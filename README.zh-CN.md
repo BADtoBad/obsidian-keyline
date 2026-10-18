@@ -4,7 +4,7 @@
 
 少一点界面折腾，多一点真正使用笔记的时间。Keyline 为 Obsidian 准备好一套协调的阅读与写作界面：清楚的排版、克制的明暗配色，以及为内容让出空间的导航。启用主题，就有完整一致的视觉基础，不必先拼装一堆 CSS 片段。
 
-[English](README.md) · [下载](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma 展示](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
+[English](README.md) · [下载](https://github.com/BADtoBad/obsidian-keyline/releases)
 
 ![明暗拼接展示](assets/keyline-cover-diagonal-v2.png)
 
@@ -37,7 +37,7 @@
 | **[Keyline 交互插件](https://github.com/BADtoBad/keyline-interactions)** | 就地编辑、快速辨认文件类型、切换已保存的工作区。插件列表中显示为 **Keyline**。 |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | 按空间与分组组织引用，不搬动或复制原文件。 |
 
-三个仓库分别对应一个主题、两个可独立安装的插件。两个插件均非必需、互不依赖，安装主题也不会自动安装插件。每个插件均有中英文介绍和功能截图。Marginalia 与 Journal View 不在此发行包中。
+三个仓库分别对应一个主题、两个可独立安装的插件。两个插件均非必需、互不依赖，安装主题也不会自动安装插件。每个插件均有中英文介绍和功能截图。
 
 ## 安装到现有库
 

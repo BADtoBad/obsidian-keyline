@@ -4,7 +4,7 @@
 
 Spend less time assembling your interface and more time using your notes. Keyline gives Obsidian a coordinated reading and writing space out of the box: clear typography, considered light and dark colours, and navigation that leaves room for your content. Select the theme to get the complete visual foundation, without first assembling a collection of CSS snippets.
 
-[中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma showcase](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
+[中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases)
 
 ![Keyline light and dark showcase](assets/keyline-cover-diagonal-v2.png)
 
@@ -37,7 +37,7 @@ Explore 27 linked English notes, project pages, research material and original P
 | **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)** | Edit in context, recognise file types at a glance and switch saved workspaces. Named **Keyline** in Obsidian’s plugin list. |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Organise references into spaces and groups without moving or duplicating the originals. |
 
-The three repositories are one theme and two separately installable plugins. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and feature screenshots. Marginalia and Journal View are not included.
+The three repositories are one theme and two separately installable plugins. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and feature screenshots.
 
 ## Install in an existing Vault
 
