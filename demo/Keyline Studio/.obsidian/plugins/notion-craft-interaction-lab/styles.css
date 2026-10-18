@@ -1172,8 +1172,12 @@ body.ncl-quiet-hints .tooltip { display: none !important; }
 .ncl-settings.is-narrow .ncl-settings-panel { padding-inline-end: 4px; }
 .modal.mod-settings .vertical-tab-content.ncl-settings { padding: 20px; }
 .modal.mod-settings .vertical-tab-content.ncl-settings.is-narrow { padding: 16px; }
-.vertical-tab-content.ncl-settings :is(h2.ncl-settings-title, h3.ncl-settings-title) { margin: 0 0 4px; padding: 0; font-size: 17px; }
-.vertical-tab-content.ncl-settings .ncl-settings-header h2 { margin: 0; padding: 0; font-size: 19px; }
+.vertical-tab-content.ncl-settings .ncl-settings-title { margin: 0 0 4px; padding: 0; border: 0; }
+.vertical-tab-content.ncl-settings .ncl-settings-title .setting-item-name { font-size: 17px; color: var(--text-normal); }
+.vertical-tab-content.ncl-settings .ncl-settings-header .ncl-settings-brand { margin: 0; padding: 0; border: 0; flex: 0 0 auto; }
+.vertical-tab-content.ncl-settings .ncl-settings-brand .setting-item-name { font-size: 19px; color: var(--text-normal); }
+.vertical-tab-content.ncl-settings .ncl-settings-brand .setting-item-info { flex: 0 0 auto; }
+.ncl-settings :is(.ncl-settings-brand, .ncl-settings-title, .ncl-theme-layout-section) .setting-item-control { display: none; }
 .ncl-settings .ncl-preference-group { margin: 0 0 14px; }
 .ncl-settings .ncl-preference-group > :is(.setting-item-heading, .ncl-theme-layout-section) { margin: 0; padding: 4px 2px 8px; }
 .ncl-settings .ncl-preference-items { border: 1px solid var(--background-modifier-border); border-radius: 8px; padding: 0 12px; background: var(--background-secondary); }

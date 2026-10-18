@@ -4,8 +4,9 @@
 
 [English](README.md) · [下载](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma 展示](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
 
-![亮色模式](assets/keyline-light.png)
-![暗色模式](assets/keyline-dark.png)
+![明暗拼接展示](assets/keyline-cover-diagonal-v2.png)
+
+[亮色原始截图](assets/keyline-showcase-light.png) · [暗色原始截图](assets/keyline-showcase-dark.png)
 
 ## 组成
 
@@ -17,9 +18,11 @@
 
 ## 体验示例库
 
-从 Releases 下载 **Keyline-Studio-Demo.zip**，解压后在 Obsidian 中选择“打开本地仓库”，从 `00 Home/Keyline Studio.md` 开始。
+从 Releases 下载 **Keyline-Studio-Demo-0.8.23.zip**，解压后在 Obsidian 中选择“打开本地仓库”，从 `00 Home/Studio showcase.md` 开始。
 
-示例包含 25 篇全英文的项目、研究、日记、阅读、工作方法和模板笔记，全部是虚构内容。附带插件按需启用，请先查看其说明。
+示例包含 27 篇全英文笔记，以及原创 PDF、EPUB、图片、音频与 Canvas 样例，全部是虚构内容。展示附件分类图标、Bucket 分组、克制的强调色和工作区导航；EPUB 阅读本身需另装阅读器。附带插件按需启用。斜切封面为展示合成图，明暗完整截图来自实际应用。
+
+当前版本 **0.8.23** 完成 Community 规范清理，未测出视觉变化；覆盖范围及限制见 [发行验证](RELEASE-VERIFICATION.md)。
 
 ## 安装到现有库
 

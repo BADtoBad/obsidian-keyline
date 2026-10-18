@@ -1040,7 +1040,7 @@ function eligibleChildren(folder) {
   });
 }
 function appendIcon(parent, icon, className) {
-  const element = document.createElement("span");
+  const element = createSpan();
   element.className = className;
   element.setAttribute("aria-hidden", "true");
   (0, import_obsidian.setIcon)(element, icon);
@@ -1065,9 +1065,9 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
     this.modalEl.classList.add("bucket-target-picker-modal");
     this.titleEl.textContent = localize`添加到 ${this.bucket.name}`;
     this.contentEl.replaceChildren();
-    const layout = document.createElement("div");
+    const layout = createDiv();
     layout.className = "bucket-target-picker";
-    const search = document.createElement("input");
+    const search = createEl("input");
     search.type = "search";
     search.className = "bucket-target-search";
     search.placeholder = localize("\u641C\u7D22 Markdown\u3001PDF \u6216\u6587\u4EF6\u5939\u2026");
@@ -1076,24 +1076,24 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
       this.query = search.value.trim().toLocaleLowerCase();
       this.renderTree(false);
     });
-    this.treeEl = document.createElement("div");
+    this.treeEl = createDiv();
     this.treeEl.className = "bucket-target-tree";
     this.treeEl.setAttribute("role", "tree");
     this.treeEl.setAttribute("aria-label", localize("Vault \u6587\u4EF6\u5C42\u7EA7"));
-    const hint = document.createElement("div");
+    const hint = createDiv();
     hint.className = "bucket-target-hint";
     hint.textContent = localize("\u9009\u62E9\u6587\u4EF6\u5939\u4F1A\u5305\u542B\u5176\u540E\u4EE3\uFF1B\u53EF\u7EE7\u7EED\u53D6\u6D88\u4E0D\u9700\u8981\u7684\u5B50\u9879\u3002");
-    const footer = document.createElement("div");
+    const footer = createDiv();
     footer.className = "bucket-target-footer";
-    this.countEl = document.createElement("div");
+    this.countEl = createDiv();
     this.countEl.className = "bucket-target-count";
-    const footerActions = document.createElement("div");
+    const footerActions = createDiv();
     footerActions.className = "bucket-target-footer-actions";
-    const cancel = document.createElement("button");
+    const cancel = createEl("button");
     cancel.type = "button";
     cancel.textContent = localize("\u53D6\u6D88");
     cancel.addEventListener("click", () => this.close());
-    this.confirmButton = document.createElement("button");
+    this.confirmButton = createEl("button");
     this.confirmButton.type = "button";
     this.confirmButton.className = "mod-cta";
     this.confirmButton.addEventListener("click", () => this.submit());
@@ -1131,7 +1131,7 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
       this.renderNode(this.treeEl, child, 0, matchCache);
     }
     if (!this.treeEl.hasChildNodes()) {
-      const empty = document.createElement("div");
+      const empty = createDiv();
       empty.className = "bucket-target-empty";
       empty.textContent = this.query ? localize("\u6CA1\u6709\u5339\u914D\u7684\u6587\u4EF6\u6216\u6587\u4EF6\u5939") : localize("Vault \u4E2D\u6CA1\u6709 Markdown\u3001PDF \u6216\u6587\u4EF6\u5939");
       this.treeEl.appendChild(empty);
@@ -1140,7 +1140,7 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
     this.updateFooter();
   }
   renderNode(parent, file, depth2, matchCache) {
-    const row = document.createElement("div");
+    const row = createDiv();
     row.className = "bucket-target-row";
     row.style.setProperty("--bucket-picker-indent", `${depth2 * 14}px`);
     row.setAttribute("role", "treeitem");
@@ -1151,7 +1151,7 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
     if (isFolder)
       row.setAttribute("aria-expanded", String(expanded));
     if (isFolder) {
-      const disclosure = document.createElement("button");
+      const disclosure = createEl("button");
       disclosure.type = "button";
       disclosure.className = "bucket-target-disclosure";
       disclosure.setAttribute("aria-label", expanded ? localize`收起 ${file.path}` : localize`展开 ${file.path}`);
@@ -1159,12 +1159,12 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
       disclosure.addEventListener("click", () => this.toggleFolder(file.path));
       row.appendChild(disclosure);
     } else {
-      const spacer = document.createElement("span");
+      const spacer = createSpan();
       spacer.className = "bucket-target-disclosure-spacer";
       row.appendChild(spacer);
     }
     appendIcon(row, isFolder ? "folder" : "file-text", "bucket-target-icon");
-    const label = document.createElement("button");
+    const label = createEl("button");
     label.type = "button";
     label.className = "bucket-target-label";
     label.textContent = file instanceof import_obsidian.TFile && file.extension.toLowerCase() === "md" ? file.basename : file.name;
@@ -1186,7 +1186,7 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
     if (existing)
       row.classList.add("is-existing");
     row.setAttribute("aria-selected", String(selected));
-    const toggle = document.createElement("button");
+    const toggle = createEl("button");
     toggle.type = "button";
     toggle.className = "bucket-target-toggle";
     if (selected)
@@ -1303,17 +1303,17 @@ var CreateFolderModal = class extends import_obsidian2.Modal {
   onOpen() {
     this.titleEl.textContent = localize("\u65B0\u5EFA\u6587\u4EF6\u5939");
     this.modalEl.classList.add("bucket-create-folder-modal");
-    const form = document.createElement("form");
+    const form = createEl("form");
     form.className = "bucket-text-form";
-    const location = document.createElement("p");
+    const location = createEl("p");
     location.className = "bucket-folder-location";
     location.textContent = localize`创建位置：${this.parentPath}`;
-    const input = document.createElement("input");
+    const input = createEl("input");
     input.type = "text";
     input.className = "bucket-text-input";
     input.value = localize("\u672A\u547D\u540D\u6587\u4EF6\u5939");
     input.setAttribute("aria-label", localize("\u6587\u4EF6\u5939\u540D\u79F0"));
-    const error = document.createElement("p");
+    const error = createEl("p");
     error.className = "bucket-folder-error";
     error.setAttribute("role", "alert");
     error.hidden = true;
@@ -1324,20 +1324,19 @@ var CreateFolderModal = class extends import_obsidian2.Modal {
       input.setCustomValidity("");
     };
     input.addEventListener("input", clearError);
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-modal-actions";
-    const cancel = document.createElement("button");
+    const cancel = createEl("button");
     cancel.type = "button";
     cancel.textContent = localize("\u53D6\u6D88");
     cancel.addEventListener("click", () => this.close());
-    const submit = document.createElement("button");
+    const submit = createEl("button");
     submit.type = "submit";
     submit.className = "mod-cta";
     submit.textContent = localize("\u521B\u5EFA");
     let pending = false;
     form.noValidate = true;
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    const create = async () => {
       if (pending)
         return;
       pending = true;
@@ -1367,6 +1366,10 @@ var CreateFolderModal = class extends import_obsidian2.Modal {
         if (input.isConnected)
           input.focus();
       }
+    };
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void create();
     });
     actions.append(cancel, submit);
     form.append(location, input, error, actions);
@@ -1390,7 +1393,7 @@ function validateFolderName(value) {
     return localize("\u8BF7\u8F93\u5165\u6587\u4EF6\u5939\u540D\u79F0\u3002");
   if (name.startsWith("."))
     return localize("\u6587\u4EF6\u5939\u540D\u79F0\u4E0D\u80FD\u4EE5\u70B9\u5F00\u5934\u3002");
-  if (/[\\/:*?"<>|\u0000-\u001f\u007f]/.test(name)) {
+  if (/[\\/:*?"<>|]/.test(name) || [...name].some((char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127)) {
     return localize("\u8BF7\u8F93\u5165\u5355\u4E2A\u6587\u4EF6\u5939\u540D\u79F0\uFF0C\u4E0D\u80FD\u5305\u542B\u659C\u6760\u3001\u5192\u53F7\u6216\u5176\u4ED6\u65E0\u6548\u5B57\u7B26\u3002");
   }
   if (name.endsWith("."))
@@ -1479,7 +1482,7 @@ function displayName(path) {
   return name.toLowerCase().endsWith(".md") ? name.slice(0, -3) : name;
 }
 function iconButton(parent, icon, label, onClick) {
-  const button = document.createElement("button");
+  const button = createEl("button");
   button.type = "button";
   button.className = "bucket-icon-button clickable-icon";
   button.setAttribute("aria-label", label);
@@ -1501,21 +1504,21 @@ var TextInputModal = class extends import_obsidian3.Modal {
   onOpen() {
     this.titleEl.textContent = this.heading;
     this.contentEl.replaceChildren();
-    const form = document.createElement("form");
+    const form = createEl("form");
     form.className = "bucket-text-form";
-    const input = document.createElement("input");
+    const input = createEl("input");
     input.type = "text";
     input.value = this.initialValue;
     input.placeholder = this.placeholder;
     input.className = "bucket-text-input";
     input.setAttribute("aria-label", this.heading);
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-modal-actions";
-    const cancel = document.createElement("button");
+    const cancel = createEl("button");
     cancel.type = "button";
     cancel.textContent = localize("\u53D6\u6D88");
     cancel.addEventListener("click", () => this.close());
-    const submit = document.createElement("button");
+    const submit = createEl("button");
     submit.type = "submit";
     submit.className = "mod-cta";
     submit.textContent = this.submitLabel;
@@ -1549,13 +1552,13 @@ var SpaceIconPickerModal = class extends import_obsidian3.Modal {
     this.modalEl.classList.add("bucket-space-icon-modal");
     this.titleEl.textContent = localize("\u9009\u62E9 Space \u56FE\u6807");
     this.contentEl.replaceChildren();
-    const grid = document.createElement("div");
+    const grid = createDiv();
     grid.className = "bucket-space-icon-grid";
     grid.setAttribute("role", "listbox");
     grid.setAttribute("aria-label", localize("Space \u56FE\u6807"));
     let selectedButton = null;
     for (const choice of SPACE_ICON_CHOICES) {
-      const button = document.createElement("button");
+      const button = createEl("button");
       button.type = "button";
       button.className = "bucket-space-icon-choice";
       button.setAttribute("role", "option");
@@ -1563,11 +1566,11 @@ var SpaceIconPickerModal = class extends import_obsidian3.Modal {
       button.classList.toggle("is-selected", selected);
       button.setAttribute("aria-selected", String(selected));
       button.title = choice.label;
-      const icon = document.createElement("span");
+      const icon = createSpan();
       icon.className = "bucket-space-icon-choice-symbol";
       icon.setAttribute("aria-hidden", "true");
       (0, import_obsidian3.setIcon)(icon, choice.id);
-      const label = document.createElement("span");
+      const label = createSpan();
       label.className = "bucket-space-icon-choice-label";
       label.textContent = choice.label;
       button.append(icon, label);
@@ -1848,20 +1851,22 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       }
     });
   }
-  onunload() {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR);
-  }
   async activateView() {
-    let leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR)[0] || null;
-    if (!leaf) {
-      leaf = this.app.workspace.getLeftLeaf(false);
+    try {
+      let leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR)[0] || null;
       if (!leaf) {
-        new import_obsidian3.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
-        return;
+        leaf = this.app.workspace.getLeftLeaf(false);
+        if (!leaf) {
+          new import_obsidian3.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
+          return;
+        }
+        await leaf.setViewState({ type: VIEW_TYPE_BUCKET_SIDEBAR, active: true });
       }
-      await leaf.setViewState({ type: VIEW_TYPE_BUCKET_SIDEBAR, active: true });
+      await this.app.workspace.revealLeaf(leaf);
+    } catch (error) {
+      console.error("Bucket Sidebar: failed to open view", error);
+      new import_obsidian3.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
     }
-    this.app.workspace.revealLeaf(leaf);
   }
   promptCreateBucket() {
     new TextInputModal(
@@ -2079,7 +2084,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
         modal.close();
       });
     });
-    const description = document.createElement("p");
+    const description = createEl("p");
     description.textContent = localize`当前生效：${resolved === "created-desc" ? localize("\u521B\u5EFA\u65F6\u95F4\uFF0C\u65B0\u5230\u65E7") : localize("\u540D\u79F0\uFF0CA \u5230 Z")}。可通过 Bucket 撤销命令恢复。`;
     modal.contentEl.appendChild(description);
     modal.open();
@@ -2172,7 +2177,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     return "layers";
   }
   async onOpen() {
-    this.rootEl = document.createElement("div");
+    this.rootEl = createDiv();
     this.rootEl.className = "bucket-sidebar-root";
     this.contentEl.replaceChildren(this.rootEl);
     this.render();
@@ -2189,10 +2194,10 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     this.syncNativeActions();
     this.rootEl.appendChild(this.renderSpaceSwitcher());
     const activeSpace = this.plugin.activeSpace;
-    const list = document.createElement("div");
+    const list = createDiv();
     list.className = "bucket-list";
     list.setAttribute("role", "tree");
-    const treeLabel = document.createElement("span");
+    const treeLabel = createSpan();
     treeLabel.className = "bucket-accessible-label";
     treeLabel.id = `bucket-tree-label-${++bucketViewLabelSequence}`;
     treeLabel.textContent = localize("\u865A\u62DF Bucket \u5217\u8868");
@@ -2216,11 +2221,11 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     this.rootEl.appendChild(list);
   }
   renderSpaceSwitcher() {
-    const wrapper = document.createElement("div");
+    const wrapper = createDiv();
     wrapper.className = "bucket-space-switcher-wrap";
-    const switcher = document.createElement("div");
+    const switcher = createDiv();
     switcher.className = "bucket-space-switcher";
-    const tabs = document.createElement("div");
+    const tabs = createDiv();
     tabs.className = "bucket-space-tabs";
     tabs.setAttribute("role", "radiogroup");
     tabs.setAttribute("aria-label", localize("Project / Area \u5207\u6362\u5668"));
@@ -2229,7 +2234,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     for (let index = 0; index < spaces.length; index += 1) {
       const space = spaces[index];
       const active = space.id === activeSpaceId;
-      const button = document.createElement("button");
+      const button = createEl("button");
       button.type = "button";
       button.className = "bucket-space-tab";
       button.classList.toggle("is-active", active);
@@ -2239,13 +2244,13 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       button.setAttribute("aria-label", space.name);
       button.tabIndex = active ? 0 : -1;
       button.title = space.name;
-      const icon = document.createElement("span");
+      const icon = createSpan();
       icon.className = "bucket-space-tab-icon";
       icon.setAttribute("aria-hidden", "true");
       (0, import_obsidian3.setIcon)(icon, space.icon || DEFAULT_SPACE_ICON);
       button.appendChild(icon);
       if (this.plugin.data.settings.showSpaceNames) {
-        const label = document.createElement("span");
+        const label = createSpan();
         label.className = "bucket-space-tab-label";
         label.textContent = space.name;
         button.appendChild(label);
@@ -2272,12 +2277,12 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       });
       tabs.appendChild(button);
     }
-    const addButton = document.createElement("button");
+    const addButton = createEl("button");
     addButton.type = "button";
     addButton.className = "bucket-space-add";
     addButton.setAttribute("aria-label", localize("\u65B0\u5EFA Project / Area"));
     addButton.title = localize("\u65B0\u5EFA Project / Area");
-    const addIcon = document.createElement("span");
+    const addIcon = createSpan();
     addIcon.setAttribute("aria-hidden", "true");
     (0, import_obsidian3.setIcon)(addIcon, "plus");
     addButton.appendChild(addIcon);
@@ -2300,12 +2305,12 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     }
   }
   renderPinnedSection() {
-    const section = document.createElement("section");
+    const section = createEl("section");
     section.className = "bucket-pinned-section";
     section.setAttribute("role", "group");
     section.setAttribute("aria-label", localize("\u7F6E\u9876"));
     section.appendChild(this.renderSectionHeading(localize("\u7F6E\u9876")));
-    const entries = document.createElement("div");
+    const entries = createDiv();
     entries.className = "bucket-pinned-entries";
     entries.setAttribute("role", "group");
     for (const entry of this.plugin.activeSpace.pinnedEntries) {
@@ -2315,7 +2320,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     return section;
   }
   renderSectionHeading(label) {
-    const heading = document.createElement("div");
+    const heading = createDiv();
     heading.className = "bucket-section-heading";
     heading.textContent = label;
     heading.setAttribute("role", "heading");
@@ -2324,14 +2329,14 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   renderPinnedEntry(entry) {
     var _a;
-    const wrapper = document.createElement("div");
+    const wrapper = createDiv();
     wrapper.className = "bucket-entry-wrapper bucket-pinned-entry";
     wrapper.dataset.entryId = entry.id;
     const target = this.app.vault.getAbstractFileByPath(entry.path);
     const validFolder = entry.type === "folder" && target instanceof import_obsidian3.TFolder ? target : null;
     const validFile = entry.type === "file" && isBucketFile2(target) ? target : null;
     const missing = validFolder === null && validFile === null;
-    const row = document.createElement("div");
+    const row = createDiv();
     row.className = "bucket-entry-row";
     row.setAttribute("role", "treeitem");
     row.setAttribute("aria-level", "1");
@@ -2363,16 +2368,16 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       disclosure.disabled = validFolder === null;
       disclosure.setAttribute("aria-expanded", String(entry.expanded === true));
     } else {
-      const spacer = document.createElement("span");
+      const spacer = createSpan();
       spacer.className = "bucket-disclosure-spacer";
       row.appendChild(spacer);
     }
-    const leading = document.createElement("span");
+    const leading = createSpan();
     leading.className = "bucket-entry-icon";
     leading.setAttribute("aria-hidden", "true");
     (0, import_obsidian3.setIcon)(leading, entry.type === "folder" ? "folder" : "file-text");
     row.appendChild(leading);
-    const label = document.createElement("button");
+    const label = createEl("button");
     label.type = "button";
     label.className = "bucket-entry-label";
     label.textContent = entry.label || displayName(entry.path);
@@ -2391,12 +2396,12 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     });
     row.appendChild(label);
     if (missing) {
-      const status = document.createElement("span");
+      const status = createSpan();
       status.className = "bucket-missing-label";
       status.textContent = localize("\u7F3A\u5931");
       row.appendChild(status);
     }
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-row-actions";
     if (validFolder)
       this.addCreationAction(actions, validFolder.path);
@@ -2407,7 +2412,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     row.appendChild(actions);
     wrapper.appendChild(row);
     if (validFolder && entry.expanded) {
-      const children = document.createElement("div");
+      const children = createDiv();
       children.className = "bucket-folder-children";
       children.setAttribute("role", "group");
       this.renderFolderChildren(children, entry, validFolder, 1, 1);
@@ -2424,15 +2429,15 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     action.setAttribute("aria-disabled", String(!enabled));
   }
   renderEmptyState() {
-    const empty = document.createElement("div");
+    const empty = createDiv();
     empty.className = "bucket-empty-state";
-    const heading = document.createElement("div");
+    const heading = createDiv();
     heading.className = "bucket-empty-heading";
     heading.textContent = localize("\u8FD8\u6CA1\u6709 Bucket");
-    const description = document.createElement("div");
+    const description = createDiv();
     description.className = "bucket-empty-description";
     description.textContent = localize("Bucket \u53EA\u4FDD\u5B58\u5F15\u7528\uFF0C\u4E0D\u4F1A\u79FB\u52A8\u6216\u5220\u9664\u771F\u5B9E\u6587\u4EF6\u3002");
-    const create = document.createElement("button");
+    const create = createEl("button");
     create.type = "button";
     create.className = "mod-cta";
     create.textContent = localize("\u65B0\u5EFA Bucket");
@@ -2441,12 +2446,12 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     return empty;
   }
   renderBucket(bucket) {
-    const section = document.createElement("section");
+    const section = createEl("section");
     section.className = "bucket-section";
     section.dataset.bucketId = bucket.id;
     section.setAttribute("role", "treeitem");
     section.setAttribute("aria-expanded", String(!bucket.collapsed));
-    const header = document.createElement("div");
+    const header = createDiv();
     header.className = "bucket-header";
     const disclosure = iconButton(
       header,
@@ -2461,24 +2466,24 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     );
     disclosure.classList.add("bucket-disclosure");
     disclosure.setAttribute("aria-expanded", String(!bucket.collapsed));
-    const bucketIcon = document.createElement("span");
+    const bucketIcon = createSpan();
     bucketIcon.className = "bucket-leading-icon";
     bucketIcon.setAttribute("aria-hidden", "true");
     (0, import_obsidian3.setIcon)(bucketIcon, "layers");
     header.appendChild(bucketIcon);
-    const name = document.createElement("button");
+    const name = createEl("button");
     name.type = "button";
     name.className = "bucket-name";
     name.textContent = bucket.name;
     name.title = bucket.name;
     name.addEventListener("click", () => disclosure.click());
     header.appendChild(name);
-    const count = document.createElement("span");
+    const count = createSpan();
     count.className = "bucket-count";
     count.textContent = String(bucket.entries.length);
     count.setAttribute("aria-label", localize`${bucket.entries.length} 个引用`);
     header.appendChild(count);
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-row-actions";
     iconButton(actions, "plus", localize`向 ${bucket.name} 添加内容`, (event) => {
       event.stopPropagation();
@@ -2496,14 +2501,14 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       this.handleDrop(event, bucket.id, bucket.entries.length);
     });
     section.appendChild(header);
-    const entries = document.createElement("div");
+    const entries = createDiv();
     entries.className = "bucket-entries";
     entries.setAttribute("role", "group");
     entries.hidden = bucket.collapsed === true;
     entries.addEventListener("dragover", (event) => this.prepareDrop(event, bucket.id));
     entries.addEventListener("drop", (event) => this.handleDrop(event, bucket.id, bucket.entries.length));
     if (bucket.entries.length === 0) {
-      const empty = document.createElement("button");
+      const empty = createEl("button");
       empty.type = "button";
       empty.className = "bucket-entry-empty";
       empty.textContent = localize("\u6DFB\u52A0\u7B14\u8BB0\u6216\u6587\u4EF6\u5939\u2026");
@@ -2526,14 +2531,14 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   renderEntry(bucket, entry, index) {
     var _a;
-    const wrapper = document.createElement("div");
+    const wrapper = createDiv();
     wrapper.className = "bucket-entry-wrapper";
     wrapper.dataset.entryId = entry.id;
     const target = this.app.vault.getAbstractFileByPath(entry.path);
     const validFolder = entry.type === "folder" && target instanceof import_obsidian3.TFolder ? target : null;
     const validFile = entry.type === "file" && isBucketFile2(target) ? target : null;
     const missing = validFolder === null && validFile === null;
-    const row = document.createElement("div");
+    const row = createDiv();
     row.className = "bucket-entry-row";
     row.setAttribute("role", "treeitem");
     row.setAttribute("aria-level", "2");
@@ -2581,16 +2586,16 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       disclosure.disabled = validFolder === null;
       disclosure.setAttribute("aria-expanded", String(entry.expanded === true));
     } else {
-      const spacer = document.createElement("span");
+      const spacer = createSpan();
       spacer.className = "bucket-disclosure-spacer";
       row.appendChild(spacer);
     }
-    const leading = document.createElement("span");
+    const leading = createSpan();
     leading.className = "bucket-entry-icon";
     leading.setAttribute("aria-hidden", "true");
     (0, import_obsidian3.setIcon)(leading, entry.type === "folder" ? "folder" : "file-text");
     row.appendChild(leading);
-    const label = document.createElement("button");
+    const label = createEl("button");
     label.type = "button";
     label.className = "bucket-entry-label";
     label.textContent = entry.label || displayName(entry.path);
@@ -2609,12 +2614,12 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     });
     row.appendChild(label);
     if (missing) {
-      const status = document.createElement("span");
+      const status = createSpan();
       status.className = "bucket-missing-label";
       status.textContent = localize("\u7F3A\u5931");
       row.appendChild(status);
     }
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "bucket-row-actions";
     if (validFolder)
       this.addCreationAction(actions, validFolder.path);
@@ -2625,7 +2630,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     row.appendChild(actions);
     wrapper.appendChild(row);
     if (validFolder && entry.expanded) {
-      const children = document.createElement("div");
+      const children = createDiv();
       children.className = "bucket-folder-children";
       children.setAttribute("role", "group");
       this.renderFolderChildren(children, entry, validFolder, 1);
@@ -2650,7 +2655,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       const target = targetFromFile(child);
       if (!target)
         continue;
-      const row = document.createElement("div");
+      const row = createDiv();
       row.className = "bucket-entry-row bucket-nested-row";
       row.dataset.bucketPath = child.path;
       row.dataset.bucketKind = child instanceof import_obsidian3.TFolder ? "folder" : "file";
@@ -2675,19 +2680,19 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
         );
         disclosure.classList.add("bucket-disclosure");
         disclosure.setAttribute("aria-expanded", String(expanded));
-        const icon = document.createElement("span");
+        const icon = createSpan();
         icon.className = "bucket-entry-icon";
         icon.setAttribute("aria-hidden", "true");
         (0, import_obsidian3.setIcon)(icon, "folder");
         row.appendChild(icon);
-        const label = document.createElement("button");
+        const label = createEl("button");
         label.type = "button";
         label.className = "bucket-entry-label";
         label.textContent = child.name;
         label.title = child.path;
         label.addEventListener("click", () => this.toggleNestedFolder(rootEntry, child.path));
         row.appendChild(label);
-        const actions = document.createElement("div");
+        const actions = createDiv();
         actions.className = "bucket-row-actions";
         this.addCreationAction(actions, child.path);
         iconButton(actions, "more-horizontal", localize`${child.name} 的更多操作`, (event) => {
@@ -2699,15 +2704,15 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
         if (expanded)
           this.renderFolderChildren(parent, rootEntry, child, depth2 + 1, rootAriaLevel);
       } else if (isBucketFile2(child)) {
-        const spacer = document.createElement("span");
+        const spacer = createSpan();
         spacer.className = "bucket-disclosure-spacer";
         row.appendChild(spacer);
-        const icon = document.createElement("span");
+        const icon = createSpan();
         icon.className = "bucket-entry-icon";
         icon.setAttribute("aria-hidden", "true");
         (0, import_obsidian3.setIcon)(icon, "file-text");
         row.appendChild(icon);
-        const label = document.createElement("button");
+        const label = createEl("button");
         label.type = "button";
         label.className = "bucket-entry-label";
         label.textContent = displayName(child.path);
@@ -2716,7 +2721,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
           void this.app.workspace.getLeaf(false).openFile(child);
         });
         row.appendChild(label);
-        const actions = document.createElement("div");
+        const actions = createDiv();
         actions.className = "bucket-row-actions";
         iconButton(actions, "more-horizontal", localize`${child.basename} 的更多操作`, (event) => {
           event.stopPropagation();
@@ -2926,7 +2931,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       if (!findBucket(this.plugin.data, value.bucketId))
         return null;
       return { bucketId: value.bucketId, entryId: value.entryId };
-    } catch (_error) {
+    } catch (e) {
       return null;
     }
   }

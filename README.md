@@ -4,8 +4,9 @@ A quieter place to think. A restrained, macOS-inspired theme for Obsidian, with 
 
 [中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma showcase](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
 
-![Keyline in light mode](assets/keyline-light.png)
-![Keyline in dark mode](assets/keyline-dark.png)
+![Keyline light and dark showcase](assets/keyline-cover-diagonal-v2.png)
+
+[Light screenshot](assets/keyline-showcase-light.png) · [Dark screenshot](assets/keyline-showcase-dark.png)
 
 ## What is included
 
@@ -17,9 +18,11 @@ The screenshots show the theme with the two optional companions. Themes alone ca
 
 ## Try the example Vault
 
-Download **Keyline-Studio-Demo.zip** from Releases, unzip it, and use Obsidian’s **Open folder as vault**. Start at `00 Home/Keyline Studio.md`.
+Download **Keyline-Studio-Demo-0.8.23.zip** from Releases, unzip it, and use Obsidian’s **Open folder as vault**. Start at `00 Home/Studio showcase.md`.
 
-The Vault contains 25 linked English notes covering projects, research, a journal, reading, studio practices, and templates. All content is fictional. The bundled plugins are optional; review and enable them only if you want the interactive features.
+The Vault contains 27 linked English notes and original PDF, EPUB, image, audio and Canvas samples. All content is fictional. The bundled plugins are optional; review and enable them only if you want the interactive features. Attachment icons, Bucket groups, restrained formatting and workspace navigation are demonstrated. EPUB reading itself needs a separate reader. The diagonal cover is a presentation composite; the full light/dark images are native application screenshots.
+
+Release **0.8.23** includes Community guideline cleanup with no measured visual changes. See [release verification](RELEASE-VERIFICATION.md) for test coverage and limits.
 
 ## Install in an existing Vault
 

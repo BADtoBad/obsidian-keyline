@@ -1638,7 +1638,7 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
     this.query = "";
     this.insertListEl = this.themeLayoutPanelEl = null;
     const header = containerEl.createDiv({ cls: "ncl-settings-header" });
-    header.createEl("h2", { text: "Keyline" });
+    this.heading(header, "Keyline", "ncl-settings-brand", 2);
     header.createSpan({ cls: "ncl-settings-version", text: this.plugin.manifest.version });
     const search = header.createEl("input", { cls: "ncl-settings-search", attr: { type: "search", placeholder: localize("\u641C\u7D22\u8BBE\u7F6E"), "aria-label": localize("\u641C\u7D22 Keyline \u8BBE\u7F6E") } });
     const shell = containerEl.createDiv({ cls: "ncl-settings-shell" });
@@ -1710,6 +1710,12 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
     this.showSection(this.section);
     this.plugin.refreshInterfacePresentation(containerEl.ownerDocument);
   }
+  heading(container, name, cls, level) {
+    const heading = new import_obsidian3.Setting(container).setName(name).setHeading();
+    heading.settingEl.addClass(cls);
+    heading.nameEl.setAttribute("role", "heading");
+    heading.nameEl.setAttribute("aria-level", String(level));
+  }
   hide() {
     var _a;
     (_a = this.resize) == null ? void 0 : _a.disconnect();
@@ -1731,7 +1737,7 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
     if (!panel) {
       panel = this.contentEl.createEl("section", { cls: "ncl-settings-panel", attr: { "aria-label": item.label } });
       panel.dataset.section = id;
-      panel.createEl("h3", { cls: "ncl-settings-title", text: item.label });
+      this.heading(panel, item.label, "ncl-settings-title", 3);
       panel.createEl("p", { cls: "ncl-settings-description", text: item.description });
       this.panels.set(id, panel);
       switch (id) {
@@ -1790,6 +1796,8 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
     let items = null;
     for (const child of Array.from(container.children)) {
       const el = child;
+      if (el.matches(".ncl-settings-title"))
+        continue;
       if (el.matches(".setting-item-heading, .ncl-theme-layout-section") && !el.querySelector("button")) {
         const group = container.ownerDocument.createElement("section");
         group.className = "ncl-preference-group";
@@ -1991,7 +1999,7 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
     readingParagraphEl.appendText(localize("\u9605\u8BFB\u89C6\u56FE\u7B2C\u4E00\u884C\u3002"));
     readingParagraphEl.createEl("br");
     readingParagraphEl.appendText(localize("\u9605\u8BFB\u89C6\u56FE\u7B2C\u4E8C\u884C\u3002"));
-    panelEl.createEl("h3", { cls: "ncl-theme-layout-section", text: localize("\u9875\u9762") });
+    this.heading(panelEl, localize("\u9875\u9762"), "ncl-theme-layout-section", 4);
     this.addThemeLayoutSlider(
       panelEl,
       "textMaxWidth",
@@ -2004,7 +2012,7 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
       localize("\u5DE6\u53F3\u7559\u767D"),
       localize("\u6700\u5DE6\u7AEF\u4E3A\u81EA\u52A8\u7559\u767D\uFF1B\u624B\u52A8\u503C\u5728\u7A84\u7A97\u53E3\u4E2D\u4E0D\u8D85\u8FC7\u6BCF\u4FA7 20%\u3002")
     );
-    panelEl.createEl("h3", { cls: "ncl-theme-layout-section", text: localize("\u6B63\u6587") });
+    this.heading(panelEl, localize("\u6B63\u6587"), "ncl-theme-layout-section", 4);
     this.addThemeLayoutSlider(
       panelEl,
       "editorLineHeight",
@@ -2041,7 +2049,7 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
       localize("\u9996\u884C\u7F29\u8FDB"),
       localize("\u4EC5\u7528\u4E8E\u666E\u901A\u6B63\u6587\u6BB5\u843D\uFF0C\u4E0D\u7F29\u8FDB\u6807\u9898\u3001\u5217\u8868\u3001\u5F15\u7528\u6216\u4EE3\u7801\u5757\u3002")
     );
-    panelEl.createEl("h3", { cls: "ncl-theme-layout-section", text: localize("\u5217\u8868") });
+    this.heading(panelEl, localize("\u5217\u8868"), "ncl-theme-layout-section", 4);
     this.addThemeLayoutSlider(
       panelEl,
       "listLineHeight",
@@ -2072,7 +2080,7 @@ var BlockPluginSettingTab = class extends import_obsidian3.PluginSettingTab {
       localize("\u65E0\u5E8F\u5217\u8868\u5706\u70B9\u5927\u5C0F"),
       localize("\u63A7\u5236\u65E0\u5E8F\u5217\u8868\u5B9E\u5FC3\u5706\u70B9\u7684\u76F4\u5F84\u3002")
     );
-    panelEl.createEl("h3", { cls: "ncl-theme-layout-section", text: localize("\u5F15\u7528\u4E0E\u6807\u9898") });
+    this.heading(panelEl, localize("\u5F15\u7528\u4E0E\u6807\u9898"), "ncl-theme-layout-section", 4);
     this.addThemeLayoutSlider(
       panelEl,
       "blockquoteIndent",
@@ -2488,7 +2496,7 @@ function isImageFile(file) {
   return IMAGE_EXTENSIONS2.has(ext);
 }
 function sanitizeAttachmentName(name) {
-  const cleaned = name.replace(/[\\/:*?"<>|]/g, "-").replace(/[\u0000-\u001f\u007f]/g, "-").replace(/^\.+/, "").trim();
+  const cleaned = name.replace(/[\\/:*?"<>|]/g, "-").split("").map((char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127 ? "-" : char).join("").replace(/^\.+/, "").trim();
   return cleaned || "attachment";
 }
 function getFileExtension(name) {
@@ -4200,7 +4208,7 @@ var foldBlockEffect = import_state2.StateEffect.define();
 var unfoldBlockEffect = import_state2.StateEffect.define();
 var FoldEllipsisWidget = class extends import_view.WidgetType {
   toDOM(view) {
-    const el = document.createElement("span");
+    const el = createSpan();
     el.className = "ftn-fold-ellipsis";
     el.textContent = "\u2026";
     el.setAttribute("aria-label", t("fold.expand"));
@@ -6044,11 +6052,11 @@ var FloatingSurfaceCoordinator = class {
     this.activeByDocument.set(doc, active);
     active.cleanup = this.bindViewportLifecycle(doc, token, options);
     this.syncBodyState(doc);
-    const coordinator = this;
+    const isActive = () => this.isActive(doc, token);
     return {
       kind,
       get active() {
-        return coordinator.isActive(doc, token);
+        return isActive();
       },
       release: () => this.release(doc, token),
       close: (reason = "programmatic") => this.closeToken(doc, token, reason)
@@ -6253,7 +6261,7 @@ var FileIconManager = class {
       return;
     const selector = ".bucket-sidebar-root, .workspace-leaf-content, .workspace-tab-header";
     const observer = new win.MutationObserver((records) => {
-      if (records.some((record2) => Array.from(record2.addedNodes).concat(Array.from(record2.removedNodes)).some((node) => node instanceof win.Element && (node.matches(selector) || node.querySelector(selector)))))
+      if (records.some((record2) => Array.from(record2.addedNodes).concat(Array.from(record2.removedNodes)).some((node) => node.instanceOf(win.Element) && (node.matches(selector) || node.querySelector(selector)))))
         this.schedule();
     });
     observer.observe(doc.body, { childList: true, subtree: true });
@@ -6929,7 +6937,7 @@ function readMentionSession(text, from, head) {
   if (from < 0 || head <= from || head > text.length || text[from] !== "@")
     return null;
   const query = text.slice(from + 1, head);
-  if (query.length > 120 || /[\r\n@\[\]]/u.test(query))
+  if (query.length > 120 || /[\r\n@[\]]/u.test(query))
     return null;
   return { from, to: head, query };
 }
@@ -6944,7 +6952,7 @@ function findMentionPages(pages, query, limit = 12) {
   return pages.filter((page) => mentionMatches(query, page.path)).sort((a, b) => (q ? score(a) - score(b) : 0) || b.modified - a.modified || a.path.localeCompare(b.path)).slice(0, limit);
 }
 function mentionWikilink(linktext) {
-  return linktext && !/[\[\]|#^\r\n]/u.test(linktext) ? `[[${linktext}]]` : null;
+  return linktext && !/[[\]|#^\r\n]/u.test(linktext) ? `[[${linktext}]]` : null;
 }
 
 // src/mentionMenu.ts
@@ -7949,7 +7957,7 @@ var StatusBarPresentation = class {
     this.observer = new this.win.MutationObserver((records) => {
       if (records.some((r) => {
         var _a;
-        return ((_a = r.target instanceof this.win.Element ? r.target : r.target.parentElement) == null ? void 0 : _a.closest(".status-bar")) || Array.from(r.addedNodes).some((n) => n instanceof this.win.Element && (n.matches(".status-bar, .syncstatusbar") || n.querySelector(".status-bar, .syncstatusbar")));
+        return ((_a = r.target.instanceOf(this.win.Element) ? r.target : r.target.parentElement) == null ? void 0 : _a.closest(".status-bar")) || Array.from(r.addedNodes).some((n) => n.instanceOf(this.win.Element) && (n.matches(".status-bar, .syncstatusbar") || n.querySelector(".status-bar, .syncstatusbar")));
       }))
         this.schedule();
     });
@@ -7974,7 +7982,7 @@ var StatusBarPresentation = class {
     item.classList.remove("ncl-sync-known", "ncl-sync-attention");
   }
   refresh() {
-    var _a;
+    var _a, _b;
     if (!this.observer)
       return;
     this.observer.disconnect();
@@ -7994,7 +8002,7 @@ var StatusBarPresentation = class {
       const fragment = this.doc.createDocumentFragment();
       let offset = 0;
       for (const match of text.matchAll(tokenPattern)) {
-        const index = match.index, raw = match[0];
+        const index = (_b = match.index) != null ? _b : 0, raw = match[0];
         const icon = (0, import_obsidian15.getIcon)(symbols[raw.replace(/\uFE0F/g, "")]);
         if (!icon)
           continue;
@@ -8072,7 +8080,7 @@ var ShellControls = class {
     this.active = true;
     this.observer = new this.win.MutationObserver((records) => {
       const shell = ".workspace, .workspace-ribbon.mod-left, .mod-left-split, .workspace-sidedock-vault-profile";
-      if (records.some((record2) => record2.type === "attributes" ? [this.doc.body, this.workspace, this.dock, this.ribbon].includes(record2.target) : [...Array.from(record2.addedNodes), ...Array.from(record2.removedNodes)].some((node) => node instanceof this.win.Element && (node.matches(shell) || node.querySelector(shell)))))
+      if (records.some((record2) => record2.type === "attributes" ? [this.doc.body, this.workspace, this.dock, this.ribbon].includes(record2.target) : [...Array.from(record2.addedNodes), ...Array.from(record2.removedNodes)].some((node) => node.instanceOf(this.win.Element) && (node.matches(shell) || node.querySelector(shell)))))
         this.schedule();
     });
     this.observer.observe(this.doc.body, {
@@ -8459,7 +8467,7 @@ var WorkspaceMenu = class {
 };
 
 // src/workspaceLayouts.ts
-var hasWorkspace = (core, name) => Object.prototype.hasOwnProperty.call(core.workspaces, name);
+var hasWorkspace = (core, name) => Object.prototype.hasOwnProperty.call(core.workspaces, name) === true;
 function cloneLayout(value) {
   if (!value || typeof value !== "object" || Array.isArray(value) || !value.main || typeof value.main !== "object") {
     throw new Error(localize("\u5E03\u5C40\u6570\u636E\u4E0D\u5B8C\u6574\uFF0C\u672A\u6267\u884C\u5207\u6362\u3002"));
@@ -8510,7 +8518,7 @@ function validateWorkspaceName(value) {
   const name = value.trim();
   if (!name)
     return localize("\u8BF7\u8F93\u5165\u5E03\u5C40\u540D\u79F0\u3002");
-  if (/[\u0000-\u001f\u007f]/.test(name) || name === "prototype" || Object.getOwnPropertyNames(Object.prototype).includes(name)) {
+  if ([...name].some((char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127) || name === "prototype" || Object.getOwnPropertyNames(Object.prototype).includes(name)) {
     return localize("\u6B64\u5E03\u5C40\u540D\u79F0\u4E0D\u53EF\u7528\uFF0C\u8BF7\u6362\u4E00\u4E2A\u540D\u79F0\u3002");
   }
   return null;
@@ -8595,12 +8603,12 @@ var WorkspaceLayouts = class {
       await this.host.changeLayout(cloneLayout(layout));
       core.activeWorkspace = active;
       await core.saveData();
-    } catch (cause) {
+    } catch (e) {
       try {
         await this.host.changeLayout(cloneLayout(before.layout));
         core.activeWorkspace = before.active;
         await core.saveData();
-      } catch (e) {
+      } catch (e2) {
         throw new Error(localize("\u5E03\u5C40\u5207\u6362\u672A\u5B8C\u6210\uFF1B\u5207\u6362\u524D\u5907\u4EFD\u5DF2\u4FDD\u7559\uFF0C\u8BF7\u901A\u8FC7\u300C\u6062\u590D\u5207\u6362\u524D\u5E03\u5C40\u300D\u91CD\u8BD5\u3002"));
       }
       throw new Error(localize("\u5E03\u5C40\u5207\u6362\u672A\u5B8C\u6210\uFF0C\u5DF2\u6062\u590D\u5207\u6362\u524D\u7684\u5E03\u5C40\u3002"));
@@ -8623,7 +8631,7 @@ var WorkspaceLayouts = class {
       core.activeWorkspace = name;
       try {
         await core.saveData();
-      } catch (cause) {
+      } catch (e) {
         if (exists)
           core.workspaces[name] = previous;
         else
@@ -8763,8 +8771,8 @@ var WorkspaceSwitcher = class {
         var _a;
         if (((_a = this.item) == null ? void 0 : _a.contains(r.target)) || r.target === this.item)
           return false;
-        const parent = r.target instanceof this.win.Element ? r.target : r.target.parentElement;
-        return (parent == null ? void 0 : parent.closest(".status-bar")) || [...Array.from(r.addedNodes), ...Array.from(r.removedNodes)].some((n) => n instanceof this.win.Element && (n.matches(".status-bar") || n.querySelector(".status-bar")));
+        const parent = r.target.instanceOf(this.win.Element) ? r.target : r.target.parentElement;
+        return (parent == null ? void 0 : parent.closest(".status-bar")) || [...Array.from(r.addedNodes), ...Array.from(r.removedNodes)].some((n) => n.instanceOf(this.win.Element) && (n.matches(".status-bar") || n.querySelector(".status-bar")));
       }))
         this.schedule();
     });
@@ -8861,7 +8869,7 @@ var WorkspaceSwitcher = class {
     let left = 0, right = bounds.width, top = null, wrapped = false;
     const observed = /* @__PURE__ */ new Set([bar]);
     for (const sibling of Array.from(bar.children)) {
-      if (sibling === item || !(sibling instanceof this.win.HTMLElement))
+      if (sibling === item || !sibling.instanceOf(this.win.HTMLElement))
         continue;
       observed.add(sibling);
       const r = sibling.getBoundingClientRect();

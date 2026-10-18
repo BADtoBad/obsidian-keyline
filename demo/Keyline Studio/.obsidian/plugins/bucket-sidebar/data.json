@@ -7,39 +7,72 @@
       "icon": "layers",
       "pinnedEntries": [
         {
-          "id": "home",
+          "id": "showcase-pin",
           "type": "file",
-          "path": "00 Home/Keyline Studio.md"
+          "path": "00 Home/Studio showcase.md"
         }
       ],
       "buckets": [
         {
-          "id": "now",
+          "id": "focus",
           "name": "In focus",
           "entries": [
             {
-              "id": "projects",
-              "type": "folder",
-              "path": "01 Projects",
-              "expanded": true
+              "id": "field",
+              "type": "file",
+              "path": "01 Projects/Field Notes.md"
+            },
+            {
+              "id": "atlas",
+              "type": "file",
+              "path": "01 Projects/Atlas.md"
+            },
+            {
+              "id": "letter",
+              "type": "file",
+              "path": "01 Projects/Sunday Letter.md"
             }
           ]
         },
         {
-          "id": "learn",
-          "name": "Research & ideas",
+          "id": "references",
+          "name": "Reference shelf",
           "entries": [
             {
-              "id": "research",
-              "type": "folder",
-              "path": "02 Research",
-              "expanded": false
+              "id": "pdf",
+              "type": "file",
+              "path": "07 Assets/Research brief.pdf"
             },
             {
-              "id": "library",
-              "type": "folder",
-              "path": "04 Library",
-              "expanded": false
+              "id": "rituals",
+              "type": "file",
+              "path": "02 Research/Reading rituals.md"
+            },
+            {
+              "id": "quiet",
+              "type": "file",
+              "path": "02 Research/Quiet interfaces.md"
+            }
+          ]
+        },
+        {
+          "id": "practice",
+          "name": "Daily practice",
+          "entries": [
+            {
+              "id": "daily",
+              "type": "file",
+              "path": "03 Journal/2026-10-18.md"
+            },
+            {
+              "id": "principles",
+              "type": "file",
+              "path": "05 Studio/Design principles.md"
+            },
+            {
+              "id": "review",
+              "type": "file",
+              "path": "03 Journal/Weekly review.md"
             }
           ]
         }
@@ -49,27 +82,32 @@
       "id": "personal",
       "name": "Personal",
       "icon": "notebook-pen",
-      "pinnedEntries": [],
       "buckets": [
         {
           "id": "daily",
           "name": "Daily practice",
+          "collapsed": false,
           "entries": [
             {
               "id": "journal",
               "type": "folder",
               "path": "03 Journal",
-              "expanded": true
+              "expanded": true,
+              "expandedPaths": [],
+              "excludedPaths": []
             },
             {
               "id": "studio-folder",
               "type": "folder",
               "path": "05 Studio",
-              "expanded": false
+              "expanded": false,
+              "expandedPaths": [],
+              "excludedPaths": []
             }
           ]
         }
-      ]
+      ],
+      "pinnedEntries": []
     }
   ],
   "activeSpaceId": "studio",

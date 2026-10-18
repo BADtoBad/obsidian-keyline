@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    {"id":"read","type":"text","text":"## Read\nCapture one idea worth keeping.","x":0,"y":0,"width":270,"height":140,"color":"5"},
+    {"id":"connect","type":"text","text":"## Connect\nLink it to a question you care about.","x":360,"y":0,"width":270,"height":140,"color":"4"},
+    {"id":"revisit","type":"text","text":"## Revisit\nNotice what changed your thinking.","x":720,"y":0,"width":270,"height":140,"color":"3"}
+  ],
+  "edges": [
+    {"id":"read-connect","fromNode":"read","fromSide":"right","toNode":"connect","toSide":"left"},
+    {"id":"connect-revisit","fromNode":"connect","fromSide":"right","toNode":"revisit","toSide":"left"}
+  ]
+}

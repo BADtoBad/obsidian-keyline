@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#f5f4f0"/>
+  <text x="64" y="86" font-family="Helvetica,Arial,sans-serif" font-size="18" letter-spacing="3" fill="#777873">KEYLINE STUDIO</text>
+  <text x="64" y="156" font-family="Helvetica,Arial,sans-serif" font-size="42" font-weight="600" fill="#292d33">A quiet collection.</text>
+  <rect x="64" y="220" width="160" height="210" rx="16" fill="#709bcb"/>
+  <rect x="232" y="220" width="160" height="210" rx="16" fill="#c66369"/>
+  <rect x="400" y="220" width="160" height="210" rx="16" fill="#c3a16a"/>
+  <rect x="568" y="220" width="160" height="210" rx="16" fill="#74a38b"/>
+  <rect x="736" y="220" width="160" height="210" rx="16" fill="#9984ba"/>
+  <g font-family="Helvetica,Arial,sans-serif" font-size="17" fill="#5e625e"><text x="64" y="465">Notes</text><text x="232" y="465">Documents</text><text x="400" y="465">Books</text><text x="568" y="465">Images</text><text x="736" y="465">Audio</text></g>
+</svg>
