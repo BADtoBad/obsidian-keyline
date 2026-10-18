@@ -1,0 +1,2077 @@
+/*
+ * Keyline 0.8.22 — Quiet split seams with preserved resize targets
+ *
+ * A quiet, macOS-inspired Obsidian shell with a neutral writing canvas and
+ * a floating navigation surface. This theme deliberately leaves file commands,
+ * rename semantics, context menus, and storage ownership to Obsidian itself.
+ */
+
+/* -------------------------------------------------------------------------
+   Foundations
+   ---------------------------------------------------------------------- */
+
+.theme-light,
+.theme-dark {
+  --font-text-theme: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --font-interface-theme: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --font-monospace-theme: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --font-text-size: 16px;
+  --font-ui-small: 13px;
+  --font-ui-smaller: 11.5px;
+  --line-height-normal: 1.62;
+  --line-height-tight: 1.34;
+  --ncl-text-max-width: 600px;
+  --ncl-page-side-padding: initial;
+  --ncl-page-padding-block: clamp(24px, 5vw, 72px);
+  --ncl-page-top-padding: 30px;
+  --file-line-width: var(--ncl-text-max-width);
+  /* One top inset; preserve horizontal settings, bottom space and text rhythm. */
+  --file-margins: var(--ncl-page-top-padding) var(--ncl-page-side-padding, var(--ncl-page-padding-block)) var(--ncl-page-padding-block);
+
+  /* Companion-plugin overrides. Keeping complete theme-side defaults makes
+     the theme usable even while the interaction plugin is disabled. */
+  --ncl-editor-line-height: 1.85;
+  --ncl-reading-line-height: 1.8;
+  --ncl-paragraph-gap: 1em;
+  --ncl-paragraph-before: 1em;
+  --ncl-paragraph-after: 1em;
+  --ncl-first-line-indent: 0em;
+  --ncl-list-line-height: 1.8;
+  --ncl-list-item-spacing: 0em;
+  --ncl-list-indent: 1.8em;
+  --ncl-list-first-indent: 0.72em;
+  --ncl-list-marker-gap: 10px;
+  --ncl-list-bullet-size: 7px;
+  --ncl-blockquote-indent: 16px;
+  --ncl-heading-before: 1.8em;
+  --ncl-heading-after: 0.6em;
+  --list-indent: var(--ncl-list-indent);
+
+  --h1-size: 2em;
+  --h1-weight: 680;
+  --h1-line-height: 1.16;
+  --h2-size: 1.55em;
+  --h2-weight: 660;
+  --h2-line-height: 1.22;
+  --h3-size: 1.25em;
+  --h3-weight: 650;
+  --h3-line-height: 1.28;
+  --h4-size: 1.08em;
+  --h4-weight: 640;
+  --h5-size: 1em;
+  --h5-weight: 630;
+  --h6-size: 0.92em;
+  --h6-weight: 620;
+
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 14px;
+  --radius-xl: 18px;
+  --input-radius: 8px;
+  --button-radius: 8px;
+  --modal-radius: 14px;
+  --tab-radius-active: 8px;
+
+  --ncl-sidebar-row-height: 34px;
+  --ncl-sidebar-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --ncl-sidebar-gutter: 8px;
+  --ncl-sidebar-toolbar-height: 26px;
+  --ncl-sidebar-depth-step: 20px;
+  --ncl-sidebar-guide-axis: 12px;
+  --ncl-control-hit-size: 28px;
+  --ncl-shell-controls: 1;
+  --ncl-workspace-controls: 1;
+  --ncl-menu-row-height: 28px;
+  --ncl-menu-radius: 8px;
+  --ncl-menu-active-bg: color-mix(in srgb, var(--text-normal) 10%, var(--ncl-surface-bg));
+  --ncl-motion-fast: 120ms;
+
+  --nav-item-size: 13px;
+  --nav-item-weight: 450;
+  --nav-item-weight-hover: 470;
+  --nav-item-weight-active: 530;
+  --nav-item-radius: 7px;
+  --icon-size: 16px;
+  --icon-stroke: 1.6px;
+
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.05), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  --shadow-m: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-l: 0 22px 56px rgba(0, 0, 0, 0.16), 0 4px 14px rgba(0, 0, 0, 0.08);
+  --ncl-surface-shadow: var(--shadow-m);
+  --ncl-space-control: 4px;
+  --ncl-space-panel: 8px;
+  --ncl-sidebar-card-inset: var(--ncl-space-panel);
+  --ncl-sidebar-card-radius: 12px;
+  --ncl-sidebar-card-outline: 0 0 1px var(--ncl-sidebar-card-edge), inset 0 0 1px 1px var(--ncl-sidebar-card-highlight);
+}
+
+.theme-light {
+  --color-accent-hsl: 217, 72%, 48%;
+  --interactive-accent: #2266d3;
+  --interactive-accent-hover: #1c55b0;
+  --interactive-accent-rgb: 34, 102, 211;
+  --text-accent: var(--interactive-accent);
+  --text-accent-hover: var(--interactive-accent-hover);
+  --text-on-accent: #ffffff;
+  --caret-color: var(--interactive-accent);
+
+  --background-primary: #ffffff;
+  --background-primary-alt: #f7f7f7;
+  --background-secondary: #f2f2f2;
+  --background-secondary-alt: #ebebeb;
+  --background-modifier-hover: rgba(0, 0, 0, 0.055);
+  --background-modifier-active-hover: rgba(0, 0, 0, 0.085);
+  --background-modifier-border: rgba(0, 0, 0, 0.10);
+  --background-modifier-border-hover: rgba(0, 0, 0, 0.17);
+  --background-modifier-border-focus: var(--interactive-accent);
+  --background-modifier-form-field: #ffffff;
+
+  --text-normal: #292929;
+  --text-muted: #696969;
+  --text-faint: #858585;
+  --text-selection: rgba(var(--interactive-accent-rgb), 0.18);
+  --text-highlight-bg: rgba(245, 198, 64, 0.32);
+  --icon-color: #737373;
+  --icon-color-hover: var(--text-normal);
+  --icon-color-active: var(--interactive-accent);
+
+  --divider-color: rgba(0, 0, 0, 0.08);
+  --nav-item-color: var(--text-muted);
+  --nav-item-color-hover: var(--text-normal);
+  --nav-item-color-active: var(--text-accent);
+  --nav-item-background-hover: rgba(0, 0, 0, 0.04);
+  --nav-item-background-active: var(--background-modifier-hover);
+  --nav-item-background-selected: var(--background-modifier-hover);
+  --background-modifier-error: #fff0ef;
+  --text-error: #c83c35;
+
+  --ncl-canvas: var(--background-primary);
+  --ncl-sidebar: var(--background-secondary);
+  --ncl-sidebar-raised: var(--background-primary-alt);
+  --ncl-chrome: var(--background-secondary);
+  /* Keep selected labels legible on the darker navigation surface. */
+  --ncl-sidebar-selected-color: var(--text-normal);
+  --ncl-surface-bg: #ffffff;
+  --ncl-surface-border: var(--background-modifier-border);
+  --ncl-menu-shadow: 0 4px 16px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+  --ncl-toolbar-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  --ncl-sidebar-card-edge: rgba(0, 0, 0, 0.28);
+  --ncl-sidebar-card-highlight: rgba(255, 255, 255, 0.72);
+  --ncl-sidebar-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.075);
+}
+
+.theme-dark {
+  --color-accent-hsl: 217, 77%, 69%;
+  --interactive-accent: #74a3ed;
+  --interactive-accent-hover: #9abdf3;
+  --interactive-accent-rgb: 116, 163, 237;
+  --text-accent: var(--interactive-accent);
+  --text-accent-hover: var(--interactive-accent-hover);
+  --text-on-accent: #10141d;
+  --caret-color: var(--interactive-accent);
+
+  --background-primary: #1e1e1e;
+  --background-primary-alt: #252525;
+  --background-secondary: #292929;
+  --background-secondary-alt: #303030;
+  --background-modifier-hover: rgba(255, 255, 255, 0.065);
+  --background-modifier-active-hover: rgba(255, 255, 255, 0.105);
+  --background-modifier-border: rgba(255, 255, 255, 0.075);
+  --background-modifier-border-hover: rgba(255, 255, 255, 0.17);
+  --background-modifier-border-focus: var(--interactive-accent);
+  --background-modifier-form-field: #303030;
+
+  --text-normal: #dedede;
+  --text-muted: #a6a6a6;
+  --text-faint: #7e7e7e;
+  --text-selection: rgba(var(--interactive-accent-rgb), 0.24);
+  --text-highlight-bg: rgba(218, 170, 55, 0.28);
+  --icon-color: #a0a0a0;
+  --icon-color-hover: var(--text-normal);
+  --icon-color-active: var(--interactive-accent);
+
+  --divider-color: rgba(255, 255, 255, 0.045);
+  --nav-item-color: var(--text-muted);
+  --nav-item-color-hover: var(--text-normal);
+  --nav-item-color-active: var(--text-accent);
+  --nav-item-background-hover: rgba(255, 255, 255, 0.04);
+  --nav-item-background-active: rgba(255, 255, 255, 0.065);
+  --nav-item-background-selected: rgba(255, 255, 255, 0.065);
+  --background-modifier-error: #402421;
+  --text-error: #ff8279;
+
+  --ncl-canvas: var(--background-primary);
+  --ncl-sidebar: #191919;
+  --ncl-sidebar-raised: var(--background-primary-alt);
+  --ncl-chrome: var(--background-secondary);
+  --ncl-sidebar-selected-color: var(--text-normal);
+  --ncl-surface-bg: #2b2b2b;
+  --ncl-surface-border: rgba(255, 255, 255, 0.12);
+  --ncl-menu-shadow: 0 4px 16px rgba(0, 0, 0, 0.24), 0 1px 4px rgba(0, 0, 0, 0.16);
+  --ncl-toolbar-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+  --ncl-surface-shadow: 0 18px 54px rgba(0, 0, 0, 0.42), 0 4px 16px rgba(0, 0, 0, 0.28);
+  --ncl-sidebar-card-edge: rgba(0, 0, 0, 0.4);
+  --ncl-sidebar-card-highlight: rgba(255, 255, 255, 0.11);
+  --ncl-sidebar-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.22);
+}
+
+/* -------------------------------------------------------------------------
+   App shell, title bars, tabs
+   ---------------------------------------------------------------------- */
+
+body {
+  background: var(--ncl-chrome);
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.workspace {
+  background: var(--ncl-chrome);
+}
+
+.workspace-split,
+.workspace-tabs {
+  background: transparent;
+}
+
+.workspace-split.mod-root,
+.workspace-split.mod-root .workspace-tabs,
+.workspace-split.mod-root .workspace-leaf {
+  background: var(--ncl-canvas);
+}
+
+/* The document is one surface below the Tab strip: view header + content,
+   never individual paragraphs. Leave core's split/resize geometry intact. */
+body:not(.is-mobile) .workspace-split.mod-root,
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs {
+  background: var(--ncl-chrome);
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs > .workspace-tab-container {
+  /* One owner per seam: the previous panel supplies the trailing 8px.
+     Adding another leading inset here doubled the Sidebar/document gap. */
+  margin: 0 var(--ncl-space-panel) var(--ncl-space-panel) 0;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 12px;
+  background: var(--ncl-canvas);
+  overflow: hidden;
+}
+
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-split.mod-root {
+  padding-inline-start: var(--ncl-space-panel);
+}
+
+/* The native status bar is an app-container sibling. Put it back into that
+   column's flow, so it cannot cut across the document's bottom-right corner.
+   No DOM reparenting or fixed-height reserve; wrapping/hidden state stays native. */
+body:not(.is-mobile) .app-container > .status-bar {
+  --status-bar-font-size: 11px;
+  --ncl-status-icon-size: 12px;
+  --status-bar-text-color: rgba(var(--mono-rgb-100), 0.5);
+  position: static;
+  flex: 0 0 auto;
+  align-self: stretch;
+  align-items: center;
+  max-width: 100%;
+  flex-wrap: wrap;
+  /* Share the existing 8px card-bottom gutter: 4px above the row, 4px below.
+     This is still in flow, including when plugin items wrap or are hidden. */
+  margin-block-start: calc(-1 * var(--ncl-space-control));
+  padding: 0 var(--ncl-space-panel) var(--ncl-space-control);
+  gap: 0 var(--ncl-space-control);
+  border: 0;
+  border-radius: 0;
+  background: var(--ncl-chrome);
+}
+body:not(.is-mobile) .app-container > .status-bar .status-bar-item {
+  min-height: 20px;
+  max-width: 100%;
+  padding: 2px var(--ncl-space-control);
+  align-items: center;
+  justify-content: center;
+  line-height: 14px;
+  overflow-wrap: anywhere;
+}
+/* Light chrome needs slightly more ink than dark chrome at this small size. */
+body.theme-light:not(.is-mobile) .app-container > .status-bar {
+  --status-bar-text-color: rgba(var(--mono-rgb-100), 0.56);
+}
+/* Glyph size is not the hit target: retain a 20px row for native actions.
+   Include SVGs without .svg-icon; do not override status colors or drawings. */
+body:not(.is-mobile) .app-container > .status-bar .status-bar-item svg {
+  --icon-size: var(--ncl-status-icon-size);
+  width: var(--ncl-status-icon-size);
+  height: var(--ncl-status-icon-size);
+  flex-shrink: 0;
+  display: block;
+}
+body:not(.is-mobile) .app-container > .status-bar .status-bar-item:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: -2px;
+}
+body:not(.is-mobile) .app-container > .status-bar:empty { display: none; }
+
+/* LiveSync owns the information, click handlers and lifetime. The companion
+   can substitute monochrome glyphs without changing the underlying text. */
+body:not(.is-mobile) .app-container > .status-bar > .syncstatusbar {
+  order: -1;
+  margin-inline-end: auto;
+  justify-content: flex-start;
+  text-align: start;
+}
+body:not(.is-mobile) .app-container > .status-bar > .syncstatusbar.ncl-sync-attention {
+  color: var(--text-normal);
+  filter: none;
+}
+body:not(.is-mobile) .app-container > .status-bar .status-bar-item:is(:hover, :focus-within) {
+  color: var(--text-normal);
+}
+
+/* Core hides Markdown/empty-tab icons. Visibility is separate from the
+   companion's type/custom identity resolver, so the theme also works alone. */
+body:not(.is-mobile) .workspace .mod-root .workspace-tab-header
+  .workspace-tab-header-inner-icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.workspace-ribbon {
+  border-inline-end: 0;
+  background: var(--ncl-chrome);
+}
+
+/* One painted navigation card covers the native ribbon + left dock. Unlike
+   a negative layout margin, this never changes core's saved sidebar width,
+   resize handle, or collapse animation. The card has no pointer hit box. */
+body:not(.is-mobile) .workspace {
+  --ncl-sidebar-ribbon-offset: 0px;
+}
+
+body:not(.is-mobile).show-ribbon .workspace.is-left-sidedock-open {
+  --ncl-sidebar-ribbon-offset: var(--ribbon-width);
+}
+
+body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+  isolation: isolate;
+  /* Let the shadow fade over the canvas, while the native ribbon remains
+     above the card extending behind it. Do not lift this above menus. */
+  z-index: calc(var(--layer-sidedock) - 1);
+  padding-block: var(--ncl-sidebar-card-inset);
+  padding-inline-start: var(--ncl-sidebar-card-inset);
+  padding-inline-end: var(--ncl-sidebar-card-inset);
+  background: transparent;
+}
+
+body:not(.is-mobile).show-ribbon .workspace.is-left-sidedock-open
+  > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+  padding-inline-start: 0;
+}
+
+body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed)::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: var(--ncl-sidebar-card-inset);
+  inset-inline-start: calc(var(--ncl-sidebar-card-inset) - var(--ncl-sidebar-ribbon-offset));
+  inset-inline-end: var(--ncl-sidebar-card-inset);
+  border-radius: var(--ncl-sidebar-card-radius);
+  background: var(--ncl-sidebar);
+  box-shadow: var(--ncl-sidebar-card-outline), var(--ncl-sidebar-card-shadow);
+  /* Keep the diffuse side shadow, but never cast a band into the bottom
+     gutter. Clip only this painted pseudo-element, not controls/resize hits. */
+  clip-path: inset(-32px -32px -1px -32px);
+  pointer-events: none;
+}
+
+/* Transparent children reveal one continuous surface; preserve their native
+   scrolling/containment and keep the resize handle outside the painted edge. */
+body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed)
+  :is(.workspace-tabs, .workspace-leaf, .workspace-leaf-content, .workspace-tab-header-container,
+      .workspace-sidedock-vault-profile, .bucket-sidebar-root) {
+  background: transparent;
+}
+
+body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed)
+  .workspace-tabs.mod-top > .workspace-tab-header-container {
+  /* The card starts 8px below the window. Its old 32px header left only
+     1px around a 30px button. Reserve real space around the whole surface;
+     do not squeeze the glyph or modify the native traffic-light geometry. */
+  min-height: max(calc(var(--header-height) - 2 * var(--ncl-sidebar-card-inset)), calc(30px + 2 * var(--ncl-space-panel)));
+  height: max(calc(var(--header-height) - 2 * var(--ncl-sidebar-card-inset)), calc(30px + 2 * var(--ncl-space-panel)));
+  padding-block: var(--ncl-space-panel);
+}
+
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left,
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left::before {
+  background: transparent;
+}
+
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left {
+  padding-bottom: var(--ncl-sidebar-card-inset);
+  /* Center within the visible card, whose left edge is inset from the window. */
+  padding-inline-start: var(--ncl-sidebar-card-inset);
+  padding-inline-end: 0;
+}
+
+.side-dock-actions,
+.side-dock-settings {
+  padding-inline: 5px;
+}
+
+.workspace-ribbon .clickable-icon,
+.nav-action-button,
+.view-action,
+.workspace-tab-header-new-tab,
+.sidebar-toggle-button .clickable-icon {
+  border-radius: 7px;
+}
+
+.workspace-ribbon .clickable-icon:hover,
+.nav-action-button:hover,
+.view-action:hover,
+.workspace-tab-header-new-tab:hover,
+.sidebar-toggle-button .clickable-icon:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--icon-color-hover);
+}
+
+.workspace-tab-header-container {
+  min-height: 40px;
+  padding: var(--ncl-space-control);
+  border-bottom: 0;
+  background: var(--ncl-sidebar);
+}
+
+.mod-root .workspace-tab-header-container {
+  background: var(--ncl-chrome);
+}
+
+.workspace-tab-header {
+  margin: 0 1px;
+  border-radius: 8px 8px 0 0;
+  color: var(--text-muted);
+}
+
+.workspace-tab-header:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--text-normal);
+}
+
+.workspace-tab-header.is-active {
+  background: var(--background-primary);
+  box-shadow: none;
+  color: var(--text-normal);
+}
+
+.workspace-tab-header-inner-title {
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.workspace-leaf-content > .view-header {
+  min-height: 36px;
+  border-bottom: 0;
+  background: var(--ncl-canvas);
+}
+
+.view-header-title {
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+/* Quiet is a shell treatment, never a global font or editor-layout reset.
+   Keep the Vault's editor font and saved line/paragraph metrics intact. */
+:is(.workspace-tab-header-container, .view-header, .workspace-ribbon,
+    .workspace-split.mod-right-split, .workspace-sidedock-vault-profile, .status-bar) {
+  --font-interface: var(--ncl-sidebar-font);
+  font-family: var(--font-interface);
+}
+
+body:not(.is-mobile) {
+  --header-height: 48px;
+  --tab-outline-width: 0px;
+  --tab-container-background: var(--ncl-chrome);
+  --titlebar-background: var(--ncl-chrome);
+  --titlebar-background-focused: var(--ncl-chrome);
+  --tab-text-color: var(--text-muted);
+  --tab-text-color-active: var(--text-normal);
+  --tab-text-color-focused: var(--text-muted);
+  --tab-text-color-focused-active: var(--text-normal);
+}
+
+/* Native tab scroller, close buttons, drag regions and overflow stay native.
+   Only unstacked desktop tabs become small floating capsules. The strip
+   shrink-wraps its tabs; only the native spacer AFTER + absorbs free space. */
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) > .workspace-tab-header-container {
+  --ncl-tab-gap: var(--ncl-space-panel);
+  height: var(--header-height);
+  padding-block: var(--ncl-space-panel);
+  align-items: center;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container > .workspace-tab-header-container-inner {
+  flex: 0 1 auto;
+  min-width: 0;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  gap: var(--ncl-tab-gap);
+  justify-content: flex-start;
+}
+
+/* Keep Obsidian's reserved traffic-light gutter in pop-outs / with the left
+   sidebar hidden. No fixed positioning, transforms or DOM reordering. */
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space)
+  > .workspace-tab-header-container {
+  padding-inline-start: 0;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container > .workspace-tab-header-new-tab {
+  flex: 0 0 28px;
+  height: 32px;
+  padding: 0;
+  margin-inline: var(--ncl-space-panel) 0;
+  align-items: center;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container > .workspace-tab-header-spacer {
+  flex: 1 1 0;
+  min-width: var(--ncl-space-panel);
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container > .workspace-tab-header-tab-list {
+  flex: 0 0 28px;
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container > :is(.workspace-tab-header-new-tab, .workspace-tab-header-tab-list)
+  > .clickable-icon {
+  --icon-size: 16px;
+  --icon-stroke: 1.6px;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+}
+
+/* Breadcrumbs follow Back/Forward from the leading edge, instead of being
+   centered independently below a left-aligned tab group. */
+body:not(.is-mobile) .mod-root .view-header {
+  --file-header-justify: flex-start;
+  --file-header-font: var(--ncl-sidebar-font);
+  padding-inline-start: 8px;
+}
+
+body:not(.is-mobile) .workspace .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header {
+  flex: 0 1 auto;
+  width: 190px;
+  min-width: 72px;
+  max-width: 210px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+  border-radius: 16px;
+  box-shadow: none;
+  /* Core's tooltip dispatcher reads this flag; keep aria-label intact. */
+  --no-tooltip: true;
+}
+
+/* The inherited title policy must not silence actual tab actions. */
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header
+  :is(.workspace-tab-header-inner-close-button, .workspace-tab-header-status-icon) {
+  --no-tooltip: false;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header::before,
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header::after {
+  display: none;
+}
+
+/* A divider belongs on the midpoint BETWEEN capsule surfaces, not on the
+   hovered capsule's edge. Paint only: native tab hit boxes stay unchanged. */
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header-inner::after {
+  inset-inline-end: calc((var(--ncl-tab-gap) + 1px) / -2);
+  pointer-events: none;
+}
+
+/* No last divider: a shrink-wrapped strip must not scroll for decoration. */
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header:last-child .workspace-tab-header-inner::after {
+  display: none;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header-inner {
+  padding: 0 8px;
+  border-radius: inherit;
+  /* The outer capsule already paints hover; core's inner hover would double it. */
+  background: transparent;
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header.is-active {
+  background: var(--ncl-canvas);
+  box-shadow: inset 0 0 0 1px var(--background-modifier-border);
+}
+
+body:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked)
+  > .workspace-tab-header-container .workspace-tab-header.is-active .workspace-tab-header-inner-icon {
+  color: var(--text-accent);
+}
+
+body:not(.is-mobile) :is(.workspace-ribbon, .view-header, .workspace-tab-header-container) {
+  --icon-size: 15px;
+  --icon-stroke: 1.6px;
+}
+
+.workspace-split.mod-left-split,
+.workspace-split.mod-left-split .workspace-ribbon,
+.workspace-split.mod-left-split .workspace-tab-header-container {
+  --titlebar-background: var(--ncl-sidebar);
+  --titlebar-background-focused: var(--ncl-sidebar);
+}
+
+body:not(.is-mobile) .workspace-ribbon.mod-left {
+  --titlebar-background: var(--ncl-sidebar);
+  --titlebar-background-focused: var(--ncl-sidebar);
+}
+
+/* A collapsed dock leaves a toolbar on the window chrome, not a second
+   rectangular canvas. Core's header drag region and all native geometry stay. */
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left {
+  --ribbon-background-collapsed: var(--ncl-chrome);
+  --titlebar-background: var(--ncl-chrome);
+  --titlebar-background-focused: var(--ncl-chrome);
+  background: var(--ncl-chrome);
+  border-inline-end: 0;
+  box-shadow: none;
+  padding-bottom: var(--ncl-space-panel);
+  /* Include the editor's leading gutter in the visual center, without moving
+     the native ribbon frame, header drag region or document card. */
+  padding-inline-start: var(--ncl-space-panel);
+  padding-inline-end: 0;
+}
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left :is(.side-dock-actions, .side-dock-settings) {
+  /* Native 44px ribbons must still fit the unchanged button hit targets. */
+  padding-inline: 0;
+}
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left::before {
+  background: var(--ncl-chrome);
+  border: 0;
+  box-shadow: none;
+}
+
+/* Sidebar view tabs are icon buttons, not document tabs. Core's inner strip
+   had a 6px top margin inside an already inset 32px row: only the horizontal
+   padding survived. Give the four buttons their own complete 30px surface. */
+body:not(.is-mobile) .mod-left-split .workspace-tabs > .workspace-tab-header-container {
+  align-items: center;
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header-container-inner {
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  margin: 0;
+  padding: 0;
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header .workspace-tab-header-inner {
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow: none;
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header-inner-icon {
+  --icon-size: 18px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header:hover .workspace-tab-header-inner {
+  background: var(--background-modifier-hover);
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header.is-active .workspace-tab-header-inner {
+  background: var(--background-modifier-active-hover);
+}
+body:not(.is-mobile) .mod-left-split .workspace-tab-header::before,
+body:not(.is-mobile) .mod-left-split .workspace-tab-header::after,
+body:not(.is-mobile) .mod-left-split .workspace-tab-header-inner::after {
+  display: none;
+}
+
+/* The companion relocates the original native profile into the shared
+   navigation footer, retaining menu handlers and restoring it on unload. */
+body:not(.is-mobile) .workspace.ncl-shell-managed { position: relative; }
+/* Core applies flex: 1 0 0 to .workspace-split.mod-horizontal > *.
+   A single-class rule loses that specificity contest: our empty placeholder
+   becomes a second equal-height pane, despite its measured inline height.
+   Only the owned footer reservation is fixed-size; native split panes retain
+   their own flexible/saved sizing. Height remains measured by the companion. */
+.workspace-split.mod-left-split > .ncl-shell-footer-space {
+  flex: 0 0 auto;
+  order: 1;
+  pointer-events: none;
+}
+body:not(.is-mobile) .workspace > .ncl-shell-profile {
+  --ncl-shell-inner-inset: var(--ncl-space-control);
+  --ncl-shell-inner-radius: max(0px, calc(var(--ncl-sidebar-card-radius) - var(--ncl-shell-inner-inset)));
+  position: absolute;
+  bottom: 8px;
+  z-index: calc(var(--layer-sidedock) + 1);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* The hover now follows the actual card radius at a uniform 4px left/bottom
+     inset. Keep the total 10px vertical padding so scroll/footer height stays. */
+  padding: calc(10px - var(--ncl-shell-inner-inset)) var(--ncl-shell-inner-inset) var(--ncl-shell-inner-inset);
+  margin: 0;
+  border: 0;
+  border-radius: 0 0 var(--ncl-sidebar-card-radius) var(--ncl-sidebar-card-radius);
+  /* Same card paint as the content above. An opaque footer at this higher
+     layer erased the card's inset highlight along both sides and corners. */
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  box-shadow: none;
+  -webkit-app-region: no-drag;
+}
+.ncl-shell-profile .workspace-drawer-vault-switcher {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 30px;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border-radius: var(--ncl-shell-inner-radius);
+  overflow: hidden;
+}
+.ncl-shell-profile .workspace-drawer-vault-name {
+  order: 2;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.ncl-shell-profile:not(.is-compact) .workspace-drawer-vault-switcher {
+  --no-tooltip: true;
+}
+.ncl-shell-profile .workspace-drawer-vault-switcher-icon {
+  --icon-size: 12px;
+  order: 3;
+  display: flex;
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  margin-inline-end: 4px;
+}
+.ncl-shell-profile .ncl-shell-vault-icon {
+  --icon-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 28px;
+  height: 30px;
+}
+.ncl-shell-profile .workspace-drawer-vault-actions { display: flex; gap: 4px; }
+.ncl-shell-profile .clickable-icon {
+  --icon-size: 16px;
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+  border-radius: var(--ncl-shell-inner-radius);
+}
+.ncl-shell-profile .workspace-drawer-vault-switcher:is(:hover, .has-active-menu),
+.ncl-shell-profile .clickable-icon:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+.ncl-shell-profile [role="button"]:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: -2px;
+}
+body:not(.is-mobile) .workspace > .ncl-shell-profile.is-compact {
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  background: var(--ncl-chrome);
+}
+.ncl-shell-profile.is-compact .workspace-drawer-vault-switcher {
+  flex: 0 0 30px;
+  width: 30px;
+  justify-content: center;
+}
+.ncl-shell-profile.is-compact :is(.workspace-drawer-vault-name, .workspace-drawer-vault-switcher-icon, .ncl-shell-secondary) { display: none; }
+body:not(.is-mobile) .workspace > .workspace-ribbon.mod-left.ncl-shell-ribbon {
+  padding-bottom: calc(var(--ncl-shell-footer-height, 0px) + 8px);
+}
+body:not(.is-mobile) .ncl-shell-ribbon .side-dock-actions {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+body:not(.is-mobile) .ncl-shell-ribbon .side-dock-actions::-webkit-scrollbar { display: none; }
+
+.workspace-split.mod-right-split,
+.workspace-split.mod-right-split :is(.workspace-tabs, .workspace-leaf, .workspace-leaf-content,
+    .workspace-tab-header-container, .view-content) {
+  background: var(--ncl-chrome);
+}
+
+.workspace-split.mod-right-split .workspace-leaf-content[data-type="outline"] {
+  --nav-item-size: 13px;
+  --nav-item-weight: 400;
+  --nav-item-weight-active: 400;
+  --nav-item-color-active: var(--text-normal);
+  --nav-item-background-active: var(--background-modifier-hover);
+  --nav-item-background-selected: var(--background-modifier-hover);
+  font-family: var(--ncl-sidebar-font);
+}
+
+.workspace-leaf-content[data-type="outline"] .tree-item-self {
+  padding-block: 8px;
+  padding-inline-end: 10px;
+  line-height: 1.35;
+  border-radius: 7px;
+}
+
+.workspace-leaf-content[data-type="outline"] .tree-item-self.is-active {
+  box-shadow: none;
+  background: var(--nav-item-background-active);
+}
+
+.workspace-split.mod-right-split .workspace-leaf-content[data-type="calendar"] {
+  font-family: var(--ncl-sidebar-font);
+  border-top: 1px solid var(--divider-color);
+  --color-background-heading: transparent;
+  --color-background-day: transparent;
+}
+
+/* Subtle idle controls must still be unambiguous from the keyboard. */
+:is(.workspace-tab-header, .view-action, .sidebar-toggle-button .clickable-icon):focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: -2px;
+}
+
+.workspace-split.mod-left-split > .workspace-leaf-resize-handle,
+.workspace-split.mod-right-split > .workspace-leaf-resize-handle {
+  width: 5px;
+  border: 0;
+}
+
+.workspace-split.mod-left-split > .workspace-leaf-resize-handle:hover,
+.workspace-split.mod-right-split > .workspace-leaf-resize-handle:hover {
+  background: rgba(var(--interactive-accent-rgb), 0.28);
+}
+
+/* Split gutters already separate document surfaces. Paint no idle rules, in
+   BOTH axes: otherwise a native horizontal border meets the custom vertical
+   rule off-center at T/cross junctions. Keep native DOM, drag ownership,
+   cursors, display rules and ratios; never hide the interactive handle. */
+body:not(.is-mobile) .mod-root .workspace-leaf-resize-handle {
+  border: 0;
+  background: transparent;
+}
+/* The previous document owns the trailing gutter. Center resize feedback
+   within that existing 8px seam, without changing document geometry. */
+body:not(.is-mobile) .workspace-split.mod-root.mod-vertical > * > .workspace-leaf-resize-handle,
+body:not(.is-mobile) .mod-root .workspace-split.mod-vertical > * > .workspace-leaf-resize-handle {
+  width: var(--ncl-space-panel);
+  border: 0;
+  background: transparent;
+}
+body:not(.is-mobile) .workspace-split.mod-root.mod-vertical > * > .workspace-leaf-resize-handle::after,
+body:not(.is-mobile) .mod-root .workspace-split.mod-vertical > * > .workspace-leaf-resize-handle::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: transparent;
+  pointer-events: none;
+}
+body:not(.is-mobile) .workspace-split.mod-root.mod-horizontal > * > .workspace-leaf-resize-handle,
+body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-leaf-resize-handle {
+  height: var(--ncl-space-panel);
+}
+body:not(.is-mobile) .workspace-split.mod-root.mod-horizontal > * > .workspace-leaf-resize-handle::after,
+body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-leaf-resize-handle::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0 var(--ncl-space-panel);
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background: transparent;
+  pointer-events: none;
+}
+/* Only the hovered/active axis is painted. Horizontal feedback stops before
+   the adjacent vertical gutter, so nested junctions do not sprout an arm. */
+body:not(.is-mobile) .workspace-split.mod-root.mod-vertical > * > .workspace-leaf-resize-handle:is(:hover, .is-active)::after,
+body:not(.is-mobile) .mod-root .workspace-split.mod-vertical > * > .workspace-leaf-resize-handle:is(:hover, .is-active)::after,
+body:not(.is-mobile) .workspace-split.mod-root.mod-horizontal > * > .workspace-leaf-resize-handle:is(:hover, .is-active)::after,
+body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-leaf-resize-handle:is(:hover, .is-active)::after {
+  background: var(--divider-color-hover);
+}
+
+/* -------------------------------------------------------------------------
+   Writing canvas
+   ---------------------------------------------------------------------- */
+
+.workspace-leaf-content[data-type="markdown"] .view-content,
+.markdown-source-view,
+.markdown-reading-view {
+  background: var(--ncl-canvas);
+}
+
+.markdown-source-view.mod-cm6 .cm-sizer,
+.markdown-preview-view .markdown-preview-sizer {
+  padding-top: 0;
+  padding-bottom: 28vh;
+}
+
+.markdown-source-view.mod-cm6 .cm-content {
+  line-height: var(--ncl-editor-line-height);
+}
+
+/* Journal View owns each day's outer spacing. An embedded day is not a full
+   document: do not repeat the writing canvas's viewport-sized bottom padding.
+   Keep the day's own padding and temporary preview-height hold intact. */
+.journal-view .journal-day-body .markdown-source-view.mod-cm6 .cm-sizer,
+.journal-view .journal-day-body .markdown-preview-view .markdown-preview-sizer {
+  padding-bottom: 0;
+  min-height: 0;
+}
+
+/* Remove only Keyline's outer edge widgets, never a text line's geometry or
+   the gaps between paragraphs. Apply to nonempty days too, so typing the
+   first character or clearing the last one cannot move the caret. */
+.journal-view .journal-day-body .markdown-source-view.mod-cm6 .cm-content > .ncl-editor-block-gap:first-child,
+.journal-view .journal-day-body .markdown-source-view.mod-cm6 .cm-content > .ncl-editor-block-gap:last-child {
+  height: 0;
+}
+
+/* The plugin's placeholder is outside CodeMirror. Match the empty editor's
+   line box in preview and editing states; font-size and today padding remain
+   user/plugin controlled. No offset guessing or fixed pixel translation. */
+.journal-view .journal-day-blank .journal-day-body {
+  min-height: max(
+    calc(var(--ncl-editor-line-height) * var(--font-text-size) + var(--journal-body-pad-top) + var(--journal-body-pad-bottom)),
+    var(--journal-held-height, 0px)
+  );
+}
+
+.journal-view .journal-day-blank .journal-day-body::after {
+  line-height: var(--ncl-editor-line-height);
+}
+
+.journal-view .journal-day-blank.journal-day-editing .journal-day-body:has(.ncl-editor-paragraph-line)::after {
+  text-indent: var(--ncl-first-line-indent);
+}
+
+/* Focus hides the hint, not the line or its accessible editing surface.
+   :focus-within also covers the interval before Journal updates its class. */
+.journal-view .journal-day-blank.journal-day-focused .journal-day-body::after,
+.journal-view .journal-day-blank .journal-day-body:focus-within::after {
+  visibility: hidden;
+}
+
+.journal-view .journal-day-body .journal-plain-editor:focus::placeholder {
+  color: transparent;
+}
+
+/* Hide only the main document scrollbar; keep native wheel, trackpad and
+   keyboard scrolling. Sidebar, dialogs and embedded code retain their bars. */
+.mod-root .workspace-leaf-content[data-type="markdown"] :is(.markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view) {
+  scrollbar-width: none;
+  scrollbar-gutter: auto;
+}
+
+.mod-root .workspace-leaf-content[data-type="markdown"] :is(.markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller, .markdown-reading-view > .markdown-preview-view)::-webkit-scrollbar {
+  width: 0;
+}
+
+.markdown-rendered {
+  line-height: var(--ncl-reading-line-height);
+}
+
+.inline-title {
+  margin-bottom: 22px;
+  color: var(--text-normal);
+  font-size: clamp(30px, 4.2vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.14;
+}
+
+/* Keep the native checkbox semantics and marker, but give the visual control
+   a decisive rounded-square outline in both Live Preview and Reading View. */
+:is(.markdown-source-view.mod-cm6, .markdown-preview-view) {
+  /* A 17px control with a 4px radius reads unmistakably as a rounded square.
+     The previous 16px / 6px pairing sat ambiguously between circle and square. */
+  --checkbox-size: 17px;
+  --checkbox-radius: 4px;
+  --checkbox-border-color: color-mix(in srgb, var(--text-muted) 72%, transparent);
+  --checkbox-border-color-hover: var(--text-normal);
+  --checkbox-color: var(--interactive-accent);
+  --checkbox-color-hover: var(--interactive-accent-hover);
+  --checkbox-marker-color: var(--text-on-accent);
+  --list-bullet-size: var(--ncl-list-bullet-size);
+  --list-marker-color: color-mix(in srgb, var(--text-normal) 76%, transparent);
+  --list-marker-color-hover: var(--text-normal);
+  /* Obsidian applies --list-spacing above and below every item. Halving the
+     user-facing total keeps the displayed slider equal to the visible gap. */
+  --list-spacing: calc(var(--ncl-list-item-spacing) * 0.5);
+}
+
+.markdown-preview-view .task-list-item-checkbox {
+  margin-inline-end: var(--ncl-list-marker-gap);
+  border-width: 1.5px;
+  border-radius: var(--checkbox-radius);
+  background-clip: padding-box;
+  transition: border-color 80ms ease, background-color 80ms ease, box-shadow 80ms ease;
+}
+
+/* Keep Obsidian's native checkbox control and interaction geometry. */
+.markdown-source-view.mod-cm6 .task-list-item-checkbox {
+  border-width: 1.5px;
+  border-radius: var(--checkbox-radius);
+  background-clip: padding-box;
+  transition: border-color 80ms ease, background-color 80ms ease, box-shadow 80ms ease;
+}
+
+:is(.markdown-source-view.mod-cm6, .markdown-preview-view) .task-list-item-checkbox:focus-visible {
+  box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.30);
+}
+
+.markdown-source-view.mod-cm6 .cm-line,
+.markdown-rendered p,
+.markdown-rendered li {
+  letter-spacing: -0.005em;
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-list-line,
+.markdown-rendered li {
+  line-height: var(--ncl-list-line-height);
+}
+
+/* Keep marker placement native. Obsidian deliberately puts the editing guide
+   0.1em to the right of the marker's padding edge so its rule crosses the
+   optical centre of the bullet rather than the start of the marker glyph. */
+.markdown-source-view.mod-cm6.is-live-preview {
+  --list-indent-editing: var(--ncl-list-first-indent);
+  --indentation-guide-editing-indent: calc(var(--ncl-list-first-indent) + 0.1em);
+}
+
+/* Expand the actual one-character Markdown separator instead of adding
+   margin after a marker or replacing source with a widget. `word-spacing`
+   changes that character's typographic advance, so the native caret at its
+   end and the first label glyph remain the same boundary. A normal line box
+   also keeps an empty list item's caret at text height under loose leading. */
+.markdown-source-view.mod-cm6.is-live-preview .ncl-editor-list-separator {
+  line-height: normal;
+}
+
+.markdown-source-view.mod-cm6.is-live-preview .ncl-editor-list-separator.is-marker {
+  word-spacing: calc(var(--ncl-list-marker-gap) - 0.25em);
+}
+
+/* Core already contributes 0.25em after the checkbox, in addition to the
+   separator's own 0.25em space. Subtract both so the slider still describes
+   the complete checkbox-to-label distance. */
+.markdown-source-view.mod-cm6.is-live-preview .ncl-editor-list-separator.is-task {
+  word-spacing: calc(var(--ncl-list-marker-gap) - 0.5em);
+}
+
+.markdown-rendered :is(ul, ol) > li {
+  margin-inline-start: max(1em, var(--ncl-list-first-indent));
+  padding-inline-start: var(--ncl-list-marker-gap);
+}
+
+.markdown-rendered :is(ul, ol) :is(ul, ol) > li {
+  margin-inline-start: var(--ncl-list-indent);
+}
+
+.markdown-source-view.mod-cm6 .cm-formatting-list-ol,
+.markdown-rendered ol > li::marker {
+  color: var(--list-marker-color);
+  font-size: 0.94em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reading View has semantic paragraphs, so every parameter can be applied
+   without disturbing list, quote, callout or code geometry. */
+.markdown-rendered p:not(:where(li, blockquote, .callout) p) {
+  margin-block-start: var(--ncl-paragraph-before);
+  margin-block-end: var(--ncl-paragraph-after);
+  text-indent: var(--ncl-first-line-indent);
+}
+
+.markdown-rendered
+  p:not(:where(li, blockquote, .callout) p):has(+ p:not(:where(li, blockquote, .callout) p)) {
+  margin-block-end: 0;
+}
+
+.markdown-rendered
+  p:not(:where(li, blockquote, .callout) p)
+  + p:not(:where(li, blockquote, .callout) p) {
+  margin-block-start: var(--ncl-paragraph-gap);
+}
+
+.markdown-rendered p:not(:where(li, blockquote, .callout) p) > br {
+  display: block;
+  content: "";
+  margin-block-end: var(--ncl-paragraph-gap);
+}
+
+/* The companion plugin adds stable source-line roles instead of relying on
+   Obsidian parser classes. Vertical rhythm is deliberately carried by its
+   between-line block widgets; only indentation belongs on the text line. */
+.markdown-source-view.mod-cm6 .ncl-editor-paragraph-line.is-first {
+  text-indent: var(--ncl-first-line-indent);
+}
+
+.markdown-source-view.mod-cm6 .cm-header-1,
+.markdown-rendered h1 {
+  letter-spacing: -0.026em;
+}
+
+.markdown-source-view.mod-cm6 .cm-header-2,
+.markdown-rendered h2 {
+  letter-spacing: -0.019em;
+}
+
+.markdown-source-view.mod-cm6 .cm-header-3,
+.markdown-rendered h3 {
+  letter-spacing: -0.012em;
+}
+
+.markdown-rendered h1,
+.markdown-rendered h2 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.markdown-rendered :where(h1, h2, h3, h4, h5, h6) {
+  margin-block-start: var(--ncl-heading-before);
+  margin-block-end: var(--ncl-heading-after);
+}
+
+.markdown-rendered blockquote {
+  position: relative;
+  margin-block-start: var(--ncl-paragraph-before);
+  margin-block-end: var(--ncl-paragraph-after);
+  margin-inline: 0;
+  padding: 0 0 0 var(--ncl-blockquote-indent);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: 0.92em;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.markdown-rendered blockquote::before {
+  content: "";
+  position: absolute;
+  inset-block: 1px;
+  inset-inline-start: 0;
+  width: 2px;
+  border-radius: 0;
+  background: color-mix(in srgb, #828282 40%, transparent);
+}
+
+.markdown-rendered blockquote > p {
+  margin-block: 0 10px;
+}
+
+.markdown-rendered blockquote > :first-child {
+  margin-block-start: 0;
+}
+
+.markdown-rendered blockquote > :last-child {
+  margin-block-end: 0;
+}
+
+.markdown-rendered blockquote br {
+  display: block;
+  content: "";
+  margin-block-end: 10px;
+}
+
+.markdown-rendered code,
+.cm-inline-code {
+  padding: 0.14em 0.34em;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 5px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  font-size: 0.88em;
+}
+
+.markdown-rendered pre,
+.HyperMD-codeblock {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 10px;
+  background: var(--background-primary-alt);
+}
+
+.markdown-rendered hr,
+.cm-line.hr {
+  border-color: var(--divider-color);
+}
+
+.markdown-rendered mark {
+  padding: 0.05em 0.12em;
+  border-radius: 3px;
+}
+
+.callout {
+  --callout-padding: 12px 14px;
+  --callout-title-padding: 0;
+  --callout-content-padding: 8px 0 0;
+  margin-block: 1em;
+  border: 1px solid color-mix(in oklch, var(--callout-color) 20%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--callout-color) 7.5%, transparent);
+}
+
+.callout-title {
+  min-height: 22px;
+  align-items: center;
+}
+
+.callout-content > :first-child {
+  margin-block-start: 0;
+}
+
+.callout-content > :last-child {
+  margin-block-end: 0;
+}
+
+/* Properties are one quiet group around a native key/value form.
+   Scope to note panes: Bases, settings and sidebar property lists retain core
+   styling. No hiding, DOM replacement, or frontmatter transformation. */
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-container {
+  --metadata-label-font: var(--ncl-sidebar-font);
+  --metadata-input-font: var(--ncl-sidebar-font);
+  --metadata-label-font-size: 12px;
+  --metadata-input-font-size: 13px;
+  --metadata-label-font-weight: 400;
+  --metadata-label-width: clamp(112px, 28%, 168px);
+  --metadata-input-height: 28px;
+  --metadata-input-padding: 4px 8px;
+  --metadata-property-padding: 2px 4px;
+  --metadata-gap: 4px;
+  --metadata-divider-width: 0;
+  --metadata-property-background-hover: var(--background-modifier-hover);
+  --metadata-property-box-shadow-hover: none;
+  --metadata-property-box-shadow-focus: inset 0 0 0 1px var(--interactive-accent);
+  --metadata-label-background-active: transparent;
+  --metadata-input-background-active: transparent;
+  --icon-size: 14px;
+  margin-block: 12px 24px;
+  padding: 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--text-normal) 2%, var(--background-primary));
+  font-family: var(--ncl-sidebar-font);
+  font-size: 13px;
+  line-height: 1.4;
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-properties-heading {
+  margin-bottom: 8px;
+  padding: 4px 8px;
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-properties-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-property {
+  min-height: 32px;
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-property-key {
+  min-width: 0;
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-property-value {
+  min-width: 0;
+}
+/* More specific than the theme's generic input[type=text] rule below.
+   Focus belongs to the native row, so individual fields don't double-ring. */
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-container
+  :is(input.metadata-property-key-input, .metadata-input:not([type="checkbox"]),
+      .multi-select-container, .multi-select-input) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-property-icon::before {
+  content: none;
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-add-button {
+  min-height: 28px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-add-button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.markdown-source-view.mod-cm6 :is(.cm-cursor, .cm-dropCursor) {
+  border-left: 1px solid var(--caret-color) !important;
+  margin-left: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* -------------------------------------------------------------------------
+   Native File Explorer: the real filesystem source list
+   ---------------------------------------------------------------------- */
+
+/* A source list is interface text, even when the Vault's global interface
+   preference is monospaced. Keep this override local: editor, menus and the
+   saved appearance settings retain the user's fonts. Cupertino's useful
+   distinction is clear regular labels with a quiet selected surface, not
+   heavier folder names or a saturated selection block. */
+:is(.workspace-leaf-content[data-type="file-explorer"], .bucket-sidebar-root) {
+  --font-interface: var(--ncl-sidebar-font);
+  --nav-item-weight: 400;
+  --nav-item-weight-hover: 400;
+  --nav-item-weight-active: 500;
+  --nav-item-color: var(--text-normal);
+  --nav-item-color-hover: var(--text-normal);
+  /* Gray surface + weight retain a non-color selection cue. Managed filenames
+     opt into their resolved identity color below; other rows stay neutral. */
+  --nav-item-color-active: var(--ncl-sidebar-selected-color);
+  --nav-item-background-hover: color-mix(in srgb, var(--text-normal) 3%, transparent);
+  --nav-item-background-active: var(--background-modifier-hover);
+  --nav-item-background-selected: var(--background-modifier-hover);
+  font-family: var(--font-interface);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] {
+  /* Obsidian places every 16px tree icon in a slot whose start is 20px before
+     its label. Make one depth step that same 20px, so a child's icon slot
+     begins exactly on its parent's text axis. The native guide is the border
+     between margin and padding: 12px places it at the parent icon's centre,
+     and subtracting its real border width keeps the total step exactly 20px. */
+  --nav-item-children-margin-start: var(--ncl-sidebar-guide-axis);
+  --nav-item-children-padding-start: calc(
+    var(--ncl-sidebar-depth-step) - var(--ncl-sidebar-guide-axis) - var(--border-width)
+  );
+  --nav-indentation-guide-width: var(--border-width);
+  --nav-indentation-guide-color: var(--indentation-guide-color);
+  background: var(--ncl-sidebar);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header {
+  min-height: var(--ncl-sidebar-toolbar-height);
+  justify-content: flex-end;
+  padding: 0 var(--ncl-sidebar-gutter);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header .nav-buttons-container {
+  width: 100%;
+  height: var(--ncl-sidebar-toolbar-height);
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 0;
+  overflow: hidden;
+  transition: gap var(--ncl-motion-fast) ease;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header .nav-action-button {
+  --icon-size: 14px;
+  flex: 0 0 auto;
+  width: var(--ncl-sidebar-toolbar-height);
+  min-width: var(--ncl-sidebar-toolbar-height);
+  height: var(--ncl-sidebar-toolbar-height);
+  padding: 5px;
+  color: var(--text-faint);
+  opacity: 0.72;
+  transition:
+    width var(--ncl-motion-fast) ease,
+    min-width var(--ncl-motion-fast) ease,
+    padding var(--ncl-motion-fast) ease,
+    color var(--ncl-motion-fast) ease,
+    opacity var(--ncl-motion-fast) ease;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header:hover .nav-action-button,
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header:focus-within .nav-action-button {
+  color: var(--icon-color);
+  opacity: 1;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header:not(:hover):not(:focus-within) .nav-buttons-container {
+  gap: 0;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] > .nav-header:not(:hover):not(:focus-within) .nav-action-button {
+  width: 0;
+  min-width: 0;
+  padding-inline: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-files-container {
+  padding: 2px var(--ncl-sidebar-gutter) 18px;
+  font-size: var(--nav-item-size);
+}
+
+.nav-folder.mod-root > .nav-folder-children {
+  padding-top: 2px;
+}
+
+.nav-folder-title,
+.nav-file-title {
+  min-height: var(--ncl-sidebar-row-height);
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-inline-end: 6px;
+  align-items: center;
+  border-radius: var(--nav-item-radius);
+  color: var(--nav-item-color);
+  cursor: default;
+  font-weight: var(--nav-item-weight);
+  line-height: var(--line-height-tight);
+  transition:
+    background-color var(--ncl-motion-fast) ease,
+    color var(--ncl-motion-fast) ease;
+}
+
+.nav-folder-title:hover,
+.nav-file-title:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--nav-item-color-hover);
+  font-weight: var(--nav-item-weight-hover);
+}
+
+.nav-file-title.is-active,
+.nav-file-title.is-selected,
+.nav-folder-title.is-active {
+  background: var(--nav-item-background-active);
+  box-shadow: none;
+  color: var(--nav-item-color-active);
+  font-weight: var(--nav-item-weight-active);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.has-focus {
+  box-shadow: none;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .tree-item-self.has-focus:focus-visible {
+  outline: 1px solid rgba(var(--interactive-accent-rgb), 0.68);
+  outline-offset: -1px;
+}
+
+.nav-folder-title-content,
+.nav-file-title-content {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--nav-item-size);
+  line-height: var(--line-height-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-folder-title-content {
+  font-weight: inherit;
+}
+
+/*
+ * Obsidian positions this indicator inside its own indentation gutter.
+ * Preserve that native box geometry so first-level chevrons remain visible
+ * and the built-in disclosure target stays aligned with every tree depth.
+ */
+.nav-folder-collapse-indicator {
+  color: var(--text-muted);
+  opacity: 0.82;
+  transition: opacity var(--ncl-motion-fast) ease;
+}
+
+.nav-folder-collapse-indicator svg {
+  stroke-width: 1.9;
+}
+
+.nav-folder-title:hover > .nav-folder-collapse-indicator,
+.nav-folder-title:focus-visible > .nav-folder-collapse-indicator {
+  opacity: 0.92;
+}
+
+/* Obsidian 1.13 uses the generic tree disclosure node; older builds exposed
+   the nav-folder-specific class above. Both rules remain visual-only so the
+   core hit target and indentation geometry stay untouched. */
+.workspace-leaf-content[data-type="file-explorer"]
+  .nav-folder-title > .tree-item-icon.collapse-icon {
+  color: var(--text-muted);
+  opacity: 0.82;
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+  .nav-folder-title:is(:hover, :focus-within) > .tree-item-icon.collapse-icon {
+  opacity: 0.92;
+}
+
+/* Expanding a source-list folder is a high-frequency navigation action. The
+   core state and click target stay native, but its 100ms height/rotation
+   interpolation is removed so the result tracks the click immediately. */
+.workspace-leaf-content[data-type="file-explorer"] .nav-folder-children,
+.workspace-leaf-content[data-type="file-explorer"]
+  .nav-folder-title > .tree-item-icon.collapse-icon svg {
+  transition: none !important;
+  animation: none !important;
+}
+
+.nav-file-tag {
+  margin-inline-start: 5px;
+  padding: 1px 5px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  color: var(--text-faint);
+  background: transparent;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.nav-file-title.is-being-renamed,
+.nav-folder-title.is-being-renamed {
+  background: var(--background-modifier-form-field);
+  box-shadow: inset 0 0 0 2px var(--interactive-accent);
+}
+
+.nav-file-title.is-being-dragged,
+.nav-folder-title.is-being-dragged {
+  opacity: 0.45;
+}
+
+.nav-file-title.is-being-dragged-over,
+.nav-folder-title.is-being-dragged-over,
+.nav-file-title.is-drop-target,
+.nav-folder-title.is-drop-target {
+  background: var(--nav-item-background-active);
+  box-shadow: inset 0 0 0 2px var(--interactive-accent);
+}
+
+.tree-item-flair-outer {
+  color: var(--text-faint);
+}
+
+/* -------------------------------------------------------------------------
+   Bucket Sidebar: the virtual Project / Area source list
+   ---------------------------------------------------------------------- */
+
+.workspace-leaf-content[data-type="bucket-sidebar-view"] .bucket-sidebar-root {
+  --bucket-row-height: var(--ncl-sidebar-row-height);
+  --bucket-switcher-background: #e2e3e5;
+  --bucket-switcher-active-background: #ffffff;
+  --bucket-switcher-active-color: #24272b;
+  --bucket-switcher-active-icon: #3268b5;
+  --bucket-switcher-active-shadow: 0 1px 3px rgb(0 0 0 / 13%);
+  background: var(--ncl-sidebar);
+}
+
+.theme-dark .workspace-leaf-content[data-type="bucket-sidebar-view"] .bucket-sidebar-root {
+  --bucket-switcher-background: #202123;
+  --bucket-switcher-active-background: #4b4e53;
+  --bucket-switcher-active-color: #f5f6f7;
+  --bucket-switcher-active-icon: #a8cdfa;
+  --bucket-switcher-active-shadow: 0 1px 3px rgb(0 0 0 / 22%);
+}
+
+.bucket-space-switcher-wrap {
+  justify-content: center;
+  padding: 6px var(--ncl-sidebar-gutter) 4px;
+}
+
+.bucket-sidebar-root .bucket-space-switcher {
+  width: max-content;
+  min-height: 36px;
+  padding: 3px;
+  overflow: hidden;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  background: var(--bucket-switcher-background);
+}
+
+.bucket-space-tabs {
+  flex: 0 1 auto;
+  gap: 2px;
+}
+
+.bucket-sidebar-root button.bucket-space-tab {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.bucket-sidebar-root button.bucket-space-tab.is-active {
+  background: var(--bucket-switcher-active-background);
+  color: var(--text-normal);
+}
+
+.bucket-sidebar-root button.bucket-space-add {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+}
+
+.bucket-list {
+  padding: 4px var(--ncl-sidebar-gutter) 18px;
+}
+
+.bucket-section-heading {
+  min-height: 22px;
+  padding: 7px 8px 3px;
+  color: var(--text-faint);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.bucket-section {
+  margin: 0;
+  border-radius: var(--nav-item-radius);
+}
+
+/* Pinned → groups is a stronger boundary than group → group. Keep these
+   rules independent of whether core loads the theme or plugin CSS first. */
+.bucket-sidebar-root .bucket-groups-heading {
+  margin-top: var(--bucket-pinned-gap, 14px);
+  padding-top: var(--bucket-pinned-gap, 14px);
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.bucket-section + .bucket-section {
+  margin-top: var(--bucket-group-gap, 14px);
+}
+
+.bucket-header,
+.bucket-entry-row {
+  position: relative;
+  min-height: var(--ncl-sidebar-row-height);
+  margin: 0;
+  align-items: center;
+  border-radius: var(--nav-item-radius);
+  color: var(--nav-item-color);
+  line-height: var(--line-height-tight);
+}
+
+.bucket-header {
+  font-size: var(--nav-item-size);
+  font-weight: 500;
+}
+
+.bucket-entry-row {
+  font-size: var(--nav-item-size);
+  font-weight: var(--nav-item-weight);
+}
+
+.bucket-header:hover,
+.bucket-header:focus-within,
+.bucket-entry-row:hover,
+.bucket-entry-row:focus-within {
+  background: var(--nav-item-background-hover);
+  color: var(--nav-item-color-hover);
+}
+
+.bucket-entry-row.is-active {
+  background: var(--nav-item-background-active);
+  box-shadow: none;
+  color: var(--nav-item-color-active);
+  font-weight: var(--nav-item-weight-active);
+}
+
+/* The companion supplies one resolved value for icon + selected filename,
+   including per-file/type overrides and monochrome. Direct labels only:
+   badges, trailing actions, folders and Tab labels retain their own colors.
+   If Keyline yields to Iconic or unloads, the removed property falls back to
+   the existing neutral selected color. No DOM color sampling is required. */
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title:is(.is-active, .is-selected) > .nav-file-title-content,
+.bucket-sidebar-root .bucket-entry-row[data-bucket-kind="file"].is-active > .bucket-entry-label {
+  color: var(--ncl-file-selection-color, var(--ncl-sidebar-selected-color));
+}
+
+.bucket-header:has(:focus-visible),
+.bucket-entry-row:has(:focus-visible),
+.bucket-sidebar-root button:focus-visible {
+  outline: 1px solid rgba(var(--interactive-accent-rgb), 0.68);
+  outline-offset: -1px;
+}
+
+.bucket-leading-icon,
+.bucket-entry-icon,
+.bucket-icon-button {
+  color: var(--icon-color);
+}
+
+/* Bucket owns a disclosure button and a semantic icon as two adjacent flex
+   items. Overlay them into one 20px identity slot: the icon is the stable
+   resting state, and a solid triangle takes its place only while the row is
+   hovered or a keyboard control is visibly focused. */
+.bucket-header > .bucket-disclosure,
+.bucket-entry-row > .bucket-disclosure,
+.bucket-entry-row > .bucket-disclosure-spacer {
+  flex: 0 0 20px;
+  width: 20px;
+  min-width: 20px;
+}
+
+.bucket-header > .bucket-disclosure + .bucket-leading-icon,
+.bucket-entry-row > .bucket-disclosure + .bucket-entry-icon,
+.bucket-entry-row > .bucket-disclosure-spacer + .bucket-entry-icon {
+  margin-inline-start: -20px;
+}
+
+.bucket-header > .bucket-disclosure,
+.bucket-entry-row > .bucket-disclosure {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: none !important;
+}
+
+.bucket-header > .bucket-disclosure svg,
+.bucket-entry-row > .bucket-disclosure svg {
+  display: none;
+}
+
+.bucket-header > .bucket-disclosure::before,
+.bucket-entry-row > .bucket-disclosure::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  clip-path: polygon(16% 8%, 88% 50%, 16% 92%);
+  transform: rotate(0deg);
+  transform-origin: 50% 50%;
+}
+
+.bucket-header > .bucket-disclosure[aria-expanded="true"]::before,
+.bucket-entry-row > .bucket-disclosure[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+.bucket-header:is(:hover, :has(:focus-visible)) > .bucket-disclosure,
+.bucket-entry-row:is(:hover, :has(:focus-visible)) > .bucket-disclosure {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bucket-header:is(:hover, :has(:focus-visible)) > .bucket-disclosure + .bucket-leading-icon,
+.bucket-entry-row:is(:hover, :has(:focus-visible)) > .bucket-disclosure + .bucket-entry-icon {
+  opacity: 0 !important;
+}
+
+.bucket-row-actions {
+  transition: opacity var(--ncl-motion-fast) ease;
+}
+
+/* Row labels own the full available width. Hidden actions must not reserve
+   a trailing flex column; reveal them ON TOP of the label without reflow.
+   The opaque sidebar base + the same row tint prevent text showing through
+   translucent hover/selection colors. No measured widths or DOM rewrites. */
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced,
+.bucket-sidebar-root :is(.bucket-header, .bucket-entry-row) {
+  position: relative;
+  --ncl-row-action-tint: transparent;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced:is(:hover, :focus-within),
+.bucket-sidebar-root :is(.bucket-header, .bucket-entry-row):is(:hover, :focus-within) {
+  --ncl-row-action-tint: var(--nav-item-background-hover);
+  background-color: var(--nav-item-background-hover);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced:is(.is-active, .is-selected),
+.bucket-sidebar-root .bucket-entry-row:is(.is-active, .is-drop-target) {
+  --ncl-row-action-tint: var(--nav-item-background-active);
+  background-color: var(--nav-item-background-active);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced > .ncl-native-row-actions,
+.bucket-sidebar-root :is(.bucket-header, .bucket-entry-row) > .bucket-row-actions {
+  position: absolute;
+  inset-inline-end: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: max-content;
+  margin: 0;
+  padding: 0 0 0 4px;
+  border-radius: 4px;
+  background-color: var(--ncl-sidebar);
+  background-image: linear-gradient(var(--ncl-row-action-tint), var(--ncl-row-action-tint));
+  /* No intermediate transparency: icons must never blend with covered text. */
+  transition: none;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-action:active,
+.bucket-sidebar-root .bucket-row-actions > .bucket-icon-button:active {
+  background-color: var(--background-modifier-active-hover);
+  color: var(--text-normal);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced:is(.is-being-renamed, .is-being-dragged) > .ncl-native-row-actions,
+.bucket-sidebar-root .bucket-entry-row.is-dragging > .bucket-row-actions {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bucket-section.is-drop-target,
+.bucket-entry-row.is-drop-target {
+  background: var(--nav-item-background-active);
+  box-shadow: inset 0 0 0 2px var(--interactive-accent);
+}
+
+.bucket-entry-row.is-dragging {
+  opacity: 0.45;
+}
+
+.bucket-target-tree {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 9px;
+  background: var(--background-primary-alt);
+}
+
+.bucket-target-row {
+  min-height: var(--ncl-sidebar-row-height);
+  border-radius: var(--nav-item-radius);
+}
+
+.bucket-target-row.is-selected {
+  background: var(--nav-item-background-active);
+  box-shadow: none;
+  color: var(--nav-item-color-active);
+}
+
+/* -------------------------------------------------------------------------
+   Menus, modals, inputs, and the interaction plugin
+   ---------------------------------------------------------------------- */
+
+.menu,
+.suggestion-container,
+.popover {
+  padding: var(--ncl-space-control);
+  border: 1px solid var(--ncl-surface-border);
+  border-radius: var(--ncl-menu-radius);
+  background: var(--ncl-surface-bg);
+  box-shadow: var(--ncl-menu-shadow, var(--ncl-surface-shadow));
+}
+
+.menu-item,
+.suggestion-item {
+  min-height: var(--ncl-menu-row-height);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Core handles placement, submenus, scrolling and keyboard commands. A flat,
+   opaque surface needs no blur filter or persistent menu observer. */
+.menu .menu-item {
+  min-height: 34px;
+  font-size: 14px;
+}
+
+.menu,
+.suggestion-container,
+.wk-nb-action-menu {
+  font-family: var(--ncl-sidebar-font);
+}
+
+/* One quiet, opaque highlight across native and companion menus. Keep the
+   native warning color and disabled semantics; no recoloring of swatches. */
+.menu .menu-item:not(.is-label):not(.is-disabled):is(.selected, :hover),
+.suggestion-container .suggestion-item:not(.is-disabled):is(.is-selected, :hover) {
+  background: var(--ncl-menu-active-bg);
+}
+
+.menu .menu-item:not(.is-disabled):not(.is-warning),
+.suggestion-container .suggestion-item:not(.is-disabled) {
+  color: var(--text-normal);
+}
+
+.menu .menu-item-shortcut {
+  color: var(--text-muted);
+}
+
+.menu .menu-item:not(.is-disabled):is(.selected, :hover) :is(.menu-item-icon, .menu-item-shortcut) {
+  color: inherit;
+}
+
+.menu .menu-item.is-disabled :is(.menu-item-icon, .menu-item-shortcut) {
+  color: var(--text-faint);
+}
+
+.menu .menu-separator {
+  margin-block: 4px;
+}
+
+.modal {
+  border: 1px solid var(--ncl-surface-border);
+  border-radius: var(--modal-radius);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-l);
+}
+
+.modal-bg {
+  backdrop-filter: blur(8px) saturate(90%);
+}
+
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+textarea,
+.search-input-container input {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--input-radius);
+  background: var(--background-modifier-form-field);
+  box-shadow: none;
+}
+
+input:focus,
+textarea:focus,
+.search-input-container input:focus {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 3px rgba(var(--interactive-accent-rgb), 0.16);
+}
+
+.tooltip {
+  border: 1px solid var(--ncl-surface-border);
+  border-radius: 6px;
+  background: var(--ncl-surface-bg);
+  box-shadow: var(--shadow-m);
+  color: var(--text-normal);
+  font-size: 11.5px;
+}
+
+.block-handle-button {
+  border-radius: 7px;
+}
+
+.wk-nb-action-menu,
+.nmg-selection-toolbar {
+  backdrop-filter: blur(18px) saturate(115%);
+}
+
+.ftn-block-selected {
+  background: rgba(var(--interactive-accent-rgb), 0.15);
+  box-shadow: inset 2px 0 0 rgba(var(--interactive-accent-rgb), 0.55);
+}
+
+.block-drag-indicator {
+  height: 2px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(var(--interactive-accent-rgb), 0.16);
+}
+
+/* -------------------------------------------------------------------------
+   Accessibility and compact windows
+   ---------------------------------------------------------------------- */
+
+@media (prefers-contrast: more) {
+  .theme-light,
+  .theme-dark {
+    --background-modifier-border: currentColor;
+    --ncl-sidebar-card-edge: var(--text-muted);
+    --ncl-sidebar-card-outline: 0 0 0 1px var(--ncl-sidebar-card-edge);
+    --ncl-sidebar-card-shadow: 0 0 transparent;
+  }
+
+  .nav-file-title.is-active,
+  .nav-file-title.is-selected,
+  .nav-folder-title.is-active,
+  .bucket-entry-row.is-active {
+    outline: 1px solid var(--interactive-accent);
+    outline-offset: -1px;
+  }
+
+  .menu,
+  .suggestion-container,
+  .popover,
+  .modal,
+  .wk-nb-action-menu,
+  .nmg-selection-toolbar {
+    border-color: var(--text-muted);
+  }
+
+  :is(.markdown-source-view.mod-cm6, .markdown-preview-view) .task-list-item-checkbox {
+    border-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  .bucket-row-actions,
+  .workspace-split > .workspace-leaf-resize-handle,
+  .workspace-leaf-content[data-type="file-explorer"] > .nav-header .nav-buttons-container,
+  .workspace-leaf-content[data-type="file-explorer"] > .nav-header .nav-action-button,
+  .nav-folder-title,
+  .nav-file-title,
+  .nav-folder-collapse-indicator,
+  .task-list-item-checkbox {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .theme-light,
+  .theme-dark {
+    --ncl-page-padding-block: 18px;
+  }
+
+  .inline-title {
+    font-size: 30px;
+  }
+}

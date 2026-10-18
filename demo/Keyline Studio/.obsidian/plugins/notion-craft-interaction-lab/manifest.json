@@ -1,0 +1,9 @@
+{
+	"id": "notion-craft-interaction-lab",
+	"name": "Keyline",
+	"version": "0.7.3",
+	"minAppVersion": "1.7.7",
+	"description": "Keyline companion: block editing, native file navigation, typography, and quiet workspace switching.",
+	"author": "Charlie",
+	"isDesktopOnly": true
+}

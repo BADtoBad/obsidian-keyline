@@ -1,0 +1,1503 @@
+body {
+    --ncl-control-hit-size: 28px;
+    --ncl-menu-row-height: 28px;
+    --ncl-menu-radius: 8px;
+    --ncl-surface-border: var(--background-modifier-border);
+    --ncl-surface-bg: var(--background-primary);
+    --ncl-surface-shadow: var(--shadow-s);
+    --ncl-motion-fast: 120ms;
+    --ncl-quote-line-gap: 10px;
+    /* File types stay recognizable without becoming a second accent system. */
+    --ncl-file-pdf-color: color-mix(in srgb, var(--color-red) 62%, var(--text-muted));
+    --ncl-file-epub-color: color-mix(in srgb, var(--color-orange) 62%, var(--text-muted));
+    --ncl-file-image-color: color-mix(in srgb, var(--color-green) 62%, var(--text-muted));
+}
+
+/* -------------------------------------------------------------------------
+   Rendered-in-place Callout and quote editing
+   ---------------------------------------------------------------------- */
+
+/* Paragraph, heading and Quote spacing must live between CodeMirror lines.
+   Padding or margin on a .cm-line changes the line box that owns the native
+   caret; an empty row then acquires a tall blue cursor and jumps when its first
+   glyph changes the parser role. These direct StateField block widgets carry
+   layout without participating in text coordinates. Never add vertical
+   margin here: CodeMirror measures the widget's own height. */
+.ncl-editor-block-gap {
+    --ncl-editor-gap-before: 0px;
+    --ncl-editor-gap-after: 0px;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: max(var(--ncl-editor-gap-before), var(--ncl-editor-gap-after));
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    line-height: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.ncl-editor-block-gap.is-paragraph-before {
+    --ncl-editor-gap-before: var(--ncl-paragraph-before, 1em);
+}
+
+.ncl-editor-block-gap.is-heading-before {
+    --ncl-editor-gap-before: var(--ncl-heading-before, 1.8em);
+}
+
+.ncl-editor-block-gap.is-paragraph-after {
+    --ncl-editor-gap-after: var(--ncl-paragraph-after, 1em);
+}
+
+.ncl-editor-block-gap.is-heading-after {
+    --ncl-editor-gap-after: var(--ncl-heading-after, 0.6em);
+}
+
+.ncl-editor-block-gap.is-paragraph-gap {
+    height: var(--ncl-paragraph-gap, 1em);
+}
+
+/* Raw Source mode stays compact. The extra 10px belongs to the finished
+   rendered-in-place Quote surface, whose rail bridges this transparent gap. */
+.ncl-editor-block-gap.is-quote-line {
+    height: 0;
+}
+
+.markdown-source-view.is-live-preview .ncl-editor-block-gap.is-quote-line {
+    height: var(--ncl-quote-line-gap, 10px);
+}
+
+.markdown-source-view.is-live-preview
+    :is(.ncl-styled-callout-line, .ncl-styled-quote-line).HyperMD-quote::before {
+    display: none !important;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-callout-line {
+    --ncl-styled-callout-color: var(--callout-info, var(--color-blue));
+    box-sizing: border-box;
+    padding-block: 2px;
+    padding-inline: 14px !important;
+    /* Core's hanging indent compensated the now-hidden `>` marker. Keeping
+       it cancels our padding on the first visual line, but not wrapped lines. */
+    text-indent: 0 !important;
+    border-inline: 1px solid color-mix(in srgb, var(--ncl-styled-callout-color) 24%, transparent);
+    background: color-mix(in srgb, var(--ncl-styled-callout-color) 8%, transparent);
+    color: var(--text-normal);
+}
+
+.markdown-source-view.is-live-preview
+    .ncl-styled-callout-line:is([data-ncl-callout="tip"], [data-ncl-callout="hint"], [data-ncl-callout="important"]) {
+    --ncl-styled-callout-color: var(--callout-tip, var(--color-cyan));
+}
+
+.markdown-source-view.is-live-preview
+    .ncl-styled-callout-line:is([data-ncl-callout="success"], [data-ncl-callout="check"], [data-ncl-callout="done"]) {
+    --ncl-styled-callout-color: var(--callout-success, var(--color-green));
+}
+
+.markdown-source-view.is-live-preview
+    .ncl-styled-callout-line:is([data-ncl-callout="question"], [data-ncl-callout="help"], [data-ncl-callout="faq"], [data-ncl-callout="example"]) {
+    --ncl-styled-callout-color: var(--color-purple);
+}
+
+.markdown-source-view.is-live-preview
+    .ncl-styled-callout-line:is([data-ncl-callout="warning"], [data-ncl-callout="caution"], [data-ncl-callout="attention"]) {
+    --ncl-styled-callout-color: var(--callout-warning, var(--color-orange));
+}
+
+.markdown-source-view.is-live-preview
+    .ncl-styled-callout-line:is([data-ncl-callout="failure"], [data-ncl-callout="fail"], [data-ncl-callout="missing"], [data-ncl-callout="danger"], [data-ncl-callout="error"], [data-ncl-callout="bug"]) {
+    --ncl-styled-callout-color: var(--callout-error, var(--color-red));
+}
+
+.markdown-source-view.is-live-preview
+    .ncl-styled-callout-line:is([data-ncl-callout="quote"], [data-ncl-callout="cite"]) {
+    --ncl-styled-callout-color: var(--callout-quote, var(--text-muted));
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-callout-line.is-first {
+    padding-block-start: 12px;
+    padding-block-end: 5px;
+    border-block-start: 1px solid color-mix(in srgb, var(--ncl-styled-callout-color) 24%, transparent);
+    border-start-start-radius: 10px;
+    border-start-end-radius: 10px;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-callout-line.is-last {
+    padding-block-end: 12px;
+    border-block-end: 1px solid color-mix(in srgb, var(--ncl-styled-callout-color) 24%, transparent);
+    border-end-start-radius: 10px;
+    border-end-end-radius: 10px;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-callout-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-inline-end: 7px;
+    color: var(--ncl-styled-callout-color);
+    font-weight: var(--font-semibold, 600);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-callout-header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-callout-header-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-quote-line {
+    box-sizing: border-box;
+    position: relative;
+    padding-block: 0;
+    padding-inline-start: var(--ncl-blockquote-indent, 16px) !important;
+    padding-inline-end: 0 !important;
+    border-radius: 0 !important;
+    background: transparent;
+    box-shadow: none;
+    color: var(--text-muted);
+    font-size: 0.92em;
+    font-style: italic;
+    line-height: 1.5;
+    text-indent: 0 !important;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-quote-line::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 2px;
+    background: color-mix(in srgb, #828282 40%, transparent);
+    pointer-events: none;
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-quote-line:not(.is-last) {
+    /* The next text line is separated by a block widget, so extend only the
+       paint—not the line box—through that 10px interval. */
+    --ncl-styled-quote-rail-overhang: var(--ncl-quote-line-gap, 10px);
+}
+
+.markdown-source-view.is-live-preview .ncl-styled-quote-line:not(.is-last)::after {
+    inset-block-end: calc(-1 * var(--ncl-styled-quote-rail-overhang));
+}
+
+.block-handle-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: var(--ncl-handle-hit-size, var(--ncl-control-hit-size));
+    z-index: 10;
+    pointer-events: all;
+    background-color: transparent;
+    transition: opacity var(--ncl-motion-fast) ease;
+    opacity: 0;
+}
+
+.block-handle-wrap:not(.is-hidden) {
+    opacity: 1;
+}
+
+.block-handle-wrap.is-hidden {
+    pointer-events: none;
+}
+
+/* A menu or drag owns the editor until it closes. Yielding the hover handle
+   prevents two competing targets from sitting under the pointer. */
+body.ncl-exclusive-surface-open .block-handle-wrap {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.block-handle-wrap.is-right {
+    flex-direction: row-reverse;
+}
+
+.ftn-fold-ellipsis {
+    display: inline-block;
+    margin-left: 0.35em;
+    padding: 0 0.35em;
+    border-radius: 4px;
+    background-color: var(--background-modifier-hover);
+    color: var(--text-muted);
+    cursor: pointer;
+    /* The glyph is a full em wide and reads as too heavy at body size. */
+    font-size: 0.85em;
+    line-height: 1.2;
+    vertical-align: baseline;
+    user-select: none;
+}
+
+.ftn-fold-ellipsis:hover {
+    background-color: var(--background-modifier-active-hover);
+    color: var(--text-normal);
+}
+
+.block-handle-button {
+    width: var(--ncl-handle-hit-size, var(--ncl-control-hit-size));
+    height: var(--ncl-handle-hit-size, var(--ncl-control-hit-size));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-s, 6px);
+    color: var(--icon-color, var(--text-muted));
+    cursor: pointer;
+    transition: background-color var(--ncl-motion-fast) ease,
+                color var(--ncl-motion-fast) ease;
+}
+
+.block-handle-button:hover {
+    background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+    color: var(--icon-color-hover, var(--text-normal));
+}
+
+.block-handle-button:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -2px;
+}
+
+.block-handle-button svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Notion Block 操作菜单 */
+.wk-nb-action-menu {
+    position: fixed;
+    z-index: 1000;
+    width: 236px;
+    max-height: min(300px, calc(100vh - 16px));
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    overflow: hidden;
+    border: 1px solid var(--ncl-surface-border);
+    border-radius: var(--ncl-menu-radius);
+    background: var(--ncl-surface-bg);
+    box-shadow: var(--ncl-menu-shadow, var(--ncl-surface-shadow));
+    color: var(--text-normal);
+}
+
+.wk-nb-action-submenu {
+    width: 204px;
+}
+
+/* Passive @ suggestions: compact grouped rows, no system menu or tooltips. */
+.ncl-mention-menu {
+    width: min(320px, calc(100vw - 16px));
+    box-sizing: border-box;
+}
+.ncl-mention-menu .wk-nb-action-menu-list { min-height: 0; overscroll-behavior: contain; }
+.ncl-mention-menu [role="group"] + [role="group"] {
+    border-top: 1px solid var(--background-modifier-border);
+    margin-top: 4px;
+    padding-top: 4px;
+}
+.ncl-mention-row {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 1px 8px;
+    min-height: 38px;
+    padding: 5px 8px;
+}
+.ncl-mention-row .wk-nb-action-menu-icon { grid-row: 1 / 3; }
+.ncl-mention-label, .ncl-mention-detail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    line-height: 1.35;
+}
+.ncl-mention-detail { grid-column: 2; font-size: 11px; color: var(--text-muted); }
+.ncl-mention-row.is-date { grid-template-columns: 20px minmax(0, 1fr) auto; min-height: 34px; }
+.ncl-mention-row.is-date .wk-nb-action-menu-icon { grid-row: auto; }
+.ncl-mention-row.is-date .ncl-mention-detail { grid-column: 3; }
+.ncl-mention-hint { padding: 6px 8px 3px; font-size: 11px; line-height: 1.4; color: var(--text-muted); }
+.ncl-mention-empty { padding: 12px 8px; font-size: 13px; color: var(--text-muted); }
+
+.wk-nb-action-submenu.is-callout {
+    width: 164px;
+}
+
+.wk-nb-hidden-file-input {
+    display: none;
+}
+
+.wk-nb-action-menu-list {
+    overflow: auto;
+    padding-right: 0;
+}
+
+.wk-nb-action-menu-section {
+    padding: 4px 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.wk-nb-action-menu-row {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 4px;
+    min-height: var(--ncl-menu-row-height);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-normal);
+}
+
+.wk-nb-action-menu-row.is-active {
+    background: var(--ncl-menu-active-bg, var(--background-modifier-hover));
+    color: var(--text-normal);
+}
+
+.wk-nb-action-menu-row.is-active :is(.wk-nb-action-menu-icon, .wk-nb-action-menu-shortcut, .wk-nb-action-menu-chevron, .wk-nb-action-menu-badge) {
+    color: inherit;
+}
+
+.wk-nb-action-menu-row:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -2px;
+}
+
+.wk-nb-action-menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+}
+
+.wk-nb-action-menu-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.wk-nb-action-menu-label {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wk-nb-action-menu-shortcut,
+.wk-nb-action-menu-badge {
+    color: var(--text-muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.wk-nb-action-menu-badge {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: var(--background-modifier-hover);
+    color: var(--text-muted);
+}
+
+.wk-nb-action-menu-chevron {
+    display: flex;
+    color: var(--text-faint);
+}
+
+.wk-nb-action-menu-chevron svg {
+    width: 16px;
+    height: 16px;
+}
+
+.wk-nb-action-menu-separator {
+    height: 1px;
+    margin: 4px 8px;
+    background: var(--background-modifier-border);
+}
+
+.wk-nb-action-menu-color-icon {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 7px;
+    background: var(--background-primary);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.wk-nb-action-menu-color-icon.is-gray {
+    color: var(--text-muted);
+    background: rgba(var(--mono-rgb-100), 0.08);
+}
+
+.wk-nb-action-menu-color-icon.is-brown {
+    color: #9f6b53;
+    background: rgba(159, 107, 83, 0.14);
+}
+
+.wk-nb-action-menu-color-icon.is-orange {
+    color: var(--color-orange);
+    background: rgba(var(--color-orange-rgb), 0.14);
+}
+
+.wk-nb-action-menu-color-icon.is-yellow {
+    color: var(--color-yellow);
+    background: rgba(var(--color-yellow-rgb), 0.16);
+}
+
+.wk-nb-action-menu-color-icon.is-green {
+    color: var(--color-green);
+    background: rgba(var(--color-green-rgb), 0.14);
+}
+
+.wk-nb-action-menu-color-icon.is-blue {
+    color: var(--color-blue);
+    background: rgba(var(--color-blue-rgb), 0.14);
+}
+
+.wk-nb-action-menu-color-icon.is-purple {
+    color: var(--color-purple);
+    background: rgba(var(--color-purple-rgb), 0.14);
+}
+
+.wk-nb-action-menu-color-icon.is-pink {
+    color: var(--color-pink);
+    background: rgba(var(--color-pink-rgb), 0.14);
+}
+
+.wk-nb-action-menu-color-icon.is-red {
+    color: var(--color-red);
+    background: rgba(var(--color-red-rgb), 0.14);
+}
+
+/* Hide handles on mobile */
+@media (max-width: 768px) {
+    .block-handle-wrap {
+        display: none;
+    }
+}
+
+/* Drag & Drop Feedback */
+.block-drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    background: var(--background-primary);
+    border: 1px solid var(--ncl-surface-border);
+    padding: 5px 9px;
+    border-radius: var(--radius-s, 6px);
+    box-shadow: var(--ncl-surface-shadow);
+    opacity: 0.82;
+    z-index: 9999;
+    font-size: var(--font-adaptive-small);
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 300px;
+}
+
+.block-drag-indicator {
+    position: fixed;
+    height: 2px;
+    background-color: var(--interactive-accent);
+    pointer-events: none;
+    z-index: 9998;
+    display: none;
+}
+
+body.is-dragging-block,
+body.is-dragging-block * {
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ── Notion-style multi-block selection ─────────────────────────────────────
+   Applied by src/blockSelection.ts via Decoration.line, so the class lands on
+   .cm-line itself.
+
+   Paint only — background and border-radius. No padding, no margin, nothing
+   that changes a line box. Vertical margin on .cm-line desynchronises
+   CodeMirror's heightmap from the rendered page and sends the caret to the
+   wrong line; see the header comment in the vault's notion.css snippet.
+*/
+
+.ftn-block-selected {
+    background-color: hsla(var(--color-accent-hsl), 0.18);
+    border-radius: 3px;
+}
+
+/* While whole blocks are selected, suppress CodeMirror's own ragged
+   highlight. Without this the two stack: a darker glyph-hugging band inside
+   an edge-to-edge block tint, which reads as a rendering bug rather than as
+   selection. The class is toggled on the editor root by the view plugin. */
+.ftn-has-block-selection .cm-selectionBackground,
+.ftn-has-block-selection .cm-line ::selection {
+    background-color: transparent !important;
+}
+
+/* ── Drop-indent selection ──────────────────────────────────────────────────
+   While dragging, horizontal pointer position chooses the depth the block
+   will land at. The indicator's left edge moves to show that depth.
+
+   The dot marks the chosen indent, and only appears when more than one depth
+   is legal here — in flat prose there is nothing to choose, so the indicator
+   stays a plain line and the drag looks exactly as it did before.
+*/
+
+.block-drag-indicator.is-indent-selectable::before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+}
+
+/* Insert-menu item list, in settings */
+.ftn-insert-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 8px 0 12px;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.ftn-insert-item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background-color: var(--background-secondary);
+    /* The whole row is the drag target, so the cursor says so everywhere. */
+    cursor: grab;
+}
+
+.ftn-insert-item-row.is-dragging {
+    opacity: 0.4;
+}
+
+.ftn-insert-item-row.is-drop-target {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -2px;
+}
+
+.ftn-insert-item-grip,
+.ftn-insert-item-icon {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+}
+
+.ftn-insert-item-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.ftn-insert-item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Names the command a custom row runs. The label above is the user's own
+   wording, so without this nothing on screen says what the row actually does. */
+.ftn-insert-item-source {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+}
+
+.ftn-insert-item-source.is-missing {
+    color: var(--text-error);
+}
+
+.ftn-insert-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ftn-insert-item-button {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.ftn-insert-item-button:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+
+.ftn-insert-item-button.is-danger:hover {
+    color: var(--text-error);
+}
+
+.ftn-icon-preview {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+}
+
+/* Command picker rows. The id line is what tells apart the several plugins
+   that each ship a command called "Insert table". */
+.ftn-command-suggest-id {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+}
+
+/* Syntax guard ----------------------------------------------------------
+   Red is reserved for an actual authoring problem. The tint stays subtle so
+   the marker remains legible without turning a whole paragraph into an alert. */
+.markdown-source-view.mod-cm6 .nmg-suspicious-marker {
+    border-radius: 2px;
+    background-color: rgba(var(--color-red-rgb), 0.08);
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--text-error);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+}
+
+@media (prefers-contrast: more) {
+    .markdown-source-view.mod-cm6 .nmg-suspicious-marker {
+        background-color: rgba(var(--color-red-rgb), 0.16);
+        text-decoration-thickness: 2px;
+    }
+}
+
+/* Selected-text toolbar -------------------------------------------------
+   It replaces Make.md's five-button Inline Styler only while the richer
+   toolbar setting is enabled. Placement and scroll lifecycle come from
+   CodeMirror's native tooltip system; the body class is reference-counted per
+   Obsidian window so pop-out windows and unloads do not leave Make.md hidden. */
+body.nmg-selection-toolbar-enabled .cm-tooltip:has(.mk-style-menu),
+body.nmg-selection-toolbar-enabled .mk-style-menu {
+    display: none !important;
+}
+
+/* CodeMirror owns placement, but its wrapper must not paint a second light
+   tooltip behind the suite-owned adaptive surface. */
+.cm-tooltip:has(> .nmg-selection-toolbar) {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.nmg-selection-toolbar,
+.cm-tooltip.nmg-selection-toolbar {
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-height: 34px;
+    max-width: calc(100vw - 16px);
+    padding: 2px 4px;
+    overflow-x: auto;
+    border: 1px solid var(--nmg-toolbar-border, var(--ncl-surface-border));
+    border-radius: 8px;
+    background: var(--nmg-toolbar-bg, var(--ncl-surface-bg)) !important;
+    box-shadow: var(--nmg-toolbar-shadow, var(--ncl-surface-shadow));
+    color: var(--nmg-toolbar-text, var(--text-normal));
+    font: 13px/1.2 var(--ncl-sidebar-font, var(--font-interface));
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+.nmg-selection-toolbar::-webkit-scrollbar { display: none; }
+
+/* State fields cannot see DOM focus. Keep stored selections in inactive
+   panes from showing a second toolbar without inventing another overlay. */
+.cm-editor:not(.cm-focused) .nmg-selection-toolbar:not(:focus-within) {
+    display: none;
+}
+
+body.ncl-exclusive-surface-open .nmg-selection-toolbar {
+    display: none;
+}
+
+.nmg-selection-toolbar > button.nmg-selection-toolbar-button {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 28px;
+    margin: 0;
+    padding: 0 4px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--nmg-toolbar-text, var(--text-normal));
+    font: inherit;
+    cursor: pointer;
+}
+
+.nmg-selection-toolbar > button.nmg-selection-toolbar-button:hover:not(:disabled) {
+    background: var(--nmg-toolbar-hover, var(--background-modifier-hover));
+    color: var(--nmg-toolbar-text, var(--text-normal));
+}
+.nmg-selection-toolbar-button:disabled { opacity: 0.4; cursor: default; }
+
+.nmg-selection-toolbar > button.nmg-selection-toolbar-button:active:not(:disabled) {
+    background: var(--nmg-toolbar-active, var(--background-modifier-active-hover));
+}
+
+.nmg-selection-toolbar-button:focus-visible {
+    outline: 2px solid var(--nmg-toolbar-accent, var(--interactive-accent));
+    outline-offset: -1px;
+}
+
+.nmg-selection-toolbar-icon-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.nmg-selection-toolbar > button.nmg-selection-toolbar-text-button {
+    gap: 4px;
+    max-width: 126px;
+    padding-inline: 8px 4px;
+    color: var(--nmg-toolbar-text, var(--text-normal));
+    font-size: var(--font-ui-small);
+}
+
+.nmg-selection-toolbar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nmg-selection-toolbar-chevron {
+    display: inline-flex;
+    color: var(--nmg-toolbar-faint, var(--text-faint));
+}
+
+.nmg-selection-toolbar-chevron svg {
+    width: 13px;
+    height: 13px;
+}
+
+.nmg-selection-toolbar-separator {
+    flex: 0 0 auto;
+    width: 1px;
+    height: 16px;
+    margin: 0 4px;
+    background: var(--nmg-toolbar-border, var(--background-modifier-border));
+}
+
+@media (prefers-contrast: more) {
+    .nmg-selection-toolbar {
+        border-color: var(--text-muted);
+    }
+
+    .nmg-selection-toolbar-button:hover {
+        outline: 1px solid var(--text-muted);
+        outline-offset: -1px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .block-handle-wrap,
+    .block-handle-button,
+    .wk-nb-action-menu,
+    .nmg-selection-toolbar,
+    .ncl-native-row-actions {
+        transition: none;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   Native File Explorer row affordances
+   ---------------------------------------------------------------------- */
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced > .nav-folder-title-content,
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-enhanced > .nav-file-title-content {
+    flex: 1 1 auto;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-actions {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0;
+    margin-inline-start: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 60ms linear;
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    :is(.nav-folder-title, .nav-file-title):is(:hover, :focus-within)
+    > .ncl-native-row-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-action {
+    --icon-size: 14px;
+    display: inline-flex;
+    flex: 0 0 24px;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 5px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--text-faint);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-action:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-action:focus-visible {
+    outline: 1px solid var(--interactive-accent);
+    outline-offset: -1px;
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    :is(.nav-folder-title, .nav-file-title):is(.is-being-renamed, .is-being-dragged)
+    > .ncl-native-row-actions {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    :is(.tree-item-icon.collapse-icon, .nav-folder-collapse-indicator).ncl-native-folder-icon-idle {
+    color: var(--text-muted);
+    opacity: 0.82;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-folder-glyph {
+    width: 16px !important;
+    height: 16px !important;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+    transition: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-folder-open-glyph {
+    width: 16px !important;
+    height: 16px !important;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+    transition: none !important;
+}
+
+/* Use Obsidian's own tree-item icon slot so a Markdown glyph inherits the
+   exact row-depth offset instead of anchoring to the full-width selection row. */
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-file-icon {
+    color: var(--text-muted);
+    opacity: 0.82;
+    pointer-events: none;
+}
+
+/* One identity across native Sidebar/Tab/picker. Original Tab SVGs stay in
+   place, hidden only while this owned marker exists; unload reveals them. */
+body {
+    --ncl-icon-gray: var(--text-muted);
+    --ncl-icon-blue: #3265a8;
+    --ncl-icon-red: var(--ncl-file-pdf-color);
+    --ncl-icon-amber: var(--ncl-file-epub-color);
+    --ncl-icon-green: var(--ncl-file-image-color);
+    --ncl-icon-purple: #7952a0;
+    --ncl-icon-cyan: #277782;
+    --ncl-icon-orange: #94602f;
+    --ncl-icon-pink: #985475;
+}
+body.theme-dark {
+    --ncl-icon-blue: #89afe0;
+    --ncl-icon-purple: #b59ad6;
+    --ncl-icon-cyan: #83bdc6;
+    --ncl-icon-orange: #d2aa78;
+    --ncl-icon-pink: #d1a0b7;
+}
+.workspace .ncl-icon-managed,
+.ncl-icon-modal .ncl-icon-managed {
+    color: var(--ncl-identity-color, var(--text-muted)) !important;
+    opacity: 1 !important;
+}
+.workspace-tab-header-inner-icon.ncl-icon-managed { display: flex !important; }
+.ncl-icon-managed > :not(.ncl-file-identity-glyph) { display: none !important; }
+.workspace .ncl-file-identity-glyph,
+.ncl-icon-modal .ncl-file-identity-glyph {
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+    transform: none !important;
+}
+/* Paint modes are explicit: a filled asset must not inherit Lucide's stroke.
+   Keep the original open-folder stroke and cap, not a rounded substitute. */
+.workspace .ncl-file-identity-glyph[data-ncl-icon-paint="fill"],
+.ncl-icon-modal .ncl-file-identity-glyph[data-ncl-icon-paint="fill"] {
+    fill: currentColor !important;
+    stroke: none !important;
+    stroke-width: 0 !important;
+}
+.workspace .ncl-file-identity-glyph[data-ncl-icon="keyline-folder-open"],
+.ncl-icon-modal .ncl-file-identity-glyph[data-ncl-icon="keyline-folder-open"] {
+    stroke-width: 2 !important;
+    stroke-linecap: butt;
+}
+/* Also protect the previous glyph classes during a CSS hot reload. Only
+   Keyline-owned identity SVGs opt out; native disclosure/other plugins do not. */
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-folder-icon-idle
+    > :is(.ncl-native-folder-glyph, .ncl-native-folder-open-glyph, .ncl-file-identity-glyph) {
+    transform: none !important;
+}
+.ncl-icon-modal { width: min(440px, calc(100vw - 32px)); }
+.ncl-icon-modal .modal-content { overflow-y: auto; }
+.ncl-icon-caption { color: var(--text-muted); font-size: 12px; overflow-wrap: anywhere; }
+.ncl-icon-preview { display: flex; align-items: center; gap: 10px; min-height: 36px; font-size: 12px; }
+.ncl-icon-search { width: 100%; margin-block: 12px 8px; }
+.ncl-icon-grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; max-height: 220px; overflow: auto; padding: 3px; }
+.ncl-icon-grid button { height: 32px; padding: 4px; display: flex; align-items: center; justify-content: center; box-shadow: none; border: 1px solid transparent; background: transparent; }
+.ncl-icon-grid button:hover { background: var(--background-modifier-hover); }
+.ncl-icon-grid button[aria-pressed="true"] { border-color: var(--interactive-accent); background: var(--background-modifier-hover); }
+.ncl-icon-modal button:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 1px; }
+.ncl-icon-color-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-block: 12px; }
+.ncl-icon-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.ncl-icon-actions button:first-child { margin-right: auto; }
+.ncl-icon-type-settings { margin-block: 12px 20px; }
+.ncl-icon-type-settings > summary { cursor: pointer; padding-block: 6px; }
+@media (max-width: 460px) { .ncl-icon-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (prefers-contrast: more) { .workspace .ncl-icon-managed { filter: contrast(1.15); } }
+
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-file-glyph {
+    width: 16px !important;
+    height: 16px !important;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+    transition: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-file-kind-pdf {
+    color: var(--ncl-file-pdf-color);
+    opacity: 0.9;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-file-kind-epub {
+    color: var(--ncl-file-epub-color);
+    opacity: 0.9;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-native-file-kind-image {
+    color: var(--ncl-file-image-color);
+    opacity: 0.96;
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    .ncl-native-file-row-kind-pdf .nav-file-tag {
+    border-color: color-mix(in srgb, var(--ncl-file-pdf-color) 42%, transparent);
+    color: var(--ncl-file-pdf-color);
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    .ncl-native-file-row-kind-epub .nav-file-tag {
+    border-color: color-mix(in srgb, var(--ncl-file-epub-color) 42%, transparent);
+    color: var(--ncl-file-epub-color);
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    .ncl-native-file-row-kind-image .nav-file-tag {
+    border-color: color-mix(in srgb, var(--ncl-file-image-color) 42%, transparent);
+    color: var(--ncl-file-image-color);
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    .nav-file-title:is(.is-active, .is-selected)
+    > .ncl-native-file-icon:not(
+        .ncl-native-file-kind-pdf,
+        .ncl-native-file-kind-epub,
+        .ncl-native-file-kind-image
+    ) {
+    color: inherit;
+    opacity: 0.9;
+}
+
+@media (prefers-contrast: more) {
+    body {
+        --ncl-file-pdf-color: color-mix(in srgb, var(--color-red) 68%, var(--text-normal));
+        --ncl-file-epub-color: color-mix(in srgb, var(--color-orange) 68%, var(--text-normal));
+        --ncl-file-image-color: color-mix(in srgb, var(--color-green) 68%, var(--text-normal));
+    }
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .ncl-notion-disclosure-triangle {
+    width: 8px;
+    height: 8px;
+    overflow: visible;
+    color: var(--text-faint);
+    fill: currentColor;
+    pointer-events: none;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+    transition: none !important;
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    :is(.nav-folder.is-collapsed > .nav-folder-title, .collapse-icon.is-collapsed)
+    .ncl-notion-disclosure-triangle {
+    transform: rotate(0deg);
+}
+
+.workspace-leaf-content[data-type="file-explorer"]
+    :is(.nav-folder-title:hover, .nav-folder-title:focus-within)
+    .ncl-notion-disclosure-triangle {
+    color: var(--text-muted);
+}
+
+/* The panel is one quiet settings group, not another card hierarchy. */
+/* Opt out at the source in both supported core generations. The display rule
+   also dismisses an already-open core tooltip when the switch changes. Do not
+   target .popover, .cm-tooltip, notices, validation messages or dialogs. */
+body.ncl-quiet-hints [aria-label] { --no-tooltip: true !important; }
+body.ncl-quiet-hints .tooltip { display: none !important; }
+
+.ncl-settings {
+    --font-interface: var(--ncl-sidebar-font, -apple-system, BlinkMacSystemFont, sans-serif);
+    font-family: var(--font-interface);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    padding: 20px;
+    --ncl-settings-row-border: var(--background-modifier-border);
+}
+.ncl-settings [hidden] { display: none !important; }
+.ncl-settings-header { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; margin-bottom: 16px; }
+.ncl-settings-header h2 { margin: 0; font-size: 19px; line-height: 1.4; }
+.ncl-settings-version { font-size: 11px; color: var(--text-faint); }
+.ncl-settings-header .ncl-settings-search { margin-inline-start: auto; width: 180px; max-width: 48%; height: 30px; font-size: 13px; }
+.ncl-settings-shell { display: grid; grid-template-columns: 144px minmax(0, 1fr); gap: 20px; flex: 1 1 0; min-height: 0; }
+.ncl-settings-nav { overflow-y: auto; padding: 2px; }
+.ncl-settings .ncl-settings-tab {
+    display: grid; grid-template-columns: 16px minmax(0, 1fr);
+    align-items: center; justify-content: start; text-align: start;
+    gap: 9px; width: 100%; min-width: 0; height: 34px;
+    padding: 0 10px; margin: 0 0 4px; border: 0; border-radius: 7px;
+    background: transparent; box-shadow: none; color: var(--text-muted); font-size: 13px;
+}
+.ncl-settings .ncl-settings-tab > span:last-child {
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    text-align: start;
+}
+.ncl-settings .ncl-settings-tab:hover { background: var(--background-modifier-hover); }
+.ncl-settings .ncl-settings-tab.is-active { background: var(--background-modifier-hover); color: var(--text-normal); font-weight: 600; }
+.ncl-settings-tab-icon { display: flex; flex: 0 0 16px; color: var(--text-muted); }
+.ncl-settings-tab-icon svg { width: 16px; height: 16px; }
+.ncl-settings-content { min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.ncl-settings-panel { min-width: 0; min-height: 0; overflow-y: auto; flex: 1 1 0; padding: 0 10px 12px 0; scrollbar-gutter: stable; }
+.ncl-settings-title { margin: 0 0 4px; font-size: 17px; }
+.ncl-settings-description { margin: 0 0 18px; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.ncl-settings .setting-item { padding: 11px 0; gap: 12px; flex-wrap: wrap; min-width: 0; border-top: 0; border-bottom: 1px solid var(--ncl-settings-row-border); }
+.ncl-settings .setting-item { flex-direction: row; align-items: center; margin-bottom: 0; background: transparent; border-radius: 0; }
+.ncl-settings .setting-item-info { flex: 1 1 190px; margin: 0; min-width: 0; }
+.ncl-settings .setting-item-name { font-size: 13px; line-height: 1.4; }
+.ncl-settings .setting-item-description { font-size: 12px; line-height: 1.5; margin-top: 4px; color: var(--text-muted); }
+.ncl-settings .setting-item-control { margin-inline-start: auto; gap: 8px; flex: 0 1 auto; max-width: 100%; flex-wrap: wrap; }
+.ncl-settings .setting-item-control input[type="text"] { max-width: 150px; }
+.ncl-settings .setting-item-control input[type="range"] { max-width: 150px; }
+.ncl-setting-value { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ncl-settings .setting-item-heading { margin-top: 14px; padding: 4px 0 8px; border: 0; }
+.ncl-settings .setting-item-heading .setting-item-name { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.ncl-settings .is-search-match { background: var(--background-modifier-hover); border-radius: 4px; }
+.ncl-settings .ncl-theme-layout-panel { margin: 0; padding: 0; border: 0; }
+.ncl-settings .ncl-theme-layout-section { font-size: 12px; margin: 18px 0 0; padding: 4px 0 8px; }
+.ncl-settings .ncl-theme-layout-preview { padding: 8px 10px; margin: 8px 0; border-radius: 8px; }
+.ncl-settings .ncl-theme-layout-preview summary { cursor: pointer; font-size: 12px; color: var(--text-muted); margin: 0; }
+.ncl-settings .ncl-theme-layout-preview[open] summary { margin-bottom: 8px; }
+.ncl-settings .ncl-theme-layout-preview-canvas { font-size: 14px; }
+.ncl-settings .ncl-icon-type-settings { margin-top: 14px; }
+.ncl-settings .ncl-icon-type-settings summary { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.ncl-settings-select { display: none; }
+.ncl-settings-empty { padding: 24px 0; color: var(--text-muted); font-size: 13px; }
+.ncl-settings :is(button, select, summary, input):focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
+.ncl-settings.is-narrow { padding: 16px; }
+.ncl-settings.is-narrow .ncl-settings-nav { display: none; }
+.ncl-settings.is-narrow .ncl-settings-select {
+    display: block; align-self: flex-start; margin: 0 0 14px;
+    width: 144px; max-width: 100%; min-width: 0; height: 34px;
+    /* Core dropdowns align values to the end. This is a navigation label,
+       so keep it at the leading edge, independent of the selected language. */
+    text-align: start; text-align-last: start;
+    padding-inline: 12px 34px;
+}
+.ncl-settings.is-narrow .ncl-settings-shell { grid-template-columns: minmax(0, 1fr); gap: 0; }
+.ncl-settings.is-narrow .ncl-settings-panel { padding-inline-end: 4px; }
+.modal.mod-settings .vertical-tab-content.ncl-settings { padding: 20px; }
+.modal.mod-settings .vertical-tab-content.ncl-settings.is-narrow { padding: 16px; }
+.vertical-tab-content.ncl-settings :is(h2.ncl-settings-title, h3.ncl-settings-title) { margin: 0 0 4px; padding: 0; font-size: 17px; }
+.vertical-tab-content.ncl-settings .ncl-settings-header h2 { margin: 0; padding: 0; font-size: 19px; }
+.ncl-settings .ncl-preference-group { margin: 0 0 14px; }
+.ncl-settings .ncl-preference-group > :is(.setting-item-heading, .ncl-theme-layout-section) { margin: 0; padding: 4px 2px 8px; }
+.ncl-settings .ncl-preference-items { border: 1px solid var(--background-modifier-border); border-radius: 8px; padding: 0 12px; background: var(--background-secondary); }
+.ncl-settings .ncl-preference-items > .setting-item:last-child { border-bottom: 0; }
+.ncl-settings .ncl-preference-items > :is(p, details) { margin-block: 10px; }
+
+.ncl-theme-layout-panel {
+    --font-interface: var(--ncl-sidebar-font, -apple-system, BlinkMacSystemFont, sans-serif);
+    font-family: var(--font-interface);
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* Cupertino-inspired flat grouping. Scope this to our own panel: do not
+   restyle another plugin's settings or alter the Markdown line boxes. */
+.ncl-theme-layout-panel > .setting-item {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin: 0;
+    padding: 12px 0;
+    border: 0;
+    border-bottom: 1px solid var(--background-modifier-border);
+    border-radius: 0;
+    background: transparent;
+}
+
+.ncl-theme-layout-panel > .setting-item-heading {
+    border-bottom: 0;
+}
+
+.ncl-theme-layout-panel .setting-item-info {
+    flex: 1 1 220px;
+    min-width: 0;
+    margin: 0;
+}
+
+.ncl-theme-layout-panel .setting-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.ncl-theme-layout-panel .setting-item-description {
+    margin: 4px 0 0;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.ncl-theme-layout-panel .setting-item-control {
+    flex: 0 1 auto;
+    max-width: 100%;
+    min-height: 28px;
+    gap: 8px;
+    margin-inline-start: auto;
+    flex-wrap: wrap;
+}
+
+.ncl-theme-layout-panel .setting-item-control input[type="range"] {
+    max-width: 100%;
+}
+
+.ncl-theme-layout-panel .setting-item-control input[type="range"]:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 4px;
+}
+
+.ncl-theme-layout-panel .ncl-theme-layout-section {
+    margin: 24px 0 0;
+    padding: 0 0 4px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.ncl-theme-layout-preview {
+    margin: 8px 0 14px;
+    padding: 9px 12px 12px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 10px;
+    background: var(--background-primary);
+}
+
+.ncl-theme-layout-preview-label {
+    margin-bottom: 8px;
+    color: var(--text-faint);
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-medium);
+}
+
+.ncl-theme-layout-preview-canvas {
+    padding-inline: var(--ncl-page-side-padding, 0px);
+    max-height: 180px;
+    overflow: auto;
+    color: var(--text-normal);
+    font-size: var(--font-text-size);
+    line-height: var(--ncl-editor-line-height);
+}
+
+.ncl-theme-layout-preview-content {
+    max-width: var(--ncl-text-max-width, 600px);
+    margin-inline: auto;
+}
+
+.ncl-theme-layout-preview-mode {
+    margin-block: 2px 5px;
+    color: var(--text-faint);
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-medium);
+}
+
+.ncl-theme-layout-preview-heading {
+    margin-block-start: var(--ncl-heading-before);
+    margin-block-end: var(--ncl-heading-after);
+    font-size: 1.25em;
+    font-weight: var(--font-semibold);
+    line-height: 1.25;
+}
+
+.ncl-theme-layout-preview-canvas p {
+    margin-block-start: var(--ncl-paragraph-before);
+    margin-block-end: var(--ncl-paragraph-after);
+    text-indent: var(--ncl-first-line-indent);
+}
+
+.ncl-theme-layout-preview-canvas p:has(+ p) {
+    margin-block-end: 0;
+}
+
+.ncl-theme-layout-preview-canvas p + p {
+    margin-block-start: var(--ncl-paragraph-gap);
+}
+
+.ncl-theme-layout-preview-canvas ul {
+    margin-block: 0 var(--ncl-paragraph-after);
+    padding-inline-start: var(--ncl-list-first-indent, 0.8em);
+}
+
+.ncl-theme-layout-preview-canvas .ncl-theme-layout-preview-list {
+    list-style: none;
+}
+
+.ncl-theme-layout-preview-list li {
+    display: grid;
+    grid-template-columns: var(--ncl-list-bullet-size) minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--ncl-list-marker-gap);
+    padding-block: calc(var(--ncl-list-item-spacing) * 0.5);
+    line-height: var(--ncl-list-line-height);
+}
+
+.ncl-theme-layout-preview-list li::before {
+    content: "";
+    width: var(--ncl-list-bullet-size);
+    height: var(--ncl-list-bullet-size);
+    border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.ncl-theme-layout-preview-list li > ul {
+    grid-column: 2;
+    width: 100%;
+    margin-block: 3px 0;
+    padding-inline-start: var(--ncl-list-indent);
+}
+
+.ncl-theme-layout-preview-canvas blockquote {
+    margin-block: var(--ncl-paragraph-before) var(--ncl-paragraph-after);
+    margin-inline: 0;
+    padding-block: 0;
+    padding-inline-start: var(--ncl-blockquote-indent);
+    border-inline-start: 2px solid color-mix(in srgb, #828282 40%, transparent);
+    border-radius: 0;
+    color: var(--text-muted);
+    font-size: 0.92em;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.ncl-theme-layout-preview-canvas blockquote > div + div {
+    margin-block-start: 10px;
+}
+
+.ncl-theme-layout-reading-sample {
+    padding-top: 7px;
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+.ncl-theme-layout-reading-sample p {
+    margin: 0;
+    line-height: var(--ncl-reading-line-height);
+    text-indent: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-leaf-content[data-type="file-explorer"] .ncl-native-row-actions {
+        transition: none !important;
+    }
+}
+/* Keep the original status symbols available to assistive technology and to
+   LiveSync's text equality checks; SVG is a presentation layer, not new state. */
+.ncl-status-content { display: block; line-height: 14px; }
+.ncl-status-token { display: inline-flex; align-items: center; vertical-align: top; margin: 1px; }
+.ncl-status-token svg { width: 12px; height: 12px; stroke-width: 1.6; }
+.ncl-status-token.is-warning { color: var(--text-warning); }
+.ncl-status-source { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+/* Keep native status items and their handlers in place. The central entry has
+   measured clearance; when there is none it reserves its own in-flow row. */
+body:not(.is-mobile) .app-container > .status-bar.ncl-workspace-bar {
+    position: relative;
+    min-height: 24px;
+}
+body:not(.is-mobile) .status-bar > .ncl-workspace-switcher {
+    position: absolute;
+    left: 50%;
+    /* Match the native status CONTENT row, not its asymmetric border-box.
+       Keyline supplies the upper clearance from the document's gutter and
+       the lower clearance through this shared bottom-padding token. */
+    top: 0;
+    bottom: var(--ncl-space-control, 4px);
+    transform: translateX(-50%);
+    width: var(--ncl-workspace-width, 180px);
+    max-width: calc(100% - 24px);
+    margin: 0;
+    padding: 0;
+    min-height: 20px;
+    order: 1000;
+    justify-content: center;
+}
+body:not(.is-mobile) .status-bar > .ncl-workspace-switcher.is-separate-row {
+    position: static;
+    top: auto;
+    bottom: auto;
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+}
+.status-bar .ncl-workspace-button {
+    --no-tooltip: true;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    max-width: var(--ncl-workspace-width, 180px);
+    min-width: 28px;
+    height: 20px;
+    padding: 2px 5px;
+    border: 0;
+    border-radius: var(--radius-s);
+    box-shadow: none;
+    background: transparent;
+    color: var(--status-bar-text-color, var(--text-muted));
+    font-size: var(--status-bar-font-size, 11px);
+    font-weight: var(--font-normal);
+    line-height: 14px;
+    cursor: pointer;
+}
+.status-bar .ncl-workspace-button:hover,
+.status-bar .ncl-workspace-button:focus-visible {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+.status-bar .ncl-workspace-button:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -2px;
+}
+.ncl-workspace-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ncl-workspace-switcher.is-icon-only .ncl-workspace-label,
+.ncl-workspace-switcher.is-icon-only .ncl-workspace-arrow { display: none; }
+.ncl-workspace-button > span:not(.ncl-workspace-label) { display: flex; flex-shrink: 0; }
+.status-bar .ncl-workspace-button svg { width: 12px; height: 12px; stroke-width: 1.6; }
+.ncl-workspace-name-modal { width: min(420px, calc(100vw - 32px)); }
+.ncl-workspace-name-modal input { width: 100%; }
+.ncl-workspace-error { color: var(--text-error); font-size: var(--font-ui-small); }
+.ncl-workspace-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* Our own in-window menu: never routed through Electron's native popup. */
+.ncl-workspace-menu {
+    --no-tooltip: true;
+    position: fixed;
+    z-index: var(--layer-menu, 100);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--ncl-menu-radius, 8px);
+    box-shadow: var(--ncl-menu-shadow, var(--shadow-s));
+    font-family: var(--font-interface);
+    color: var(--text-normal);
+}
+.ncl-workspace-menu .ncl-workspace-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 9px;
+    width: 100%;
+    min-height: 34px;
+    height: auto;
+    padding: 7px 9px;
+    margin: 0;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: none;
+    background: transparent;
+    color: var(--text-normal);
+    font: 400 14px/20px var(--font-interface);
+    text-align: left;
+    cursor: pointer;
+}
+.ncl-workspace-menu-item:is(:hover, :focus) { background: var(--ncl-menu-active-bg, var(--background-modifier-hover)); }
+.ncl-workspace-menu-item:focus { outline: none; }
+.ncl-workspace-menu-item:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: -2px; }
+.ncl-workspace-menu-icon { display: flex; flex: 0 0 16px; color: var(--text-muted); }
+.ncl-workspace-menu-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+.ncl-workspace-menu-title { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.ncl-workspace-menu-separator { height: 1px; margin: 5px 4px; background: var(--background-modifier-border); }

@@ -1,0 +1,45 @@
+# Keyline
+
+A quieter place to think. A restrained, macOS-inspired theme for Obsidian, with light and dark surfaces, a floating navigation panel, and generous reading space.
+
+[中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma showcase](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
+
+![Keyline in light mode](assets/keyline-light.png)
+![Keyline in dark mode](assets/keyline-dark.png)
+
+## What is included
+
+- **Keyline theme**: the visual shell, writing surfaces, tables, callouts, and quiet split seams. Works independently.
+- **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)**, optional: block editing, contextual formatting, icons, typography settings, and a centred workspace switcher.
+- **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)**, optional: curated groups of references without moving the original files.
+
+The screenshots show the theme with the two optional companions. Themes alone cannot provide JavaScript interactions. Marginalia and Journal View are not included in this distribution.
+
+## Try the example Vault
+
+Download **Keyline-Studio-Demo.zip** from Releases, unzip it, and use Obsidian’s **Open folder as vault**. Start at `00 Home/Keyline Studio.md`.
+
+The Vault contains 25 linked English notes covering projects, research, a journal, reading, studio practices, and templates. All content is fictional. The bundled plugins are optional; review and enable them only if you want the interactive features.
+
+## Install in an existing Vault
+
+1. Back up the Vault’s `.obsidian` folder and close that Vault’s window.
+2. Create `.obsidian/themes/Keyline/` and copy `theme.css` and `manifest.json` from the theme release into it. Keep `LICENSE` and `THIRD_PARTY_NOTICES.md` with redistributed copies.
+3. Reopen Obsidian and select **Settings → Appearance → Themes → Keyline**.
+4. Install the companion plugins separately if desired. Do not overwrite your existing workspace or plugin `data.json` files with files from the example Vault.
+
+This is a manual-install release. A GitHub release does not imply acceptance into Obsidian’s Community catalogue.
+
+## Language and compatibility
+
+The theme does not replace Obsidian’s own language. Companion menus, settings and notices support English and Chinese and follow Obsidian’s interface language; restart after changing it. Your notes and saved names are never translated.
+
+Minimum declared Obsidian version: **1.7.7**. The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. The interaction companion is desktop-only. Mobile layouts are not release-validated.
+
+## Feedback
+
+Report an issue with the Obsidian version, Keyline version, light/dark mode, reproduction steps, and a screenshot without private note content. For conflicts, also try with other themes/snippets and unrelated plugins disabled in a test Vault.
+
+## License
+
+MIT. See [LICENSE](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md). Companion repositories retain their applicable notices and licenses.

@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "spaces": [
+    {
+      "id": "studio",
+      "name": "Studio",
+      "icon": "layers",
+      "pinnedEntries": [
+        {
+          "id": "home",
+          "type": "file",
+          "path": "00 Home/Keyline Studio.md"
+        }
+      ],
+      "buckets": [
+        {
+          "id": "now",
+          "name": "In focus",
+          "entries": [
+            {
+              "id": "projects",
+              "type": "folder",
+              "path": "01 Projects",
+              "expanded": true
+            }
+          ]
+        },
+        {
+          "id": "learn",
+          "name": "Research & ideas",
+          "entries": [
+            {
+              "id": "research",
+              "type": "folder",
+              "path": "02 Research",
+              "expanded": false
+            },
+            {
+              "id": "library",
+              "type": "folder",
+              "path": "04 Library",
+              "expanded": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personal",
+      "name": "Personal",
+      "icon": "notebook-pen",
+      "pinnedEntries": [],
+      "buckets": [
+        {
+          "id": "daily",
+          "name": "Daily practice",
+          "entries": [
+            {
+              "id": "journal",
+              "type": "folder",
+              "path": "03 Journal",
+              "expanded": true
+            },
+            {
+              "id": "studio-folder",
+              "type": "folder",
+              "path": "05 Studio",
+              "expanded": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "activeSpaceId": "studio",
+  "settings": {
+    "rowHeight": 32,
+    "showSpaceNames": true
+  }
+}
