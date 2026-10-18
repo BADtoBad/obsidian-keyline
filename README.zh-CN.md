@@ -34,12 +34,14 @@ Keyline 交互插件目前是 **GitHub 预览版，尚未提交 Community**。�
 
 ## 安装到现有库
 
+可在 [Keyline Community 页面](https://community.obsidian.md/themes/keyline)点击 **Add to Obsidian**，或按以下步骤手动安装：
+
 1. 备份 Vault 的 `.obsidian` 文件夹，并关闭该库窗口。
 2. 新建 `.obsidian/themes/Keyline/`，放入主题发行包中的 `theme.css` 和 `manifest.json`。再次分发时保留许可证和第三方声明。
 3. 重新打开 Obsidian，在“设置 → 外观 → 主题”选择 Keyline。
 4. 如需交互功能，另行安装可选插件。不要用示例库的工作区或插件 `data.json` 覆盖自己的配置。
 
-目前为手动安装发行。发布到 GitHub 不代表已被 Obsidian Community 收录。
+主题已在 Community 展示并开放安装入口。配套插件分别发行：Bucket 有独立的 Community 页面，Keyline 交互插件仍需手动安装 GitHub 预览版。
 
 ## 语言与兼容性
 

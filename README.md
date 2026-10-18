@@ -34,12 +34,14 @@ Release **0.8.23** includes Community guideline cleanup with no measured visual 
 
 ## Install in an existing Vault
 
+Use **Add to Obsidian** on the [Keyline Community page](https://community.obsidian.md/themes/keyline), or install manually:
+
 1. Back up the Vault’s `.obsidian` folder and close that Vault’s window.
 2. Create `.obsidian/themes/Keyline/` and copy `theme.css` and `manifest.json` from the theme release into it. Keep `LICENSE` and `THIRD_PARTY_NOTICES.md` with redistributed copies.
 3. Reopen Obsidian and select **Settings → Appearance → Themes → Keyline**.
 4. Install the companion plugins separately if desired. Do not overwrite your existing workspace or plugin `data.json` files with files from the example Vault.
 
-This is a manual-install release. A GitHub release does not imply acceptance into Obsidian’s Community catalogue.
+The theme is listed on Community. Companion availability is separate: Bucket has its own listing, while Keyline interactions remains a manually installed GitHub preview.
 
 ## Language and compatibility
 
