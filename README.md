@@ -1,36 +1,43 @@
 # Keyline
 
-A quieter place to think. A restrained, macOS-inspired theme for Obsidian, with light and dark surfaces, a floating navigation panel, and generous reading space.
+**Obsidian, ready to use.**
+
+Spend less time assembling your interface and more time using your notes. Keyline gives Obsidian a coordinated reading and writing space out of the box: clear typography, considered light and dark colours, and navigation that leaves room for your content. Select the theme to get the complete visual foundation, without first assembling a collection of CSS snippets.
 
 [中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma showcase](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
-
-## Recommended setup
-
-**For the complete experience shown below, install the Keyline theme together with Keyline interactions and Bucket Sidebar.** The theme also works on its own; neither plugin is mandatory.
-
-| Component | What it provides | Install it when… |
-| --- | --- | --- |
-| **Keyline theme** — this repository | Light/dark appearance, reading surfaces, tables, callouts and split-pane styling | You want the visual style. |
-| **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)** — listed as **Keyline** in Obsidian’s plugin settings | Block editing, formatting toolbar, file-type icons, typography controls and workspace switching | You want the editing and navigation features in the screenshots. [Download the preview](https://github.com/BADtoBad/keyline-interactions/releases). |
-| **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Spaces, pinned references and custom groups without moving files | You want the curated sidebar shown on the right. [Download](https://github.com/BADtoBad/obsidian-bucket-sidebar/releases). |
-
-These are **three repositories: one theme and two separately installable plugins**, not duplicate copies of the same product. The plugins are optional and do not require each other. Installing the theme does not install or enable them automatically. Both plugins have English/Chinese interfaces and documentation, with their own screenshots linked above.
-
-Keyline interactions is a **GitHub preview**, not a Community-listed plugin. For the theme and Bucket, check the current [theme listing](https://community.obsidian.md/themes/keyline) and [Bucket listing](https://community.obsidian.md/plugins/bucket-sidebar); a public listing alone does not mean review is complete or Community installation is enabled. Manual installation remains available below.
 
 ![Keyline light and dark showcase](assets/keyline-cover-diagonal-v2.png)
 
 [Light screenshot](assets/keyline-showcase-light.png) · [Dark screenshot](assets/keyline-showcase-dark.png)
 
-The screenshots show the theme with the two optional companions. Themes alone cannot provide JavaScript interactions. Marginalia and Journal View are not included in this distribution.
+The showcase pairs the theme with two optional companions: **Keyline interactions** supplies the editing tools, file-type icons and workspace switcher; **Bucket Sidebar** supplies the grouped panel on the right. The theme works without them. The cover is a presentation composite; the full light and dark images are native application screenshots.
+
+## Designed for everyday writing
+
+- **Ready from the first note.** Navigation, writing surfaces, tables and callouts share one visual language. Start with the supplied defaults instead of tuning each part of the interface separately.
+- **Clear emphasis without a rainbow.** Heading hierarchy, restrained accents and distinct highlights help you find the important parts of a page without making every element compete for attention.
+- **More room for your content.** Floating navigation panels and quiet split-pane boundaries separate work areas without surrounding every pane with visible lines.
+- **Details that work together.** Reading surfaces, spacing, rounded controls and themed menus form a consistent workspace in both light and dark mode.
+
+With the companions enabled, this same approach extends to interaction: file names use the available sidebar width until action buttons are needed, common editing controls appear beside your selection, and references can be grouped around the work at hand. **Use the theme for an immediately usable visual setup; add the plugins for the full editing and organising experience.**
 
 ## Try the example Vault
 
 Download **Keyline-Studio-Demo-0.8.23.zip** from Releases, unzip it, and use Obsidian’s **Open folder as vault**. Start at `00 Home/Studio showcase.md`.
 
-The Vault contains 27 linked English notes and original PDF, EPUB, image, audio and Canvas samples. All content is fictional. The bundled plugins are optional; review and enable them only if you want the interactive features. Attachment icons, Bucket groups, restrained formatting and workspace navigation are demonstrated. EPUB reading itself needs a separate reader. The diagonal cover is a presentation composite; the full light/dark images are native application screenshots.
+Explore 27 linked English notes, project pages, research material and original PDF, EPUB, image, audio and Canvas samples. All content is fictional. The prepared workspace demonstrates the theme, file-type icons, Bucket groups and workspace navigation together, so you can explore the setup before configuring your own Vault. Review and enable the bundled optional plugins to use their features. EPUB reading itself needs a separate reader.
 
-Release **0.8.23** includes Community guideline cleanup with no measured visual changes. See [release verification](RELEASE-VERIFICATION.md) for test coverage and limits.
+## Recommended companions
+
+**For the complete experience in the screenshots, pair the theme with Keyline interactions and Bucket Sidebar.** Choose only the parts you need.
+
+| Component | What you get |
+| --- | --- |
+| **Keyline theme** — this repository | The ready-to-use light and dark visual foundation. |
+| **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)** | Edit in context, recognise file types at a glance and switch saved workspaces. Named **Keyline** in Obsidian’s plugin list. |
+| **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Organise references into spaces and groups without moving or duplicating the originals. |
+
+The three repositories are one theme and two separately installable plugins. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and feature screenshots. Marginalia and Journal View are not included.
 
 ## Install in an existing Vault
 
@@ -47,7 +54,7 @@ The theme is listed on Community. Companion availability is separate: Bucket has
 
 The theme does not replace Obsidian’s own language. Companion menus, settings and notices support English and Chinese and follow Obsidian’s interface language; restart after changing it. Your notes and saved names are never translated.
 
-Minimum declared Obsidian version: **1.7.7**. The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. The interaction companion is desktop-only. Mobile layouts are not release-validated.
+Current theme release: **0.8.23**. Minimum declared Obsidian version: **1.7.7**. The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. The interaction companion is desktop-only. Mobile layouts are not release-validated. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
 
 ## Feedback
 
