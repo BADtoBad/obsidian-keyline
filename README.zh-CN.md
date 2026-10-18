@@ -4,15 +4,23 @@
 
 [English](README.md) · [下载](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma 展示](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
 
+## 推荐搭配安装
+
+**想获得下方截图中的完整体验，建议一起安装 Keyline 主题、Keyline 交互插件和 Bucket Sidebar。** 只想使用外观，也可以单独安装主题；两个插件都不是必需依赖。
+
+| 组件 | 提供什么 | 何时安装 |
+| --- | --- | --- |
+| **Keyline 主题** — 本仓库 | 明暗外观、阅读区域、表格、callout 与分屏样式 | 需要主题外观时。 |
+| **[Keyline 交互插件](https://github.com/BADtoBad/keyline-interactions)** — 在 Obsidian 插件列表中显示为 **Keyline** | 块编辑、格式工具栏、文件类型图标、排版设置与工作区切换 | 需要截图中的编辑和导航功能时。[下载预览版](https://github.com/BADtoBad/keyline-interactions/releases)。 |
+| **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Space、置顶引用与自定义分组，不移动原文件 | 需要截图右侧的分组侧栏时。[下载](https://github.com/BADtoBad/obsidian-bucket-sidebar/releases)。 |
+
+因此是 **3 个仓库：1 个主题 + 2 个可分别安装的插件**，并非重复创建。两个插件按需安装、互不依赖，安装主题也不会自动安装或启用插件。两个插件均提供中英文界面、双语说明及各自的功能截图，点击上方链接查看。
+
+Keyline 交互插件目前是 **GitHub 预览版，尚未提交 Community**。主题和 Bucket 的进度可在 [主题介绍页](https://community.obsidian.md/themes/keyline)及 [Bucket 介绍页](https://community.obsidian.md/plugins/bucket-sidebar)查看；页面公开不代表已通过审核或已开放 Community 安装，也可按下方说明手动安装。
+
 ![明暗拼接展示](assets/keyline-cover-diagonal-v2.png)
 
 [亮色原始截图](assets/keyline-showcase-light.png) · [暗色原始截图](assets/keyline-showcase-dark.png)
-
-## 组成
-
-- **Keyline 主题**：界面外观、正文排版、表格、callout 与安静的分屏边界，可单独使用。
-- **[Keyline 交互插件](https://github.com/BADtoBad/keyline-interactions)**，可选：块编辑、选区工具栏、文件图标、排版设置和底栏工作区切换。
-- **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)**，可选：按需组织文件引用，不移动原文件。
 
 封面展示的是主题加两个可选插件。纯 CSS 主题不能提供交互功能。本次发行不包含 Marginalia 和 Journal View。
 

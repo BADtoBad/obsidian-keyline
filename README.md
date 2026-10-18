@@ -4,15 +4,23 @@ A quieter place to think. A restrained, macOS-inspired theme for Obsidian, with 
 
 [中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases) · [Figma showcase](https://www.figma.com/design/MVtMgxbXIPdd0FbkLH7D8S)
 
+## Recommended setup
+
+**For the complete experience shown below, install the Keyline theme together with Keyline interactions and Bucket Sidebar.** The theme also works on its own; neither plugin is mandatory.
+
+| Component | What it provides | Install it when… |
+| --- | --- | --- |
+| **Keyline theme** — this repository | Light/dark appearance, reading surfaces, tables, callouts and split-pane styling | You want the visual style. |
+| **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)** — listed as **Keyline** in Obsidian’s plugin settings | Block editing, formatting toolbar, file-type icons, typography controls and workspace switching | You want the editing and navigation features in the screenshots. [Download the preview](https://github.com/BADtoBad/keyline-interactions/releases). |
+| **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Spaces, pinned references and custom groups without moving files | You want the curated sidebar shown on the right. [Download](https://github.com/BADtoBad/obsidian-bucket-sidebar/releases). |
+
+These are **three repositories: one theme and two separately installable plugins**, not duplicate copies of the same product. The plugins are optional and do not require each other. Installing the theme does not install or enable them automatically. Both plugins have English/Chinese interfaces and documentation, with their own screenshots linked above.
+
+Keyline interactions is a **GitHub preview**, not a Community-listed plugin. For the theme and Bucket, check the current [theme listing](https://community.obsidian.md/themes/keyline) and [Bucket listing](https://community.obsidian.md/plugins/bucket-sidebar); a public listing alone does not mean review is complete or Community installation is enabled. Manual installation remains available below.
+
 ![Keyline light and dark showcase](assets/keyline-cover-diagonal-v2.png)
 
 [Light screenshot](assets/keyline-showcase-light.png) · [Dark screenshot](assets/keyline-showcase-dark.png)
-
-## What is included
-
-- **Keyline theme**: the visual shell, writing surfaces, tables, callouts, and quiet split seams. Works independently.
-- **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)**, optional: block editing, contextual formatting, icons, typography settings, and a centred workspace switcher.
-- **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)**, optional: curated groups of references without moving the original files.
 
 The screenshots show the theme with the two optional companions. Themes alone cannot provide JavaScript interactions. Marginalia and Journal View are not included in this distribution.
 
