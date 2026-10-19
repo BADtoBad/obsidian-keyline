@@ -54,7 +54,9 @@ The theme is listed on Community. Companion availability is separate: Bucket has
 
 The theme does not replace Obsidian’s own language. Companion menus, settings and notices support English and Chinese and follow Obsidian’s interface language; restart after changing it. Your notes and saved names are never translated.
 
-Current theme release: **0.8.23**. Minimum declared Obsidian version: **1.7.7**. The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. The interaction companion is desktop-only. Mobile layouts are not release-validated. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
+Current theme release: **0.8.24**. Minimum declared Obsidian version: **1.7.7**. This update improves mobile note layouts: aligned property cards without boxed labels, touch-sized property rows, wrapping long titles and spacing that follows the note font size. Native navigation and keyboard handling remain with Obsidian.
+
+The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. The new mobile CSS was checked in that native renderer with phone/tablet-sized viewports and mobile CSS states; **physical iOS/Android devices and their keyboards have not yet been acceptance-tested**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. **Keyline interactions remains desktop-only**; this theme update does not make its editing tools available on mobile. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
 
 ## Feedback
 

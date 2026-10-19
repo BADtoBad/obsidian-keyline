@@ -1,5 +1,5 @@
 /*
- * Keyline 0.8.23 — Community release cleanup; preserved layout and colors
+ * Keyline 0.8.24 — Mobile reading, properties and touch layout
  *
  * A quiet, macOS-inspired Obsidian shell with a neutral writing canvas and
  * a floating navigation surface. This theme deliberately leaves file commands,
@@ -2157,4 +2157,105 @@ textarea:focus,
   .inline-title {
     font-size: 30px;
   }
+}
+
+/* Mobile note surfaces. Keep native navigation, keyboard insets and property
+   editing intact; none of these rules apply to desktop windows or settings. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] > .view-content {
+  --ncl-page-top-padding: 16px;
+  --ncl-page-padding-block: 20px;
+  --file-margins: 16px max(18px, var(--safe-area-inset-right, 0px)) 20px max(18px, var(--safe-area-inset-left, 0px));
+  --ncl-editor-line-height: 1.65;
+  --ncl-reading-line-height: 1.7;
+  --ncl-paragraph-gap: 0.85em;
+  --ncl-paragraph-before: 0.85em;
+  --ncl-paragraph-after: 0.85em;
+  --ncl-heading-before: 1.4em;
+  --ncl-heading-after: 0.55em;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .inline-title {
+  margin-bottom: 16px;
+  font-size: 1.65em;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-container {
+  --metadata-label-font: var(--font-interface);
+  --metadata-input-font: var(--font-interface);
+  --metadata-label-font-size: max(16px, var(--font-text-size));
+  --metadata-input-font-size: max(16px, var(--font-text-size));
+  --metadata-label-width: clamp(96px, 36%, 160px);
+  --metadata-input-height: max(44px, calc(var(--font-text-size) * 2.5));
+  --metadata-input-padding: 8px 6px;
+  --metadata-property-padding: 0;
+  --metadata-gap: 0;
+  --metadata-padding: 0;
+  --metadata-divider-width: 0;
+  --metadata-property-box-shadow-focus: inset 0 0 0 1px var(--interactive-accent);
+
+  margin-block: 0 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: var(--font-text-size);
+}
+
+/* Core's phone card extends beyond the content column. Align it with the
+   title and body instead; the native collapse/hidden states stay in charge. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-content {
+  width: 100%;
+  transform: none;
+  padding: 6px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+  background: var(--background-primary-alt);
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-properties-heading {
+  min-height: 44px;
+  margin-bottom: 4px;
+  padding-block: 8px;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-properties-title {
+  font-size: max(13px, calc(var(--font-text-size) * 0.85));
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-property {
+  min-height: 44px;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] :is(.metadata-property-key, .metadata-property-value) {
+  min-width: 0;
+}
+
+/* Override generic form-field chrome, including on focus. Keep the row's
+   native focus indication and checkbox semantics; never hide property data. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-container
+  :is(input.metadata-property-key-input, .metadata-input:not([type="checkbox"]),
+      .multi-select-container, .multi-select-input) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-add-button {
+  min-height: 44px;
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Remove only the theme's desktop end-of-note spacer. Do not override core's
+   inline virtualisation padding or its navigation/keyboard safe-area math. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-reading-view > .markdown-preview-view > .markdown-preview-sizer,
+body.is-mobile .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller > .cm-sizer {
+  padding-bottom: 0;
 }

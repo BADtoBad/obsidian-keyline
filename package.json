@@ -1,6 +1,6 @@
 {
   "name": "obsidian-keyline",
-  "version": "0.8.23",
+  "version": "0.8.24",
   "private": true,
   "scripts": { "lint": "stylelint theme.css" },
   "devDependencies": {

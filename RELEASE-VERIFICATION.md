@@ -1,4 +1,32 @@
-# Release verification — 2026-10-18
+# Release verification — 2026-10-19
+
+## Theme 0.8.24 — mobile note layout
+
+Scope: theme CSS only. The optional interaction plugin is still desktop-only; Bucket Sidebar is not changed by this release. No personal Vault content or settings were used.
+
+Validated against Obsidian **1.13.7**, in a disposable macOS host and fictional test Vault:
+
+- 32 native-renderer layout cases: Chinese/English long titles × light/dark × 320/390/430/768 CSS-pixel widths × Reading/Live Preview. The harness supplies mobile CSS classes and the active tab's mobile visibility state; it does not run the iOS/Android app.
+- Property fields remain within the note column; label/input chrome is transparent and borderless; property rows are at least 44 CSS pixels tall. The native row focus indicator remains visible.
+- 22px note text in a 390×420 viewport and a separate 844×390 phone-layout check: text scales, with no horizontal page overflow in the tested cases.
+- Native property editing persisted to the test Markdown file. Native property collapse/expand and reaching the final line in both view modes passed.
+- Desktop before/after computed styles and geometry matched at 390px and 1440px, light/dark (307 visible elements per case). Transitions were disabled only in the test harness to compare settled values.
+- Visual review of rendered light/dark, narrow, large-text, focused, collapsed and landscape samples completed.
+- Official Obsidian Stylelint preset: **0 errors, 23 existing advisory warnings**; no new warnings from this mobile section. `git diff --check` passed.
+
+The theme removes its own desktop end spacer on mobile, but deliberately leaves core inline virtualisation padding, native navigation, keyboard height and safe-area handling intact. It does not hide properties, change stored note data or add mobile JavaScript tools.
+
+**Not yet verified:** physical iOS/Android devices, their software keyboards, WebKit-specific behavior, VoiceOver/TalkBack, all device rotations and arbitrary plugins/snippets. This is a conservative mobile CSS improvement, not full mobile-suite certification. The declared minimum stays at 1.7.7; this patch's host matrix used 1.13.7, not the old core.
+
+Reproduce the host check on macOS with Node.js 22+ and an existing official Obsidian installation:
+
+```sh
+KEYLINE_TEST_APP="/Applications/Obsidian.app/Contents/MacOS/Obsidian" node scripts/check-mobile-host.mjs /tmp/keyline-mobile-results
+```
+
+The script creates a fresh temporary profile and Vault, verifies the Vault path before each evaluation, then stops only its own process. Its screenshots are **layout-emulation evidence**, not phone screenshots. Result JSON records the tested CSS SHA-256. The 0.8.24 CSS hash is `657b169379d674e489b2e4bb548ee3c08665fed0988368c300e5fa0194e0470c`.
+
+## Historical verification — 2026-10-18
 
 Versions: Keyline theme 0.8.23; optional Keyline interactions 0.7.4; Bucket Sidebar 0.5.5.
 
