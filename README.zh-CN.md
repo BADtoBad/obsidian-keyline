@@ -10,7 +10,7 @@
 
 [亮色原始截图](assets/keyline-showcase-light.png) · [暗色原始截图](assets/keyline-showcase-dark.png)
 
-展示图搭配了两个可选插件：**Keyline 交互插件**提供编辑工具、分类图标与工作区切换，**Bucket Sidebar** 提供右侧分组面板。主题本身可独立使用。斜切封面为展示合成图，明暗完整截图来自实际应用。
+现有展示图使用旧版 **Keyline 交互插件**提供编辑工具、分类图标与工作区切换，**Bucket Sidebar** 提供右侧分组面板。新版配套插件 **With Keyline** 的主要日常功能与旧版基本一致。主题本身可独立使用。斜切封面为展示合成图，明暗完整截图来自实际应用。
 
 ## 为日常读写准备好的界面
 
@@ -29,15 +29,17 @@
 
 ## 推荐搭配
 
-**想获得截图中的完整体验，建议搭配 Keyline 交互插件和 Bucket Sidebar。** 只安装自己需要的部分即可。
+**想让 Obsidian 的读写与资料组织开箱即用，建议搭配 With Keyline 和 Bucket Sidebar。** 只安装自己需要的部分即可。
 
 | 组件 | 带来的体验 |
 | --- | --- |
 | **Keyline 主题** — 本仓库 | 开箱即用的明暗视觉基础。 |
-| **[Keyline 交互插件](https://github.com/BADtoBad/keyline-interactions)** | 就地编辑、快速辨认文件类型、切换已保存的工作区。插件列表中显示为 **Keyline**。 |
+| **[With Keyline](https://github.com/BADtoBad/with-keyline)** | 选中文字工具栏、块把手、页面／日期引用、分类图标、排版与工作区切换；内置中英双语。 |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | 按空间与分组组织引用，不搬动或复制原文件。 |
 
-三个仓库分别对应一个主题、两个可独立安装的插件。两个插件均非必需、互不依赖，安装主题也不会自动安装插件。每个插件均有中英文介绍和功能截图。
+主题与这两个可选插件分别安装。两个插件均非必需、互不依赖，安装主题也不会自动安装插件。每个插件均有中英文介绍和截图。
+
+**旧版保留，遇到问题可作为备选。** [旧版 Keyline 交互插件](https://github.com/BADtoBad/keyline-interactions)及其 GitHub 发行包继续保留，插件列表中仍显示为 **Keyline**。它与 With Keyline 的主要日常功能基本一致。**如果 With Keyline 出现 bug，建议先停用它，再尝试[旧版 GitHub 插件](https://github.com/BADtoBad/keyline-interactions/releases)。** 两者是替代关系，请勿同时启用；设置分别保存，不会自动迁移。
 
 ## 安装到现有库
 
@@ -48,7 +50,7 @@
 3. 重新打开 Obsidian，在“设置 → 外观 → 主题”选择 Keyline。
 4. 如需交互功能，另行安装可选插件。不要用示例库的工作区或插件 `data.json` 覆盖自己的配置。
 
-主题已在 Community 展示并开放安装入口。配套插件分别发行：Bucket 有独立的 Community 页面，Keyline 交互插件仍需手动安装 GitHub 预览版。
+主题与 Bucket 已有 Community 页面。With Keyline 的 Community 安装入口取决于其独立审核状态，也可先从 [GitHub Releases](https://github.com/BADtoBad/with-keyline/releases)手动安装。旧版 Keyline 交互插件继续保留在 GitHub，供需要时切换使用。
 
 ## 语言与兼容性
 
@@ -56,7 +58,7 @@
 
 当前主题版本为 **0.8.24**，最低声明版本为 **Obsidian 1.7.7**。本次补充移动端笔记布局：属性卡片与正文对齐、去除属性名的独立输入框边框、加大属性行触控空间、优化长标题换行，并让间距跟随笔记字号。导航栏和键盘避让仍由 Obsidian 原生机制负责。
 
-封面和双语界面在 **macOS 的 Obsidian 1.13.7** 中验证。新增移动样式已在其真实渲染器中使用手机／平板尺寸和移动端 CSS 状态检查；**尚未完成 iOS／Android 真机及软键盘验收**。此前主题回归也覆盖过 1.7.7，但不等于所有老 Mac 和第三方插件组合都经过实机验证。**Keyline 交互插件仍仅支持桌面端**，此次主题更新不会让其编辑工具在手机上运行。覆盖范围及限制见 [发行验证](RELEASE-VERIFICATION.md)。
+封面和双语界面在 **macOS 的 Obsidian 1.13.7** 中验证。新增移动样式已在其真实渲染器中使用手机／平板尺寸和移动端 CSS 状态检查；**尚未完成 iOS／Android 真机及软键盘验收**。此前主题回归也覆盖过 1.7.7，但不等于所有老 Mac 和第三方插件组合都经过实机验证。**With Keyline 与旧版 Keyline 交互插件均仅支持桌面端**，此次主题更新不会让其编辑工具在手机上运行。With Keyline 1.0.0 要求 Obsidian 1.13.7 或以上。覆盖范围及限制见 [发行验证](RELEASE-VERIFICATION.md)。
 
 ## 反馈与许可
 

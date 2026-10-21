@@ -10,7 +10,7 @@ Spend less time assembling your interface and more time using your notes. Keylin
 
 [Light screenshot](assets/keyline-showcase-light.png) · [Dark screenshot](assets/keyline-showcase-dark.png)
 
-The showcase pairs the theme with two optional companions: **Keyline interactions** supplies the editing tools, file-type icons and workspace switcher; **Bucket Sidebar** supplies the grouped panel on the right. The theme works without them. The cover is a presentation composite; the full light and dark images are native application screenshots.
+The existing showcase uses the original **Keyline interactions** companion for editing tools, file-type icons and workspace switching, and **Bucket Sidebar** for the grouped panel on the right. **With Keyline** is the new companion with broadly equivalent everyday features. The theme works without these plugins. The cover is a presentation composite; the full light and dark images are native application screenshots.
 
 ## Designed for everyday writing
 
@@ -29,15 +29,17 @@ Explore 27 linked English notes, project pages, research material and original P
 
 ## Recommended companions
 
-**For the complete experience in the screenshots, pair the theme with Keyline interactions and Bucket Sidebar.** Choose only the parts you need.
+**For a ready-to-use writing and organising setup, pair the theme with With Keyline and Bucket Sidebar.** Choose only the parts you need.
 
 | Component | What you get |
 | --- | --- |
 | **Keyline theme** — this repository | The ready-to-use light and dark visual foundation. |
-| **[Keyline interactions](https://github.com/BADtoBad/keyline-interactions)** | Edit in context, recognise file types at a glance and switch saved workspaces. Named **Keyline** in Obsidian’s plugin list. |
+| **[With Keyline](https://github.com/BADtoBad/with-keyline)** | Selection toolbar, block handles, page/date mentions, file-type icons, typography and saved-workspace switching. English and Chinese UI. |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Organise references into spaces and groups without moving or duplicating the originals. |
 
-The three repositories are one theme and two separately installable plugins. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and feature screenshots.
+The theme and these two optional plugins are separately installed. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and screenshots.
+
+**Previous companion kept as a fallback.** [Keyline interactions on GitHub](https://github.com/BADtoBad/keyline-interactions) remains available (named **Keyline** in Obsidian’s plugin list). Its main everyday features and With Keyline's are broadly equivalent. If With Keyline has a bug in your setup, try the [previous GitHub release](https://github.com/BADtoBad/keyline-interactions/releases). **Disable one before enabling the other**; they are alternatives, not two plugins to run together. Their settings are separate and are not automatically migrated.
 
 ## Install in an existing Vault
 
@@ -48,7 +50,7 @@ Use **Add to Obsidian** on the [Keyline Community page](https://community.obsidi
 3. Reopen Obsidian and select **Settings → Appearance → Themes → Keyline**.
 4. Install the companion plugins separately if desired. Do not overwrite your existing workspace or plugin `data.json` files with files from the example Vault.
 
-The theme is listed on Community. Companion availability is separate: Bucket has its own listing, while Keyline interactions remains a manually installed GitHub preview.
+The theme and Bucket have Community listings. With Keyline's Community installation depends on its separate directory review; [GitHub Releases](https://github.com/BADtoBad/with-keyline/releases) are available for manual installation. The original Keyline interactions remains on GitHub as a fallback.
 
 ## Language and compatibility
 
@@ -56,7 +58,7 @@ The theme does not replace Obsidian’s own language. Companion menus, settings 
 
 Current theme release: **0.8.24**. Minimum declared Obsidian version: **1.7.7**. This update improves mobile note layouts: aligned property cards without boxed labels, touch-sized property rows, wrapping long titles and spacing that follows the note font size. Native navigation and keyboard handling remain with Obsidian.
 
-The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. The new mobile CSS was checked in that native renderer with phone/tablet-sized viewports and mobile CSS states; **physical iOS/Android devices and their keyboards have not yet been acceptance-tested**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. **Keyline interactions remains desktop-only**; this theme update does not make its editing tools available on mobile. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
+The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. The new mobile CSS was checked in that native renderer with phone/tablet-sized viewports and mobile CSS states; **physical iOS/Android devices and their keyboards have not yet been acceptance-tested**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. **With Keyline and the original Keyline interactions are desktop-only**; this theme update does not make their editing tools available on mobile. With Keyline 1.0.0 requires Obsidian 1.13.7+. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
 
 ## Feedback
 
