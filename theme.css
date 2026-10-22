@@ -1297,9 +1297,30 @@ body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-
 /* stylelint-disable-next-line selector-class-pattern -- Obsidian-owned class; cannot rename. */
 .HyperMD-codeblock {
   border: 1px solid var(--background-modifier-border);
-  border-radius: 10px;
   background: var(--background-primary-alt);
 }
+
+.markdown-rendered pre {
+  border-radius: 10px;
+}
+
+/* CodeMirror renders one element per source line. Round only the block's
+   outer corners so hard breaks and blank lines keep a continuous edge. */
+/* stylelint-disable selector-class-pattern -- Obsidian-owned classes; cannot rename. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+  border-radius: 0;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock-begin {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock-end {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+/* stylelint-enable selector-class-pattern */
 
 .markdown-rendered hr,
 .cm-line.hr {
@@ -1474,6 +1495,8 @@ body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-add
 }
 
 .workspace-leaf-content[data-type="file-explorer"] > .nav-header {
+  /* Keep the native filter row above the scrollable tree in long Vaults. */
+  flex-shrink: 0;
   min-height: var(--ncl-sidebar-toolbar-height);
   justify-content: flex-end;
   padding: 0 var(--ncl-sidebar-gutter);

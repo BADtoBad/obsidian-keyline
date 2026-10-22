@@ -1,4 +1,30 @@
-# Release verification — 2026-10-19
+# Release verification — 2026-10-22
+
+## Theme 0.8.25 — code-block edges and native explorer search
+
+Scope: two theme CSS fixes only. With Keyline and Bucket Sidebar are unchanged. All notes, profiles and settings used for verification are fictional and disposable; no personal Vault is accessed.
+
+Validated in the native macOS Obsidian **1.13.7** application:
+
+- 24 code-layout cases: theme alone / With Keyline 1.0.1 × light/dark × 800/1280px widths × Live Preview, Source and Reading. Hard line breaks, blank lines and long wrapped SQL are included. Only the first/last editor rows have outer corners, all code rows share the left axis, and rendered blocks retain their existing rounded outline.
+- 8 native-search cases: the same companion, colour and width matrix, with 60 root files. The previous CSS reproduces the overlap; the new CSS places the first folder below the search box. The closed header height is unchanged, and focus, typing, clearing and list scrolling pass.
+- Paragraph/list computed layout matches the previous theme in the tested editing cases. Test Markdown content remains byte-for-byte unchanged.
+- 42 checks from the mobile-layout harness pass again using 0.8.24 as the comparison baseline: 32 phone/tablet-sized note cases, 4 unchanged desktop comparisons, and large-text, property editing, collapse/expand, end-of-note and landscape checks.
+- Light/dark native screenshots and representative mobile-emulation screenshots reviewed. Official Stylelint preset: 0 errors and 23 existing advisory warnings, with no new warnings. `git diff --check` passes.
+
+Reproduce from this repository on macOS with Node.js 22+ and an official Obsidian installation:
+
+```sh
+# Optional: point to the three release files for With Keyline 1.0.1.
+KEYLINE_TEST_PLUGIN=/absolute/path/to/with-keyline node scripts/check-layout-host.mjs /tmp/keyline-layout-results
+KEYLINE_TEST_BASELINE=0fdd570d3a0373e42be1466137587c71056b4b19 node scripts/check-mobile-host.mjs /tmp/keyline-mobile-results
+```
+
+Both scripts create their own profile and Vault, validate that Vault before evaluating its renderer, record the theme SHA-256, and stop only their own process. Set `KEYLINE_TEST_APP` to override the application executable. Without `KEYLINE_TEST_PLUGIN`, the targeted script runs the theme-only half of the matrix.
+
+Limits: this is native macOS host verification plus mobile CSS emulation, not physical iOS/Android, software-keyboard, Windows/Linux, old-core or arbitrary plugin/snippet certification. Minimum declared Obsidian version remains 1.7.7; this patch was tested on 1.13.7.
+
+## Historical verification — 2026-10-19
 
 ## Theme 0.8.24 — mobile note layout
 

@@ -1,3 +1,27 @@
+# Keyline 0.8.25
+
+## Code blocks and sidebar search
+
+- Keep code-block edges continuous across hard line breaks and blank lines. Only the first and last source lines retain the outer rounded corners; code content and indentation are unchanged.
+- Keep the native file-explorer search box above the folder list, even in Vaults with many files. Search focus, typing, clearing and tree scrolling remain native.
+- Retain the existing paragraph/list layout and the mobile improvements from 0.8.24.
+
+Validated in a disposable Obsidian 1.13.7 macOS host: 32 targeted layout/search cases, with and without With Keyline 1.0.1, plus 42 mobile-layout and desktop-regression checks. Physical iOS/Android and arbitrary plugin combinations remain unverified. See [verification](RELEASE-VERIFICATION.md).
+
+Update **Keyline** in Obsidian's Appearance settings. This is a theme-only update: do not replace plugin data or Vault settings. Manual installation only requires the new `theme.css` and `manifest.json`.
+
+## 中文
+
+- 修复代码块每次换行、空行处出现圆角凹口的问题；只在整个代码块的首尾保留外侧圆角，不改代码内容和缩进。
+- 修复原生文件侧栏搜索框与目录重叠的问题，文件较多时也能保留搜索框所需高度。
+- 保留原有正文、列表布局和 0.8.24 的移动端改进。
+
+已在独立的 macOS Obsidian 1.13.7 测试库中通过 32 组专项检查（包含启用／停用 With Keyline 1.0.1），以及 42 项移动布局和桌面回归检查。尚未完成 iOS／Android 真机及任意插件组合验收。
+
+在 Obsidian「设置 → 外观」中更新 **Keyline 主题**即可，无需重装插件或替换个人库设置。
+
+---
+
 # Keyline 0.8.24
 
 ## Mobile note layout

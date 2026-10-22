@@ -27,7 +27,8 @@ for (const [name, text] of Object.entries(notes)) fs.writeFileSync(path.join(vau
 fs.writeFileSync(path.join(vault, '.obsidian/app.json'), JSON.stringify({ showInlineTitle: true, propertiesInDocument: 'visible', readableLineLength: true }));
 fs.writeFileSync(path.join(vault, '.obsidian/community-plugins.json'), '[]');
 fs.writeFileSync(path.join(profile, 'obsidian.json'), JSON.stringify({ vaults: { e024000000000001: { path: vault, ts: Date.now(), open: true } }, updateDisabled: true }));
-const baseline = execFileSync('git', ['show', '290d2849de716b48c64fe9b6d36946bb29422583:theme.css'], { cwd: root, encoding: 'utf8' });
+const baselineRef = process.env.KEYLINE_TEST_BASELINE || '290d2849de716b48c64fe9b6d36946bb29422583';
+const baseline = execFileSync('git', ['show', `${baselineRef}:theme.css`], { cwd: root, encoding: 'utf8' });
 const next = fs.readFileSync(path.join(root, 'theme.css'), 'utf8');
 const report = { startedAt: new Date().toISOString(), vault, profile, output, themeSha256: createHash('sha256').update(next).digest('hex'), limitation: 'Native Obsidian on macOS with mobile CSS classes and emulated viewport. Not physical iOS, Android, touch keyboard, VoiceOver or WebKit acceptance.', checks: [] };
 const child = spawn(process.env.KEYLINE_TEST_APP || '/Applications/Obsidian 2.app/Contents/MacOS/Obsidian', [`--user-data-dir=${profile}`, '--remote-debugging-address=127.0.0.1', '--remote-debugging-port=0'], { stdio: ['ignore', 'ignore', 'pipe'] });
