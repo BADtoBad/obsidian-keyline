@@ -34,7 +34,7 @@
 | 组件 | 带来的体验 |
 | --- | --- |
 | **Keyline 主题** — 本仓库 | 开箱即用的明暗视觉基础。 |
-| **[With Keyline](https://github.com/BADtoBad/with-keyline)** | 选中文字工具栏、块把手、页面／日期引用、分类图标、排版与工作区切换；内置中英双语。 |
+| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | 选中文字工具栏、块把手、页面／日期引用、分类图标、排版与工作区切换；内置中英双语。 |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | 按空间与分组组织引用，不搬动或复制原文件。 |
 
 主题与这两个可选插件分别安装。两个插件均非必需、互不依赖，安装主题也不会自动安装插件。每个插件均有中英文介绍和截图。
@@ -50,7 +50,7 @@
 3. 重新打开 Obsidian，在“设置 → 外观 → 主题”选择 Keyline。
 4. 如需交互功能，另行安装可选插件。不要用示例库的工作区或插件 `data.json` 覆盖自己的配置。
 
-主题与 Bucket 已有 Community 页面。With Keyline 的 Community 安装入口取决于其独立审核状态，也可先从 [GitHub Releases](https://github.com/BADtoBad/with-keyline/releases)手动安装。旧版 Keyline 交互插件继续保留在 GitHub，供需要时切换使用。
+主题、[With Keyline](https://community.obsidian.md/plugins/with-keyline)与 Bucket 分别有独立的 Community 页面，可查看各自的当前版本与安装入口。With Keyline 也可从 [GitHub Releases](https://github.com/BADtoBad/with-keyline/releases)手动安装。旧版 Keyline 交互插件继续保留在 GitHub，供需要时切换使用。
 
 ## 语言与兼容性
 

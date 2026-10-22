@@ -34,7 +34,7 @@ Explore 27 linked English notes, project pages, research material and original P
 | Component | What you get |
 | --- | --- |
 | **Keyline theme** — this repository | The ready-to-use light and dark visual foundation. |
-| **[With Keyline](https://github.com/BADtoBad/with-keyline)** | Selection toolbar, block handles, page/date mentions, file-type icons, typography and saved-workspace switching. English and Chinese UI. |
+| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | Selection toolbar, block handles, page/date mentions, file-type icons, typography and saved-workspace switching. English and Chinese UI. |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Organise references into spaces and groups without moving or duplicating the originals. |
 
 The theme and these two optional plugins are separately installed. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and screenshots.
@@ -50,7 +50,7 @@ Use **Add to Obsidian** on the [Keyline Community page](https://community.obsidi
 3. Reopen Obsidian and select **Settings → Appearance → Themes → Keyline**.
 4. Install the companion plugins separately if desired. Do not overwrite your existing workspace or plugin `data.json` files with files from the example Vault.
 
-The theme and Bucket have Community listings. With Keyline's Community installation depends on its separate directory review; [GitHub Releases](https://github.com/BADtoBad/with-keyline/releases) are available for manual installation. The original Keyline interactions remains on GitHub as a fallback.
+The theme, [With Keyline](https://community.obsidian.md/plugins/with-keyline) and Bucket have separate Community pages. Check each page for the current release and installation entry. [With Keyline GitHub Releases](https://github.com/BADtoBad/with-keyline/releases) are also available for manual installation. The original Keyline interactions remains on GitHub as a fallback.
 
 ## Language and compatibility
 
