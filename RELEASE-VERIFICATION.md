@@ -1,5 +1,29 @@
 # Release verification — 2026-10-23
 
+## Theme 0.8.27 — Obsidian 1.14 ribbon rename
+
+The reporter supplied a screenshot confirming Obsidian **1.14.5** and installed Keyline **0.8.26**. The official 1.14.5 core constructs the ribbon with `mod-primary` only. Unlike the dock, it does not retain `mod-left`. Keyline's desktop ribbon rules consequently missed it, leaving an opaque toolbar above the extended card. This is distinct from the controlled clipping condition tested for 0.8.26.
+
+Scope: add the new ribbon class alongside the old one in eight existing desktop selectors, with unchanged declarations and specificity. No JavaScript runtime change, companion update, mobile rule change or personal Vault write.
+
+- **Actual-core reproduction:** official `obsidian-1.14.5.asar.gz` verified against GitHub's SHA-256 `20544378d99335bd54f4f03d9bb4b8ba8e4dc68ac4b5072eed81cde53d33503b`. It was loaded through Obsidian's normal update mechanism in a disposable profile. Renderer IPC confirmed version 1.14.5. No synthetic clipping style or third-party plugin was used.
+- **18 native-setting cases:** light/dark × opaque/translucent × 80/100/125% native zoom, plus 640/800/1280px windows with ribbon shown/hidden after collapse/reopen. Under 0.8.26, all nine opaque/ribbon-visible cases lose the left edge while retaining the right. Under 0.8.27, both edges are visible in all 18 cases. At light/100%, left-edge shadow samples change from 0/4832 to 4832/4832; the right remains 4832/4832. Before/after screenshots were visually inspected.
+- **40 older-host sidebar regressions:** native 1.13.7, light/dark × narrow/wide × theme alone/With Keyline 1.0.2. Normal geometry, file rows, resize handles, footer and hit targets remain unchanged. The prior clipping protection, inner scrolling, collapse and hidden-ribbon checks still pass.
+- **42 mobile-layout/desktop checks:** pass against 0.8.26; no mobile declarations changed. Representative mobile screenshots reviewed.
+- Official Stylelint: 0 errors, 23 pre-existing advisory warnings, none added. `git diff --check` passes.
+
+Reproduce with Node.js 22+ on macOS (the core path is optional; without it, the installed core is used):
+
+```sh
+KEYLINE_CORE_ASAR=/path/to/obsidian-1.14.5.asar node scripts/check-sidebar-native-settings.mjs /tmp/keyline-native-results
+KEYLINE_TEST_PLUGIN=/path/to/with-keyline node scripts/check-sidebar-edge-host.mjs /tmp/keyline-edge-results
+KEYLINE_TEST_BASELINE=929dd81186ef6fd3fb4d223273a54cd4d3256ac5 node scripts/check-mobile-host.mjs /tmp/keyline-mobile-results
+```
+
+The 1.14.5 core ran on the installed Electron 43.3.0 / Chrome 150 macOS runtime; this is not a separate test of the 1.14.5 installer/Electron 43.8.3 package. Physical iOS/Android, Windows/Linux, RTL layouts, arbitrary third-party overrides and the reporter's hardware remain outside this verification. Every host uses a guarded, fictional Vault and closes only its own process.
+
+## Historical verification — 0.8.26
+
 ## Theme 0.8.26 — sidebar left-edge clipping
 
 Scope: one CSS declaration (`overflow: visible`) on the expanded desktop left dock. Its painted card extends outside the dock, behind the ribbon. A general workspace-split clipping style can erase that left segment while leaving the right edge intact. Internal file/view scrolling remains native; no JavaScript, companion plugin, mobile rule or personal Vault was changed.

@@ -1,3 +1,27 @@
+# Keyline 0.8.27
+
+## Obsidian 1.14 sidebar compatibility
+
+- Restore the left sidebar card edge on Obsidian 1.14. Its ribbon now uses `mod-primary` instead of `mod-left`; the theme missed that element and its opaque background covered the card behind it. The right edge was unaffected.
+- Support both ribbon names, including expanded/collapsed styling, without changing sidebar width, file indentation, inner scrolling, mobile rules or companion-plugin code.
+- This fixes the reported appearance reproduced with the official Obsidian 1.14.5 core and no extra snippets/plugins. The 0.8.26 outer-clipping fix addressed a different condition and did not cover this cause.
+
+Verified: 18 native-setting cases on the 1.14.5 core, 40 sidebar regressions on 1.13.7, and 42 mobile-layout/desktop checks. See [verification](RELEASE-VERIFICATION.md) for runtime and device limits.
+
+Update **Keyline** under Settings → Appearance. No plugin reinstall or Vault-settings replacement is needed.
+
+## 中文
+
+- 修复 Obsidian 1.14 中「左侧边缘消失、右侧正常」的问题：新版工具条更换了内部标识，主题未识别到它，导致其不透明背景盖住卡片左边缘。
+- 同时兼容新旧工具条标识，覆盖展开／收起状态；不改侧栏宽度、文件缩进、内部滚动、移动端样式和配套插件代码。
+- 已使用官方 Obsidian 1.14.5 核心，在无其他插件和 CSS 片段的测试库中复现并验证修复。0.8.26 修复的是另一种裁切条件，未覆盖本次确认的原因。
+
+通过 1.14.5 核心下 18 项原生设置检查、1.13.7 下 40 项侧栏回归，以及 42 项移动布局／桌面检查。测试环境与限制详见验证记录。
+
+在「设置 → 外观」中更新 **Keyline 主题**即可，无需重装插件或替换个人库设置。
+
+---
+
 # Keyline 0.8.26
 
 ## Sidebar left-edge visibility

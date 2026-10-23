@@ -1,5 +1,5 @@
 /*
- * Keyline 0.8.26 — Preserve the complete sidebar card edge
+ * Keyline 0.8.27 — Restore sidebar edges on Obsidian 1.14
  *
  * A quiet, macOS-inspired Obsidian shell with a neutral writing canvas and
  * a floating navigation surface. This theme deliberately leaves file commands,
@@ -413,12 +413,14 @@ body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-
   padding-block: var(--ncl-space-panel);
 }
 
-body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left,
-body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left::before {
+/* Obsidian 1.14 names the ribbon mod-primary without the legacy mod-left
+   alias. Keep both hosts transparent so the ribbon cannot cover the card. */
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon:is(.mod-left, .mod-primary),
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon:is(.mod-left, .mod-primary)::before {
   background: transparent;
 }
 
-body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left {
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon:is(.mod-left, .mod-primary) {
   padding-bottom: var(--ncl-sidebar-card-inset);
 
   /* Center within the visible card, whose left edge is inset from the window. */
@@ -663,14 +665,14 @@ body:not(.is-mobile) :is(.workspace-ribbon, .view-header, .workspace-tab-header-
   --titlebar-background-focused: var(--ncl-sidebar);
 }
 
-body:not(.is-mobile) .workspace-ribbon.mod-left {
+body:not(.is-mobile) .workspace-ribbon:is(.mod-left, .mod-primary) {
   --titlebar-background: var(--ncl-sidebar);
   --titlebar-background-focused: var(--ncl-sidebar);
 }
 
 /* A collapsed dock leaves a toolbar on the window chrome, not a second
    rectangular canvas. Core's header drag region and all native geometry stay. */
-body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left {
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon:is(.mod-left, .mod-primary) {
   --ribbon-background-collapsed: var(--ncl-chrome);
   --titlebar-background: var(--ncl-chrome);
   --titlebar-background-focused: var(--ncl-chrome);
@@ -685,12 +687,12 @@ body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.
   padding-inline: var(--ncl-space-panel) 0;
 }
 
-body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left :is(.side-dock-actions, .side-dock-settings) {
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon:is(.mod-left, .mod-primary) :is(.side-dock-actions, .side-dock-settings) {
   /* Native 44px ribbons must still fit the unchanged button hit targets. */
   padding-inline: 0;
 }
 
-body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left::before {
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon:is(.mod-left, .mod-primary)::before {
   background: var(--ncl-chrome);
   border: 0;
   box-shadow: none;
@@ -879,7 +881,7 @@ body:not(.is-mobile) .workspace > .ncl-shell-profile.is-compact {
 }
 .ncl-shell-profile.is-compact :is(.workspace-drawer-vault-name, .workspace-drawer-vault-switcher-icon, .ncl-shell-secondary) { display: none; }
 
-body:not(.is-mobile) .workspace > .workspace-ribbon.mod-left.ncl-shell-ribbon {
+body:not(.is-mobile) .workspace > .workspace-ribbon:is(.mod-left, .mod-primary).ncl-shell-ribbon {
   padding-bottom: calc(var(--ncl-shell-footer-height, 0px) + 8px);
 }
 
