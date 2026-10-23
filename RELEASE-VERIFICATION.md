@@ -1,4 +1,26 @@
-# Release verification — 2026-10-22
+# Release verification — 2026-10-23
+
+## Theme 0.8.26 — sidebar left-edge clipping
+
+Scope: one CSS declaration (`overflow: visible`) on the expanded desktop left dock. Its painted card extends outside the dock, behind the ribbon. A general workspace-split clipping style can erase that left segment while leaving the right edge intact. Internal file/view scrolling remains native; no JavaScript, companion plugin, mobile rule or personal Vault was changed.
+
+- **40 targeted checks** in native macOS Obsidian 1.13.7: light/dark × 800/1280px × theme alone/With Keyline 1.0.2. The baseline reproduces the missing left edge under an explicit `.workspace-split { overflow: hidden }` conflict. Screenshot pixel comparisons find 0/1428 left-edge samples with the old CSS, and 1428/1428 after the fix; the right edge remains visible in both. Normal sidebar geometry, rows, resize-handle geometry, footer and control hit targets match the baseline. Inner scrolling, collapsed and hidden-ribbon states pass.
+- **42 mobile-layout/desktop regression checks** pass using 0.8.25 as the baseline. Representative light/dark mobile-emulation screenshots visually reviewed. These are renderer-layout tests, not iOS/Android device tests.
+- **10 legacy-CSS safety cases** pass using official Obsidian 1.7.7 CSS/icons in a current Chrome fixture: light/dark, 1×/2×, narrow, hidden-ribbon and fullscreen states. Header clearance stays at least 8px and footer rendering does not erase card-edge pixels. This is not old-Electron or Catalina acceptance.
+- Official Stylelint preset: 0 errors, 23 existing advisory warnings; no additional warnings. `git diff --check` passes. Test-note contents remain unchanged and no native runtime exceptions were recorded.
+
+Reproduce the native regression with Node.js 22+ on macOS:
+
+```sh
+KEYLINE_TEST_PLUGIN=/absolute/path/to/with-keyline node scripts/check-sidebar-edge-host.mjs /tmp/keyline-sidebar-edge-results
+KEYLINE_TEST_BASELINE=f4a5b2d node scripts/check-mobile-host.mjs /tmp/keyline-mobile-results
+```
+
+The edge harness creates its own temporary profile/Vault, guards every renderer evaluation with the Vault path, records the tested CSS hash and stops only its own process. Without `KEYLINE_TEST_PLUGIN`, it runs the theme-only half.
+
+**Evidence boundary:** this confirms a reproducible clipping cause with the same visual symptom; the reporting user's installed version and exact CSS/plugin combination have not been supplied. More-specific or `!important` third-party overrides may require separate diagnosis. No claim of universal plugin compatibility is made.
+
+## Historical verification — 2026-10-22
 
 ## Theme 0.8.25 — code-block edges and native explorer search
 

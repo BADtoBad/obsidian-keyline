@@ -1,5 +1,5 @@
 /*
- * Keyline 0.8.24 — Mobile reading, properties and touch layout
+ * Keyline 0.8.26 — Preserve the complete sidebar card edge
  *
  * A quiet, macOS-inspired Obsidian shell with a neutral writing canvas and
  * a floating navigation surface. This theme deliberately leaves file commands,
@@ -361,6 +361,10 @@ body:not(.is-mobile).show-ribbon .workspace.is-left-sidedock-open {
 
 body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
   isolation: isolate;
+
+  /* The card extends behind the ribbon, outside this dock's bounds. Keep
+     that paint visible; inner file/view containers retain native scrolling. */
+  overflow: visible;
 
   /* Let the shadow fade over the canvas, while the native ribbon remains
      above the card extending behind it. Do not lift this above menus. */

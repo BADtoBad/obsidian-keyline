@@ -1,3 +1,27 @@
+# Keyline 0.8.26
+
+## Sidebar left-edge visibility
+
+- Prevent outer sidebar clipping styles from cutting off the card behind the left ribbon while the right edge remains visible.
+- Keep sidebar dimensions, file indentation, icons, control hit targets and inner file-list scrolling unchanged. The fix is scoped to the expanded desktop left dock; mobile styles and companion plugins are unchanged.
+- Retain the code-block, explorer-search and mobile improvements from previous releases.
+
+Verified in a disposable macOS Obsidian 1.13.7 host, in light/dark mode, narrow/wide windows, with and without With Keyline 1.0.2. A controlled clipping conflict reproduces the appearance and passes with the fix; the reporting user's exact plugin/snippet combination remains unconfirmed. See [verification](RELEASE-VERIFICATION.md).
+
+Update **Keyline** under Obsidian's Appearance settings. This is a theme-only update; no plugin reinstall or Vault-settings replacement is needed.
+
+## 中文
+
+- 修复侧栏外层裁切样式可能导致左侧卡片边缘消失、右侧仍正常的问题。
+- 不改侧栏尺寸、文件缩进、图标、按钮点击区域或文件列表滚动。仅调整桌面端展开的左侧栏，不改移动端和配套插件。
+- 保留之前版本的代码块、搜索框及移动端改进。
+
+已在独立的 macOS Obsidian 1.13.7 测试库中验证明暗模式、窄／宽窗口、启用／停用 With Keyline 1.0.2。通过可控的外层裁切条件复现了相同外观并验证修复；反馈用户的具体插件／CSS 组合尚未确认。
+
+在 Obsidian「设置 → 外观」中更新 **Keyline 主题**即可，无需重装插件或替换个人库设置。
+
+---
+
 # Keyline 0.8.25
 
 ## Code blocks and sidebar search
