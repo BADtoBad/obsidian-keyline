@@ -1338,6 +1338,103 @@ body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-
   border-radius: 3px;
 }
 
+/* -------------------------------------------------------------------------
+   Markdown tables — one report-style appearance, no semantic inference.
+   Scope variables to tables, not the app: raw Markdown, Bases and settings
+   keep their native colours, sizing and controls.
+   ---------------------------------------------------------------------- */
+.theme-light {
+  --ncl-table-header-bg: #142d4e;
+  --ncl-table-rule: #cdd6e0;
+}
+
+.theme-dark {
+  --ncl-table-header-bg: #263e5a;
+  --ncl-table-rule: #405065;
+}
+
+.markdown-rendered table,
+.markdown-source-view.mod-cm6 .cm-table-widget table {
+  --table-header-background: var(--ncl-table-header-bg);
+  --table-header-background-hover: var(--ncl-table-header-bg);
+  --table-header-color: #fff;
+  --table-header-weight: 600;
+  --table-header-border-color: var(--ncl-table-header-bg);
+  --table-header-border-width: 0;
+  --table-border-color: var(--ncl-table-rule);
+  --table-column-first-border-width: 0;
+  --table-column-last-border-width: 0;
+  --table-row-last-border-width: 1px;
+  --table-line-height: 1.5;
+  --table-text-size: var(--font-text-size);
+  --table-text-color: var(--text-normal);
+  --table-column-min-width: 6em;
+  --table-column-alt-background: transparent;
+  --table-row-alt-background: transparent;
+  --ncl-table-cell-padding: 0.4em 0.75em;
+
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Leave Markdown's column alignment untouched. Every body row follows the
+   same rule, including rows named "Total" or ending with a forecast year. */
+.markdown-rendered table > :is(thead, tbody, tfoot) > tr > :is(th, td),
+.markdown-source-view.mod-cm6 .cm-table-widget table > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  padding: var(--ncl-table-cell-padding);
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: var(--table-border-color);
+}
+
+.markdown-rendered table > thead > tr > th,
+.markdown-source-view.mod-cm6 .cm-table-widget table > thead > tr > th {
+  background: var(--ncl-table-header-bg);
+  color: var(--table-header-color);
+  border-color: var(--ncl-table-header-bg);
+  line-height: var(--table-line-height);
+}
+
+/* Native Live Preview places padding on the editable wrapper. Keeping it
+   there preserves cell selection, add-row/column buttons and drag handles. */
+.markdown-source-view.mod-cm6 .cm-table-widget .table-wrapper {
+  min-width: 100%;
+}
+
+.markdown-source-view.mod-cm6 .cm-table-widget table > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  padding: 0;
+}
+
+.markdown-source-view.mod-cm6 .cm-table-widget .table-cell-wrapper {
+  padding: var(--ncl-table-cell-padding);
+}
+
+/* Do not switch to the document's looser leading when a cell gains focus. */
+.markdown-source-view.mod-cm6 .cm-table-widget .cm-content {
+  line-height: var(--table-line-height);
+}
+
+/* Header editors and links must remain readable against the dark header. */
+.markdown-rendered table > thead,
+.markdown-source-view.mod-cm6 .cm-table-widget table > thead {
+  --table-column-alt-background: var(--ncl-table-header-bg);
+  --text-normal: #fff;
+  --text-muted: #d7e6f5;
+  --caret-color: #fff;
+  --link-color: #e2edff;
+  --link-color-hover: #fff;
+  --link-external-color: #e2edff;
+  --link-external-color-hover: #fff;
+}
+
+.markdown-rendered table > thead code,
+.markdown-source-view.mod-cm6 .cm-table-widget table > thead .cm-inline-code {
+  background: rgb(255 255 255 / 10%);
+  border-color: rgb(255 255 255 / 25%);
+  color: inherit;
+}
+
 .callout {
   --callout-padding: 12px 14px;
   --callout-title-padding: 0;

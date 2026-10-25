@@ -18,6 +18,7 @@ The existing showcase uses the original **Keyline interactions** companion for e
 - **Clear emphasis without a rainbow.** Heading hierarchy, restrained accents and distinct highlights help you find the important parts of a page without making every element compete for attention.
 - **More room for your content.** Floating navigation panels and quiet split-pane boundaries separate work areas without surrounding every pane with visible lines.
 - **Details that work together.** Reading surfaces, spacing, rounded controls and themed menus form a consistent workspace in both light and dark mode.
+- **Report-style tables, everywhere.** A navy header, fine horizontal rules and tabular numerals bring structure to ordinary Markdown tables in reading and Live Preview. No mode or per-note setup; your column alignment, negative signs and original text are preserved. Totals and forecast columns are not inferred.
 
 With the companions enabled, this same approach extends to interaction: file names use the available sidebar width until action buttons are needed, common editing controls appear beside your selection, and references can be grouped around the work at hand. **Use the theme for an immediately usable visual setup; add the plugins for the full editing and organising experience.**
 
@@ -34,7 +35,7 @@ Explore 27 linked English notes, project pages, research material and original P
 | Component | What you get |
 | --- | --- |
 | **Keyline theme** — this repository | The ready-to-use light and dark visual foundation. |
-| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | Selection toolbar, block handles, page/date mentions, file-type icons, typography and saved-workspace switching. English and Chinese UI. |
+| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | Selection toolbar, block handles, page/date mentions, property entry and themed desktop calendar, file-type icons, typography and saved-workspace switching. English and Chinese UI; limited Mobile Beta. |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Organise references into spaces and groups without moving or duplicating the originals. |
 
 The theme and these two optional plugins are separately installed. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and screenshots.
@@ -56,9 +57,9 @@ The theme, [With Keyline](https://community.obsidian.md/plugins/with-keyline) an
 
 The theme does not replace Obsidian’s own language. Companion menus, settings and notices support English and Chinese and follow Obsidian’s interface language; restart after changing it. Your notes and saved names are never translated.
 
-Current theme release: **0.8.27**. Minimum declared Obsidian version: **1.7.7**. This update restores the left sidebar card edge on Obsidian 1.14 by supporting its renamed ribbon; 0.8.26's clipping fix did not address that separate cause. The issue and fix were reproduced with the official 1.14.5 core in a disposable macOS host. Older ribbon selectors remain supported. Sidebar dimensions, file indentation and inner scrolling are unchanged; earlier code-block, search and mobile improvements remain included.
+Current theme release: **0.8.28**. Minimum declared Obsidian version: **1.7.7**. This update gives all Markdown tables a single report-style appearance in light/dark, reading and Live Preview. It changes presentation only: no per-note class, total/forecast detection or number rewriting. The sidebar ribbon compatibility fix from 0.8.27 and earlier code-block, search and mobile improvements remain included.
 
-The release screenshots and bilingual interface checks were made in **Obsidian 1.13.7 on macOS**. Mobile CSS was rechecked in that native renderer with phone/tablet-sized viewports and mobile CSS states; **physical iOS/Android devices and their keyboards have not yet been acceptance-tested**. Previous theme regressions also exercised 1.7.7; this does not certify every older Mac or third-party plugin combination. **With Keyline and the original Keyline interactions are desktop-only**; this theme update does not make their editing tools available on mobile. With Keyline requires Obsidian 1.13.7+. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
+The current table checks use **Obsidian 1.13.7 on macOS**, including phone/tablet-sized viewports and mobile CSS states; **physical iOS/Android devices and their keyboards have not yet been acceptance-tested**. Earlier theme regressions also exercised 1.7.7 and the official 1.14.5 core, not a fresh complete rerun of this release on those versions. **With Keyline 1.1.0+ offers limited Mobile Beta; the original Keyline interactions remains desktop-only.** The desktop themed calendar uses the native picker as its mobile fallback. With Keyline requires Obsidian 1.13.7+ and is installed separately. See [release verification](RELEASE-VERIFICATION.md) for coverage and limits.
 
 ## Feedback
 

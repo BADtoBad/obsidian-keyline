@@ -1,4 +1,40 @@
-# Release verification — 2026-10-23
+# Release verification
+
+## Theme 0.8.28 — Report-style tables, 2026-10-25
+
+Scope: Markdown table CSS only. All tables share the same style; no per-note
+activation, inferred total/forecast treatment or text/number conversion.
+
+- **14 native host checks** pass in a disposable fictional Vault on macOS
+  Obsidian 1.13.7: light/dark, Reading/Live Preview, native column alignment,
+  ordinary text tables, unchanged negative-number text, editing/caret/Tab
+  behaviour and stable cell geometry when entering edit mode.
+- The matrix includes **8 narrow viewport cases** (390/768px × light/dark ×
+  Reading/Live Preview), retaining native horizontal table scrolling without
+  expanding the note page. These are layout-emulation checks, not device tests.
+- Ordinary paragraphs/lists and raw source retain their previous styling.
+  Note contents remain unchanged except explicit editing in the test fixture.
+- The same theme also passes With Keyline 1.2.0's 29 property/calendar, 31
+  insertion and 36 mobile-emulation checks. No renderer exceptions were recorded
+  in those plugin runs.
+- Official Stylelint: **0 errors, 23 pre-existing advisory warnings**, none added.
+  `git diff --check` passes. The source theme and public CSS are identical.
+
+Reproduce with Node.js 22+ and a desktop Obsidian installation:
+
+```sh
+node scripts/check-tables-host.mjs
+```
+
+Set `OBSIDIAN_TEST_BINARY` to override the executable. The harness creates its
+own temporary profile/Vault, compares against the 0.8.27 commit, guards renderer
+access by Vault path and closes only its own process. Reports/captures are saved
+under `evidence/tables/`, not shipped as theme assets.
+
+No personal Vault was changed. Physical iOS/Android, Windows/Linux, older cores
+and arbitrary third-party overrides remain outside this release's validation.
+The minimum declared Obsidian version remains 1.7.7; this run used 1.13.7. The
+sidebar and other earlier checks below describe their stated historical builds.
 
 ## Theme 0.8.27 — Obsidian 1.14 ribbon rename
 

@@ -1,3 +1,25 @@
+# Keyline 0.8.28
+
+## One report-style table appearance
+
+- Give Markdown tables a restrained navy header, fine horizontal rules, consistent cell spacing and tabular numerals in light and dark mode, including Live Preview editing.
+- Apply the same appearance to every Markdown table. No extra mode, per-note class, automatic total-row treatment or forecast-column inference is required.
+- Preserve your Markdown column alignment and exact text. Negative numbers stay as entered (for example `-120.50`); the theme never converts them to accounting parentheses or rewrites note data.
+- Preserve native cell editing, keyboard navigation and the table's own horizontal scrolling on narrow screens. Raw source, ordinary paragraphs, Bases and settings are outside the new table selectors.
+- Keep the existing sidebar, code-block, explorer-search and mobile fixes. With Keyline 1.2.0 separately adds blank property entry and a theme-aware desktop calendar; updating the theme does not install the plugin.
+
+See [verification](RELEASE-VERIFICATION.md) for tested environments and mobile-device limits.
+
+## 中文
+
+- Markdown 表格统一使用报告式外观：深蓝表头、细横线、整齐单元格间距与等宽数字，覆盖亮暗模式、阅读视图及实时预览编辑。
+- 不分模式、不要求逐篇开启，不自动猜合计行或预测列。
+- 保留原有列对齐与全部文本；负数按原文显示，如 `-120.50`，不转换为财务括号格式、不改笔记数据。
+- 保留原生表格编辑、键盘操作及窄屏横向滚动；不改变源码模式、普通正文、Bases 或设置界面。
+- 保留既有侧栏、代码块、搜索框和移动布局修复。With Keyline 1.2.0 的空属性入口与主题同步日历单独安装，不由主题自动安装。
+
+---
+
 # Keyline 0.8.27
 
 ## Obsidian 1.14 sidebar compatibility
