@@ -6,11 +6,11 @@
 
 [English](README.md) · [下载](https://github.com/BADtoBad/obsidian-keyline/releases)
 
-![明暗拼接展示](assets/keyline-cover-diagonal-v2.png)
+![明暗拼接展示](assets/keyline-cover-diagonal-v3.png)
 
-[亮色原始截图](assets/keyline-showcase-light.png) · [暗色原始截图](assets/keyline-showcase-dark.png)
+[亮色原始截图](assets/keyline-showcase-light-v3.png) · [暗色原始截图](assets/keyline-showcase-dark-v3.png)
 
-现有展示图使用旧版 **Keyline 交互插件**提供编辑工具、分类图标与工作区切换，**Bucket Sidebar** 提供右侧分组面板。新版配套插件 **With Keyline** 的主要日常功能与旧版基本一致。主题本身可独立使用。斜切封面为展示合成图，明暗完整截图来自实际应用。
+展示图已使用 **Keyline 0.8.28** 重新截图，包含当前的报告风格表格；**With Keyline 1.3.0** 提供分类图标与工作区切换，**Bucket Sidebar 0.5.8** 提供右侧分组面板。主题本身可独立使用。斜切封面在 Figma 中拼接亮暗原图，完整截图来自纯英文虚构展示库中的实际应用。
 
 ## 为日常读写准备好的界面
 

@@ -6,11 +6,11 @@ Spend less time assembling your interface and more time using your notes. Keylin
 
 [中文](README.zh-CN.md) · [Downloads](https://github.com/BADtoBad/obsidian-keyline/releases)
 
-![Keyline light and dark showcase](assets/keyline-cover-diagonal-v2.png)
+![Keyline light and dark showcase](assets/keyline-cover-diagonal-v3.png)
 
-[Light screenshot](assets/keyline-showcase-light.png) · [Dark screenshot](assets/keyline-showcase-dark.png)
+[Light screenshot](assets/keyline-showcase-light-v3.png) · [Dark screenshot](assets/keyline-showcase-dark-v3.png)
 
-The existing showcase uses the original **Keyline interactions** companion for editing tools, file-type icons and workspace switching, and **Bucket Sidebar** for the grouped panel on the right. **With Keyline** is the new companion with broadly equivalent everyday features. The theme works without these plugins. The cover is a presentation composite; the full light and dark images are native application screenshots.
+The showcase was captured with **Keyline 0.8.28**, **With Keyline 1.3.0** for file-type icons and workspace switching, and **Bucket Sidebar 0.5.8** for the grouped panel on the right. It includes the current report-style tables. The theme works without these plugins. The cover combines the native light and dark screenshots in Figma; the full images are unedited application captures from a fictional English example Vault.
 
 ## Designed for everyday writing
 
