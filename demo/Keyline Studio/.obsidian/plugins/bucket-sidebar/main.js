@@ -25,6 +25,14 @@ module.exports = __toCommonJS(main_exports);
 
 // src/locale/uiMessages.ts
 var english = {
+  "\u5F53\u524D Space \u7684\u66F4\u591A\u64CD\u4F5C": "More actions for the current Space",
+  "\u684C\u9762\u884C\u9AD8": "Desktop row height",
+  "\u4EC5\u8C03\u6574\u684C\u9762\u4FA7\u680F\uFF1B\u79FB\u52A8\u7AEF\u4FDD\u6301\u81F3\u5C11 44px \u7684\u70B9\u51FB\u533A\uFF0C\u56E0\u6B64\u8FD9\u91CC\u7684\u8C03\u6574\u4E0D\u4F1A\u6539\u53D8\u624B\u673A\u884C\u9AD8\u3002": "Adjusts the desktop sidebar only. Mobile touch targets stay at least 44px, so this does not change phone row height.",
+  "\u6DFB\u52A0\u5230": "Add to",
+  "Bucket Sidebar\uFF1A\u4FEE\u6539\u5C1A\u672A\u4FDD\u5B58\uFF0C\u5F53\u524D\u4F1A\u8BDD\u4E2D\u4ECD\u4FDD\u7559\u3002\u8BF7\u5728\u5173\u95ED\u5E93\u6216\u505C\u7528\u63D2\u4EF6\u524D\u91CD\u8BD5\u4FDD\u5B58\u3002": "Bucket Sidebar: Changes are not saved yet. They remain in this session. Retry saving before closing the vault or disabling the plugin.",
+  "\u91CD\u8BD5\u4FDD\u5B58": "Retry saving",
+  "\u6B63\u5728\u4FDD\u5B58\u2026": "Saving\u2026",
+  "Bucket Sidebar\uFF1A\u672A\u4FDD\u5B58\u7684\u4FEE\u6539\u5DF2\u4FDD\u5B58\u3002": "Bucket Sidebar: Your unsaved changes have been saved.",
   "\u7070\u8272": "Gray",
   "\u84DD\u8272": "Blue",
   "\u7EA2\u8272": "Red",
@@ -504,10 +512,10 @@ function localize(text, ...values) {
 }
 
 // src/main.ts
-var import_obsidian3 = require("obsidian");
+var import_obsidian4 = require("obsidian");
 
 // src/model.ts
-var DEFAULT_ROW_HEIGHT = 32;
+var DEFAULT_ROW_HEIGHT = 28;
 var MIN_ROW_HEIGHT = 28;
 var MAX_ROW_HEIGHT = 40;
 var DEFAULT_SPACE_ID = "space-default";
@@ -1063,7 +1071,14 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
   }
   onOpen() {
     this.modalEl.classList.add("bucket-target-picker-modal");
-    this.titleEl.textContent = localize`添加到 ${this.bucket.name}`;
+    const titleLabel = createSpan();
+    titleLabel.className = "bucket-target-title-label";
+    titleLabel.textContent = localize("\u6DFB\u52A0\u5230") + " ";
+    const titleName = createSpan();
+    titleName.className = "bucket-target-title-name";
+    titleName.textContent = this.bucket.name;
+    titleName.title = this.bucket.name;
+    this.titleEl.replaceChildren(titleLabel, titleName);
     this.contentEl.replaceChildren();
     const layout = createDiv();
     layout.className = "bucket-target-picker";
@@ -1102,10 +1117,19 @@ var BatchTargetPickerModal = class extends import_obsidian.Modal {
     layout.append(search, this.treeEl, hint, footer);
     this.contentEl.appendChild(layout);
     this.renderTree(false);
-    window.setTimeout(() => search.focus(), 0);
+    if (import_obsidian.Platform.isMobile) {
+      this.titleEl.tabIndex = -1;
+      this.titleEl.focus({ preventScroll: true });
+    } else {
+      window.setTimeout(() => {
+        if (search.isConnected)
+          search.focus();
+      }, 0);
+    }
   }
   onClose() {
     this.modalEl.classList.remove("bucket-target-picker-modal");
+    this.titleEl.removeAttribute("tabindex");
     this.contentEl.replaceChildren();
     this.treeEl = null;
     this.confirmButton = null;
@@ -1444,6 +1468,76 @@ function compareFolderChildren(left, right, order) {
   return left.name.localeCompare(right.name) || left.path.localeCompare(right.path);
 }
 
+// src/folder-expansion.ts
+function expandFolderAncestors(space, folderPath) {
+  const expand = (entries) => {
+    for (const entry of entries) {
+      if (entry.type !== "folder" || !(folderPath === entry.path || folderPath.startsWith(entry.path + "/")))
+        continue;
+      entry.expanded = true;
+      const paths = new Set(entry.expandedPaths || []);
+      let ancestor = folderPath;
+      while (ancestor !== entry.path) {
+        paths.add(ancestor);
+        ancestor = ancestor.slice(0, ancestor.lastIndexOf("/"));
+      }
+      entry.expandedPaths = [...paths];
+    }
+  };
+  expand(space.pinnedEntries);
+  for (const bucket of space.buckets)
+    expand(bucket.entries);
+}
+
+// src/settings.ts
+var import_obsidian3 = require("obsidian");
+function bucketSettingRows(plugin) {
+  return [
+    {
+      name: localize("\u663E\u793A Space \u540D\u79F0"),
+      desc: localize("\u9ED8\u8BA4\u53EA\u663E\u793A\u56FE\u6807\u3002Space \u6570\u91CF\u8F83\u5C11\u65F6\uFF0C\u53EF\u540C\u65F6\u663E\u793A\u56FE\u6807\u548C\u540D\u79F0\u3002"),
+      render(setting) {
+        setting.addToggle((toggle) => toggle.setValue(plugin.data.settings.showSpaceNames).onChange((value) => {
+          void plugin.setShowSpaceNames(value);
+        }));
+      }
+    },
+    {
+      name: import_obsidian3.Platform.isMobile ? localize("\u684C\u9762\u884C\u9AD8") : localize("\u4FA7\u680F\u884C\u9AD8"),
+      desc: import_obsidian3.Platform.isMobile ? localize("\u4EC5\u8C03\u6574\u684C\u9762\u4FA7\u680F\uFF1B\u79FB\u52A8\u7AEF\u4FDD\u6301\u81F3\u5C11 44px \u7684\u70B9\u51FB\u533A\uFF0C\u56E0\u6B64\u8FD9\u91CC\u7684\u8C03\u6574\u4E0D\u4F1A\u6539\u53D8\u624B\u673A\u884C\u9AD8\u3002") : localize`调整 Bucket、文件夹和笔记的每行高度。范围 ${MIN_ROW_HEIGHT}–${MAX_ROW_HEIGHT}px，默认 ${DEFAULT_ROW_HEIGHT}px。`,
+      render(setting) {
+        setting.addSlider((slider) => {
+          slider.setLimits(MIN_ROW_HEIGHT, MAX_ROW_HEIGHT, 1).setValue(plugin.data.settings.rowHeight).setDynamicTooltip().onChange((value) => {
+            void plugin.setSidebarRowHeight(value);
+          });
+          setting.addExtraButton((button) => button.setIcon("reset").setTooltip(localize("\u6062\u590D\u9ED8\u8BA4\u884C\u9AD8")).onClick(() => {
+            void plugin.setSidebarRowHeight(DEFAULT_ROW_HEIGHT).then(() => {
+              slider.setValue(plugin.data.settings.rowHeight);
+            });
+          }));
+        });
+      }
+    }
+  ];
+}
+
+// src/saved-data.ts
+function matchesSavedSnapshot(expected, actual) {
+  if (expected === actual)
+    return true;
+  if (expected === null || actual === null || typeof expected !== "object" || typeof actual !== "object")
+    return false;
+  if (Array.isArray(expected)) {
+    return Array.isArray(actual) && expected.length === actual.length && expected.every((value, index) => matchesSavedSnapshot(value, actual[index]));
+  }
+  if (Array.isArray(actual))
+    return false;
+  const source = expected;
+  const stored = actual;
+  const keys = Object.keys(source);
+  return keys.length === Object.keys(stored).length && keys.every((key) => Object.prototype.hasOwnProperty.call(stored, key) && matchesSavedSnapshot(source[key], stored[key]));
+}
+
 // src/main.ts
 var VIEW_TYPE_BUCKET_SIDEBAR = "bucket-sidebar-view";
 var DRAG_MIME = "application/x-obsidian-bucket-entry";
@@ -1467,10 +1561,10 @@ var SPACE_ICON_CHOICES = [
   { id: "user", label: localize("\u4E2A\u4EBA") }
 ];
 function isBucketFile2(file) {
-  return file instanceof import_obsidian3.TFile && ["md", "pdf"].includes(file.extension.toLowerCase());
+  return file instanceof import_obsidian4.TFile && ["md", "pdf"].includes(file.extension.toLowerCase());
 }
 function targetFromFile(file) {
-  if (file instanceof import_obsidian3.TFolder && file.path)
+  if (file instanceof import_obsidian4.TFolder && file.path)
     return { type: "folder", path: file.path };
   if (isBucketFile2(file))
     return { type: "file", path: file.path };
@@ -1487,12 +1581,12 @@ function iconButton(parent, icon, label, onClick) {
   button.className = "bucket-icon-button clickable-icon";
   button.setAttribute("aria-label", label);
   button.title = label;
-  (0, import_obsidian3.setIcon)(button, icon);
+  (0, import_obsidian4.setIcon)(button, icon);
   button.addEventListener("click", onClick);
   parent.appendChild(button);
   return button;
 }
-var TextInputModal = class extends import_obsidian3.Modal {
+var TextInputModal = class extends import_obsidian4.Modal {
   constructor(app, heading, initialValue, placeholder, submitLabel, onSubmitValue) {
     super(app);
     this.heading = heading;
@@ -1542,7 +1636,7 @@ var TextInputModal = class extends import_obsidian3.Modal {
     this.contentEl.replaceChildren();
   }
 };
-var SpaceIconPickerModal = class extends import_obsidian3.Modal {
+var SpaceIconPickerModal = class extends import_obsidian4.Modal {
   constructor(app, currentIcon, onChooseIcon) {
     super(app);
     this.currentIcon = currentIcon;
@@ -1569,7 +1663,7 @@ var SpaceIconPickerModal = class extends import_obsidian3.Modal {
       const icon = createSpan();
       icon.className = "bucket-space-icon-choice-symbol";
       icon.setAttribute("aria-hidden", "true");
-      (0, import_obsidian3.setIcon)(icon, choice.id);
+      (0, import_obsidian4.setIcon)(icon, choice.id);
       const label = createSpan();
       label.className = "bucket-space-icon-choice-label";
       label.textContent = choice.label;
@@ -1593,7 +1687,7 @@ var SpaceIconPickerModal = class extends import_obsidian3.Modal {
     this.contentEl.replaceChildren();
   }
 };
-var BucketPickerModal = class extends import_obsidian3.FuzzySuggestModal {
+var BucketPickerModal = class extends import_obsidian4.FuzzySuggestModal {
   constructor(app, buckets, placeholder, onChooseBucket) {
     super(app);
     this.buckets = buckets;
@@ -1610,18 +1704,24 @@ var BucketPickerModal = class extends import_obsidian3.FuzzySuggestModal {
     this.onChooseBucket(bucket);
   }
 };
-var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
+var BucketSidebarPlugin = class extends import_obsidian4.Plugin {
   constructor() {
     super(...arguments);
     this.data = createEmptyData();
     this.history = [];
     this.creatingFolders = /* @__PURE__ */ new Set();
     this.pendingSubfolders = /* @__PURE__ */ new Set();
+    this.saveQueue = Promise.resolve(true);
+    this.saveRevision = 0;
+    this.savedRevision = 0;
+    this.pendingSaves = 0;
+    this.saveFailureNotice = null;
+    this.unloading = false;
   }
   promptCreateFolder(folderPath) {
     const parent = this.app.vault.getAbstractFileByPath(folderPath);
-    if (!(parent instanceof import_obsidian3.TFolder)) {
-      new import_obsidian3.Notice(localize("\u8FD9\u4E2A\u6587\u4EF6\u5939\u5DF2\u4E0D\u5B58\u5728\uFF0C\u65E0\u6CD5\u65B0\u5EFA\u5B50\u6587\u4EF6\u5939\u3002"));
+    if (!(parent instanceof import_obsidian4.TFolder)) {
+      new import_obsidian4.Notice(localize("\u8FD9\u4E2A\u6587\u4EF6\u5939\u5DF2\u4E0D\u5B58\u5728\uFF0C\u65E0\u6CD5\u65B0\u5EFA\u5B50\u6587\u4EF6\u5939\u3002"));
       return;
     }
     const space = this.activeSpace;
@@ -1635,7 +1735,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     const invalidName = validateFolderName(value);
     if (invalidName)
       return invalidName;
-    if (this.app.vault.getAbstractFileByPath(folderPath) !== expectedParent || !(expectedParent instanceof import_obsidian3.TFolder)) {
+    if (this.app.vault.getAbstractFileByPath(folderPath) !== expectedParent || !(expectedParent instanceof import_obsidian4.TFolder)) {
       return localize("\u539F\u6587\u4EF6\u5939\u5DF2\u88AB\u79FB\u52A8\u6216\u5220\u9664\uFF0C\u8BF7\u5173\u95ED\u6B64\u7A97\u53E3\u540E\u91CD\u65B0\u9009\u62E9\u4F4D\u7F6E\u3002");
     }
     const path = `${folderPath ? folderPath + "/" : ""}${value.trim()}`;
@@ -1648,24 +1748,13 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     try {
       await this.app.vault.createFolder(path);
       created = true;
-      for (const entry of [...space.pinnedEntries, ...space.buckets.flatMap((bucket) => bucket.entries)]) {
-        if (entry.type !== "folder" || !(folderPath === entry.path || folderPath.startsWith(entry.path + "/")))
-          continue;
-        entry.expanded = true;
-        const paths = new Set(entry.expandedPaths || []);
-        let ancestor = folderPath;
-        while (ancestor !== entry.path) {
-          paths.add(ancestor);
-          ancestor = ancestor.slice(0, ancestor.lastIndexOf("/"));
-        }
-        entry.expandedPaths = [...paths];
-      }
+      expandFolderAncestors(space, folderPath);
       await this.persist();
       return null;
     } catch (error) {
       console.error("Bucket Sidebar: create folder", error);
       if (created) {
-        new import_obsidian3.Notice(localize`文件夹已创建：${path}，但未能刷新侧栏。`);
+        new import_obsidian4.Notice(localize`文件夹已创建：${path}，但未能刷新侧栏。`);
         return null;
       }
       return this.app.vault.getAbstractFileByPath(path) ? localize("\u6B64\u4F4D\u7F6E\u5DF2\u5B58\u5728\u540C\u540D\u6587\u4EF6\u6216\u6587\u4EF6\u5939\uFF0C\u8BF7\u6362\u4E00\u4E2A\u540D\u79F0\u3002") : localize("\u65B0\u5EFA\u6587\u4EF6\u5939\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u540C\u6B65\u72B6\u6001\u6216\u6587\u4EF6\u5939\u5199\u5165\u6743\u9650\u540E\u91CD\u8BD5\u3002");
@@ -1677,8 +1766,8 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     if (this.creatingFolders.has(folderPath))
       return null;
     const folder = this.app.vault.getAbstractFileByPath(folderPath);
-    if (!(folder instanceof import_obsidian3.TFolder)) {
-      new import_obsidian3.Notice(localize("\u8FD9\u4E2A\u6587\u4EF6\u5939\u5DF2\u4E0D\u5B58\u5728\uFF0C\u65E0\u6CD5\u65B0\u5EFA\u7B14\u8BB0\u3002"));
+    if (!(folder instanceof import_obsidian4.TFolder)) {
+      new import_obsidian4.Notice(localize("\u8FD9\u4E2A\u6587\u4EF6\u5939\u5DF2\u4E0D\u5B58\u5728\uFF0C\u65E0\u6CD5\u65B0\u5EFA\u7B14\u8BB0\u3002"));
       return null;
     }
     const space = this.activeSpace;
@@ -1701,18 +1790,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       }
       if (!created)
         throw new Error("No available note name");
-      for (const entry of [...space.pinnedEntries, ...space.buckets.flatMap((bucket) => bucket.entries)]) {
-        if (entry.type !== "folder" || !(folderPath === entry.path || folderPath.startsWith(entry.path + "/")))
-          continue;
-        entry.expanded = true;
-        const paths = new Set(entry.expandedPaths || []);
-        let ancestor = folderPath;
-        while (ancestor !== entry.path) {
-          paths.add(ancestor);
-          ancestor = ancestor.slice(0, ancestor.lastIndexOf("/"));
-        }
-        entry.expandedPaths = [...paths];
-      }
+      expandFolderAncestors(space, folderPath);
       await this.persist();
       const leaf = this.app.workspace.getLeaf(false);
       await leaf.openFile(created);
@@ -1728,7 +1806,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       return created;
     } catch (error) {
       console.error("Bucket Sidebar: create note", error);
-      new import_obsidian3.Notice(created ? localize`笔记已创建：${created.path}，但未能自动打开。` : localize("\u65B0\u5EFA\u7B14\u8BB0\u5931\u8D25\uFF0C\u539F\u6709\u6587\u4EF6\u6CA1\u6709\u88AB\u6539\u52A8\u3002"));
+      new import_obsidian4.Notice(created ? localize`笔记已创建：${created.path}，但未能自动打开。` : localize("\u65B0\u5EFA\u7B14\u8BB0\u5931\u8D25\uFF0C\u539F\u6709\u6587\u4EF6\u6CA1\u6709\u88AB\u6539\u52A8\u3002"));
       return created;
     } finally {
       this.creatingFolders.delete(folderPath);
@@ -1739,6 +1817,12 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   }
   async onload() {
     this.data = normalizeData(await this.loadData());
+    this.register(() => {
+      var _a;
+      this.unloading = true;
+      (_a = this.saveFailureNotice) == null ? void 0 : _a.hide();
+      this.saveFailureNotice = null;
+    });
     this.addSettingTab(new BucketSidebarSettingTab(this.app, this));
     this.registerView(VIEW_TYPE_BUCKET_SIDEBAR, (leaf) => new BucketSidebarView(leaf, this));
     this.addRibbonIcon("layers", localize("\u6253\u5F00 Bucket Sidebar"), () => {
@@ -1826,7 +1910,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     );
     this.registerEvent(
       this.app.vault.on("rename", (file, oldPath) => {
-        const renamedType = file instanceof import_obsidian3.TFolder ? "folder" : "file";
+        const renamedType = file instanceof import_obsidian4.TFolder ? "folder" : "file";
         const before = cloneData(this.data);
         const changed = updatePathsAfterRename(this.data, oldPath, file.path, renamedType);
         if (changed === 0) {
@@ -1857,7 +1941,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       if (!leaf) {
         leaf = this.app.workspace.getLeftLeaf(false);
         if (!leaf) {
-          new import_obsidian3.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
+          new import_obsidian4.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
           return;
         }
         await leaf.setViewState({ type: VIEW_TYPE_BUCKET_SIDEBAR, active: true });
@@ -1865,7 +1949,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       await this.app.workspace.revealLeaf(leaf);
     } catch (error) {
       console.error("Bucket Sidebar: failed to open view", error);
-      new import_obsidian3.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
+      new import_obsidian4.Notice(localize("\u65E0\u6CD5\u521B\u5EFA\u5DE6\u4FA7\u680F\u89C6\u56FE"));
     }
   }
   promptCreateBucket() {
@@ -1893,7 +1977,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       (name) => {
         const changed = this.mutate(localize("\u65B0\u5EFA Project / Area"), () => addSpace(this.data, name) !== null);
         if (!changed)
-          new import_obsidian3.Notice(localize("Project / Area \u540D\u79F0\u4E0D\u80FD\u4E3A\u7A7A\uFF0C\u4E5F\u4E0D\u80FD\u4E0E\u73B0\u6709\u540D\u79F0\u91CD\u590D"));
+          new import_obsidian4.Notice(localize("Project / Area \u540D\u79F0\u4E0D\u80FD\u4E3A\u7A7A\uFF0C\u4E5F\u4E0D\u80FD\u4E0E\u73B0\u6709\u540D\u79F0\u91CD\u590D"));
       }
     ).open();
   }
@@ -1907,7 +1991,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       (name) => {
         const changed = this.mutate(localize("\u91CD\u547D\u540D Space"), () => renameSpace(this.data, space.id, name));
         if (!changed && name !== space.name)
-          new import_obsidian3.Notice(localize("Space \u540D\u79F0\u4E0D\u80FD\u4E3A\u7A7A\uFF0C\u4E5F\u4E0D\u80FD\u4E0E\u73B0\u6709\u540D\u79F0\u91CD\u590D"));
+          new import_obsidian4.Notice(localize("Space \u540D\u79F0\u4E0D\u80FD\u4E3A\u7A7A\uFF0C\u4E5F\u4E0D\u80FD\u4E0E\u73B0\u6709\u540D\u79F0\u91CD\u590D"));
       }
     ).open();
   }
@@ -1924,9 +2008,9 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   removeSpace(spaceId) {
     const changed = this.mutate(localize("\u79FB\u9664 Space"), () => removeSpace(this.data, spaceId));
     if (changed)
-      new import_obsidian3.Notice(localize("\u5DF2\u79FB\u9664 Space\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8\uFF0C\u53EF\u64A4\u9500"));
+      new import_obsidian4.Notice(localize("\u5DF2\u79FB\u9664 Space\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8\uFF0C\u53EF\u64A4\u9500"));
     else
-      new import_obsidian3.Notice(localize("\u81F3\u5C11\u9700\u8981\u4FDD\u7559\u4E00\u4E2A Space"));
+      new import_obsidian4.Notice(localize("\u81F3\u5C11\u9700\u8981\u4FDD\u7559\u4E00\u4E2A Space"));
   }
   promptRenameBucket(bucket) {
     new TextInputModal(
@@ -1951,7 +2035,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   chooseBucketForTarget(target) {
     const buckets = this.activeSpace.buckets;
     if (buckets.length === 0) {
-      new import_obsidian3.Notice(localize("\u8BF7\u5148\u65B0\u5EFA\u4E00\u4E2A Bucket"));
+      new import_obsidian4.Notice(localize("\u8BF7\u5148\u65B0\u5EFA\u4E00\u4E2A Bucket"));
       this.promptCreateBucket();
       return;
     }
@@ -1965,7 +2049,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       () => addEntryToBucket(this.data, bucketId, target, index) !== null
     );
     if (!changed)
-      new import_obsidian3.Notice(localize("\u8FD9\u4E2A\u5F15\u7528\u5DF2\u5728\u8BE5 Bucket \u4E2D"));
+      new import_obsidian4.Notice(localize("\u8FD9\u4E2A\u5F15\u7528\u5DF2\u5728\u8BE5 Bucket \u4E2D"));
   }
   addTargets(bucketId, targets, selectedItemCount) {
     let added = 0;
@@ -1977,9 +2061,9 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       return added > 0;
     });
     if (changed)
-      new import_obsidian3.Notice(localize`已加入 ${selectedItemCount} 项`);
+      new import_obsidian4.Notice(localize`已加入 ${selectedItemCount} 项`);
     else
-      new import_obsidian3.Notice(localize("\u6240\u9009\u5185\u5BB9\u5DF2\u7ECF\u5728\u8FD9\u4E2A Bucket \u4E2D"));
+      new import_obsidian4.Notice(localize("\u6240\u9009\u5185\u5BB9\u5DF2\u7ECF\u5728\u8FD9\u4E2A Bucket \u4E2D"));
   }
   copyEntry(sourceBucketId, entryId, targetBucketId, targetIndex) {
     const changed = this.mutate(
@@ -1987,7 +2071,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
       () => copyEntryBetweenBuckets(this.data, sourceBucketId, entryId, targetBucketId, targetIndex) !== null
     );
     if (!changed)
-      new import_obsidian3.Notice(localize("\u76EE\u6807 Bucket \u5DF2\u7ECF\u5305\u542B\u8FD9\u4E2A\u5F15\u7528"));
+      new import_obsidian4.Notice(localize("\u76EE\u6807 Bucket \u5DF2\u7ECF\u5305\u542B\u8FD9\u4E2A\u5F15\u7528"));
   }
   reorder(bucketId, entryId, targetIndex) {
     this.mutate(localize("\u8C03\u6574 Bucket \u987A\u5E8F"), () => reorderEntry(this.data, bucketId, entryId, targetIndex));
@@ -1995,7 +2079,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   removeEntry(bucketId, entryId) {
     const changed = this.mutate(localize("\u79FB\u9664\u5F15\u7528"), () => removeEntryFromBucket(this.data, bucketId, entryId));
     if (changed)
-      new import_obsidian3.Notice(localize("\u5DF2\u79FB\u9664\u5F15\u7528\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8"));
+      new import_obsidian4.Notice(localize("\u5DF2\u79FB\u9664\u5F15\u7528\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8"));
   }
   isPinned(target) {
     return isTargetPinned(this.data, target.type, target.path);
@@ -2009,19 +2093,19 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   pinTarget(target) {
     const changed = this.mutate(localize("\u7F6E\u9876\u5F15\u7528"), () => addPinnedEntry(this.data, target) !== null);
     if (changed)
-      new import_obsidian3.Notice(localize("\u5DF2\u7F6E\u9876\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u79FB\u52A8"));
+      new import_obsidian4.Notice(localize("\u5DF2\u7F6E\u9876\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u79FB\u52A8"));
     else
-      new import_obsidian3.Notice(localize("\u8FD9\u4E2A\u9879\u76EE\u5DF2\u7ECF\u7F6E\u9876"));
+      new import_obsidian4.Notice(localize("\u8FD9\u4E2A\u9879\u76EE\u5DF2\u7ECF\u7F6E\u9876"));
   }
   unpinTarget(target) {
     const changed = this.mutate(localize("\u53D6\u6D88\u7F6E\u9876"), () => removePinnedEntry(this.data, target.type, target.path));
     if (changed)
-      new import_obsidian3.Notice(localize("\u5DF2\u53D6\u6D88\u7F6E\u9876\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8"));
+      new import_obsidian4.Notice(localize("\u5DF2\u53D6\u6D88\u7F6E\u9876\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8"));
   }
   removeBucket(bucketId) {
     const changed = this.mutate(localize("\u79FB\u9664 Bucket"), () => removeBucket(this.data, bucketId));
     if (changed)
-      new import_obsidian3.Notice(localize("\u5DF2\u79FB\u9664\u865A\u62DF Bucket\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8\uFF0C\u53EF\u64A4\u9500"));
+      new import_obsidian4.Notice(localize("\u5DF2\u79FB\u9664\u865A\u62DF Bucket\uFF1B\u771F\u5B9E\u6587\u4EF6\u6CA1\u6709\u6539\u53D8\uFF0C\u53EF\u64A4\u9500"));
   }
   setUiState(operation) {
     if (!operation())
@@ -2031,7 +2115,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   undo() {
     const previous = this.history.pop();
     if (!previous) {
-      new import_obsidian3.Notice(localize("\u6CA1\u6709\u53EF\u64A4\u9500\u7684 Bucket \u53D8\u66F4"));
+      new import_obsidian4.Notice(localize("\u6CA1\u6709\u53EF\u64A4\u9500\u7684 Bucket \u53D8\u66F4"));
       return;
     }
     const currentSettings = this.data.settings;
@@ -2043,7 +2127,7 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     else
       delete this.data.settings.folderSortOrders;
     void this.persist();
-    new import_obsidian3.Notice(localize`已撤销：${previous.label}`);
+    new import_obsidian4.Notice(localize`已撤销：${previous.label}`);
   }
   canUndo() {
     return this.history.length > 0;
@@ -2051,32 +2135,32 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
   async setSidebarRowHeight(value) {
     const rowHeight = normalizeRowHeight(value);
     if (this.data.settings.rowHeight === rowHeight)
-      return;
+      return this.retryUnsavedChanges();
     this.data.settings.rowHeight = rowHeight;
-    await this.persist();
+    return this.persist();
   }
   async setShowSpaceNames(value) {
     if (this.data.settings.showSpaceNames === value)
-      return;
+      return this.retryUnsavedChanges();
     this.data.settings.showSpaceNames = value;
-    await this.persist();
+    return this.persist();
   }
   addFolderSortMenu(menu, file) {
-    if (!(file instanceof import_obsidian3.TFolder) || !file.path)
+    if (!(file instanceof import_obsidian4.TFolder) || !file.path)
       return;
     menu.addItem((item) => item.setTitle(localize("Bucket \u6587\u4EF6\u5939\u6392\u5E8F\u2026")).setIcon("arrow-down-wide-narrow").onClick(() => this.promptFolderSort(file.path)));
   }
   promptFolderSort(path) {
-    if (!(this.app.vault.getAbstractFileByPath(path) instanceof import_obsidian3.TFolder))
+    if (!(this.app.vault.getAbstractFileByPath(path) instanceof import_obsidian4.TFolder))
       return;
-    const modal = new import_obsidian3.Modal(this.app);
+    const modal = new import_obsidian4.Modal(this.app);
     modal.titleEl.textContent = localize("Bucket \u6587\u4EF6\u5939\u6392\u5E8F");
     const resolved = getFolderSortOrder(this.data.settings, path);
-    new import_obsidian3.Setting(modal.contentEl).setName(path).setDesc(localize("\u4EC5\u5F71\u54CD\u6B64\u6587\u4EF6\u5939\u53CA\u672A\u5355\u72EC\u8BBE\u7F6E\u7684\u5B50\u6587\u4EF6\u5939\u3002\u6587\u4EF6\u5939\u4ECD\u5728\u524D\uFF1B\u65E5\u671F\u4F18\u5148\u8BFB\u53D6 created \u5C5E\u6027\uFF0C\u7F3A\u5931\u65F6\u4F7F\u7528\u6587\u4EF6\u521B\u5EFA\u65F6\u95F4\uFF0C\u4E0D\u4F7F\u7528\u4FEE\u6539\u65F6\u95F4\u3002")).addDropdown((dropdown) => {
+    new import_obsidian4.Setting(modal.contentEl).setName(path).setDesc(localize("\u4EC5\u5F71\u54CD\u6B64\u6587\u4EF6\u5939\u53CA\u672A\u5355\u72EC\u8BBE\u7F6E\u7684\u5B50\u6587\u4EF6\u5939\u3002\u6587\u4EF6\u5939\u4ECD\u5728\u524D\uFF1B\u65E5\u671F\u4F18\u5148\u8BFB\u53D6 created \u5C5E\u6027\uFF0C\u7F3A\u5931\u65F6\u4F7F\u7528\u6587\u4EF6\u521B\u5EFA\u65F6\u95F4\uFF0C\u4E0D\u4F7F\u7528\u4FEE\u6539\u65F6\u95F4\u3002")).addDropdown((dropdown) => {
       var _a;
       return dropdown.addOption("inherit", localize("\u8DDF\u968F\u4E0A\u7EA7\uFF08\u9ED8\u8BA4\u6309\u540D\u79F0\uFF09")).addOption("name-asc", localize("\u540D\u79F0\uFF1AA \u2192 Z")).addOption("created-desc", localize("\u521B\u5EFA\u65F6\u95F4\uFF1A\u65B0 \u2192 \u65E7")).setValue(((_a = this.data.settings.folderSortOrders) == null ? void 0 : _a[path]) || "inherit").onChange((value) => {
-        if (!(this.app.vault.getAbstractFileByPath(path) instanceof import_obsidian3.TFolder)) {
-          new import_obsidian3.Notice(localize("\u6587\u4EF6\u5939\u5DF2\u79FB\u52A8\u6216\u5220\u9664\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9\u3002"));
+        if (!(this.app.vault.getAbstractFileByPath(path) instanceof import_obsidian4.TFolder)) {
+          new import_obsidian4.Notice(localize("\u6587\u4EF6\u5939\u5DF2\u79FB\u52A8\u6216\u5220\u9664\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9\u3002"));
           modal.close();
           return;
         }
@@ -2105,14 +2189,83 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     if (this.history.length > 30)
       this.history.shift();
   }
-  async persist() {
-    try {
-      await this.saveData(this.data);
-      this.refreshViews();
-    } catch (error) {
-      console.error("Bucket Sidebar: failed to save data", error);
-      new import_obsidian3.Notice(localize("Bucket Sidebar \u4FDD\u5B58\u5931\u8D25\uFF0C\u8BF7\u67E5\u770B\u5F00\u53D1\u8005\u63A7\u5236\u53F0"));
-    }
+  get hasUnsavedChanges() {
+    return this.savedRevision < this.saveRevision;
+  }
+  retryUnsavedChanges() {
+    if (this.unloading)
+      return Promise.resolve(false);
+    if (this.pendingSaves > 0)
+      return this.saveQueue;
+    return this.hasUnsavedChanges ? this.persist() : Promise.resolve(true);
+  }
+  persist() {
+    if (this.unloading)
+      return Promise.resolve(false);
+    const revision = ++this.saveRevision;
+    const snapshot = cloneData(this.data);
+    this.pendingSaves++;
+    const operation = this.saveQueue.then(async () => {
+      if (this.unloading)
+        return false;
+      let saved = false;
+      try {
+        await this.saveData(snapshot);
+        const stored = await this.loadData();
+        if (!matchesSavedSnapshot(snapshot, stored)) {
+          throw new Error("Saved Bucket data could not be verified");
+        }
+        this.savedRevision = revision;
+        saved = true;
+      } catch (error) {
+        console.error("Bucket Sidebar: failed to save data", error);
+      }
+      if (!this.unloading) {
+        try {
+          this.refreshViews();
+        } catch (error) {
+          console.error("Bucket Sidebar: failed to refresh views", error);
+        }
+        try {
+          if (!saved)
+            this.showSaveFailure();
+          else if (!this.hasUnsavedChanges && this.saveFailureNotice) {
+            this.saveFailureNotice.hide();
+            this.saveFailureNotice = null;
+            new import_obsidian4.Notice(localize("Bucket Sidebar\uFF1A\u672A\u4FDD\u5B58\u7684\u4FEE\u6539\u5DF2\u4FDD\u5B58\u3002"));
+          }
+        } catch (error) {
+          console.error("Bucket Sidebar: failed to show save status", error);
+        }
+      }
+      return saved;
+    });
+    this.saveQueue = operation.finally(() => {
+      this.pendingSaves--;
+    });
+    return this.saveQueue;
+  }
+  showSaveFailure() {
+    var _a;
+    if ((_a = this.saveFailureNotice) == null ? void 0 : _a.noticeEl.isConnected)
+      return;
+    const message = createFragment();
+    const text = createSpan();
+    text.textContent = localize("Bucket Sidebar\uFF1A\u4FEE\u6539\u5C1A\u672A\u4FDD\u5B58\uFF0C\u5F53\u524D\u4F1A\u8BDD\u4E2D\u4ECD\u4FDD\u7559\u3002\u8BF7\u5728\u5173\u95ED\u5E93\u6216\u505C\u7528\u63D2\u4EF6\u524D\u91CD\u8BD5\u4FDD\u5B58\u3002");
+    const retry = createEl("button");
+    retry.type = "button";
+    retry.textContent = localize("\u91CD\u8BD5\u4FDD\u5B58");
+    retry.addEventListener("click", (event) => {
+      event.stopPropagation();
+      retry.disabled = true;
+      retry.textContent = localize("\u6B63\u5728\u4FDD\u5B58\u2026");
+      void this.retryUnsavedChanges().finally(() => {
+        retry.disabled = false;
+        retry.textContent = localize("\u91CD\u8BD5\u4FDD\u5B58");
+      });
+    });
+    message.append(text, createEl("br"), retry);
+    this.saveFailureNotice = new import_obsidian4.Notice(message, 0);
   }
   refreshViews() {
     for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_BUCKET_SIDEBAR)) {
@@ -2121,43 +2274,43 @@ var BucketSidebarPlugin = class extends import_obsidian3.Plugin {
     }
   }
 };
-var BucketSidebarSettingTab = class extends import_obsidian3.PluginSettingTab {
+var BucketSidebarSettingTab = class extends import_obsidian4.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.bucketPlugin = plugin;
   }
+  // Obsidian 1.13+ indexes these rows and skips display(). Render callbacks
+  // deliberately use the existing whole-data setters, not automatic saveData.
+  getSettingDefinitions() {
+    return [{
+      type: "group",
+      name: localize("\u5916\u89C2"),
+      items: bucketSettingRows(this.bucketPlugin)
+    }];
+  }
   display() {
     this.containerEl.empty();
-    new import_obsidian3.Setting(this.containerEl).setName(localize("\u5916\u89C2")).setHeading();
-    new import_obsidian3.Setting(this.containerEl).setName(localize("\u663E\u793A Space \u540D\u79F0")).setDesc(localize("\u9ED8\u8BA4\u53EA\u663E\u793A\u56FE\u6807\u3002Space \u6570\u91CF\u8F83\u5C11\u65F6\uFF0C\u53EF\u540C\u65F6\u663E\u793A\u56FE\u6807\u548C\u540D\u79F0\u3002")).addToggle((toggle) => {
-      toggle.setValue(this.bucketPlugin.data.settings.showSpaceNames).onChange((value) => {
-        void this.bucketPlugin.setShowSpaceNames(value);
-      });
-    });
-    const rowHeightSetting = new import_obsidian3.Setting(this.containerEl).setName(localize("\u4FA7\u680F\u884C\u9AD8")).setDesc(localize`调整 Bucket、文件夹和笔记的每行高度。范围 ${MIN_ROW_HEIGHT}–${MAX_ROW_HEIGHT}px，默认 ${DEFAULT_ROW_HEIGHT}px。`);
-    rowHeightSetting.addSlider((slider) => {
-      slider.setLimits(MIN_ROW_HEIGHT, MAX_ROW_HEIGHT, 1).setValue(this.bucketPlugin.data.settings.rowHeight).setDynamicTooltip().onChange((value) => {
-        void this.bucketPlugin.setSidebarRowHeight(value);
-      });
-    });
-    rowHeightSetting.addExtraButton((button) => {
-      button.setIcon("reset").setTooltip(localize("\u6062\u590D\u9ED8\u8BA4\u884C\u9AD8")).onClick(() => {
-        void this.bucketPlugin.setSidebarRowHeight(DEFAULT_ROW_HEIGHT).then(() => this.display());
-      });
-    });
+    new import_obsidian4.Setting(this.containerEl).setName(localize("\u5916\u89C2")).setHeading();
+    for (const row of bucketSettingRows(this.bucketPlugin)) {
+      row.render(new import_obsidian4.Setting(this.containerEl).setName(row.name).setDesc(row.desc));
+    }
   }
 };
-var BucketSidebarView = class extends import_obsidian3.ItemView {
+var BucketSidebarView = class extends import_obsidian4.ItemView {
   constructor(leaf, plugin) {
     super(leaf);
     this.rootEl = null;
+    // View-local only: refreshing references must not reset browsing position
+    // or write scroll coordinates into synced Vault configuration.
+    this.renderedSpaceId = null;
+    this.scrollTopBySpace = /* @__PURE__ */ new Map();
     this.plugin = plugin;
     this.addAction("layout-grid", localize("\u65B0\u5EFA Project / Area"), () => this.plugin.promptCreateSpace());
     this.addAction("plus", localize("\u65B0\u5EFA Bucket"), () => this.plugin.promptCreateBucket());
     this.addCurrentAction = this.addAction("file-plus", localize("\u628A\u5F53\u524D\u7B14\u8BB0\u52A0\u5165 Bucket"), () => {
       const current = this.app.workspace.getActiveFile();
       if (!current) {
-        new import_obsidian3.Notice(localize("\u5F53\u524D\u6CA1\u6709\u6253\u5F00\u6587\u4EF6"));
+        new import_obsidian4.Notice(localize("\u5F53\u524D\u6CA1\u6709\u6253\u5F00\u6587\u4EF6"));
         return;
       }
       this.plugin.chooseBucketForTarget({ type: "file", path: current.path });
@@ -2184,11 +2337,18 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   async onClose() {
     this.rootEl = null;
+    this.renderedSpaceId = null;
+    this.scrollTopBySpace.clear();
     this.contentEl.replaceChildren();
   }
   render() {
     if (!this.rootEl)
       return;
+    const previousSpaceId = this.renderedSpaceId;
+    const previousTabs = this.rootEl.querySelector(".bucket-space-tabs");
+    const previousScrollLeft = (previousTabs == null ? void 0 : previousTabs.scrollLeft) || 0;
+    if (previousSpaceId)
+      this.scrollTopBySpace.set(previousSpaceId, this.rootEl.scrollTop);
     this.rootEl.replaceChildren();
     this.rootEl.style.setProperty("--bucket-row-height", `${this.plugin.data.settings.rowHeight}px`);
     this.syncNativeActions();
@@ -2219,6 +2379,25 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
         list.appendChild(this.renderBucket(bucket));
     }
     this.rootEl.appendChild(list);
+    this.rootEl.scrollTop = this.scrollTopBySpace.get(activeSpace.id) || 0;
+    const tabs = this.rootEl.querySelector(".bucket-space-tabs");
+    if (tabs) {
+      tabs.scrollLeft = previousScrollLeft;
+      const activeTab = tabs.querySelector(".is-active");
+      if (activeTab && previousSpaceId !== activeSpace.id && tabs.clientWidth > 0) {
+        const viewport = tabs.getBoundingClientRect();
+        const target = activeTab.getBoundingClientRect();
+        if (target.left < viewport.left || target.width > viewport.width)
+          tabs.scrollLeft += target.left - viewport.left;
+        else if (target.right > viewport.right)
+          tabs.scrollLeft += target.right - viewport.right;
+      }
+    }
+    this.renderedSpaceId = activeSpace.id;
+    for (const id of this.scrollTopBySpace.keys()) {
+      if (!this.plugin.data.spaces.some((space) => space.id === id))
+        this.scrollTopBySpace.delete(id);
+    }
   }
   renderSpaceSwitcher() {
     const wrapper = createDiv();
@@ -2247,7 +2426,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       const icon = createSpan();
       icon.className = "bucket-space-tab-icon";
       icon.setAttribute("aria-hidden", "true");
-      (0, import_obsidian3.setIcon)(icon, space.icon || DEFAULT_SPACE_ICON);
+      (0, import_obsidian4.setIcon)(icon, space.icon || DEFAULT_SPACE_ICON);
       button.appendChild(icon);
       if (this.plugin.data.settings.showSpaceNames) {
         const label = createSpan();
@@ -2284,10 +2463,15 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     addButton.title = localize("\u65B0\u5EFA Project / Area");
     const addIcon = createSpan();
     addIcon.setAttribute("aria-hidden", "true");
-    (0, import_obsidian3.setIcon)(addIcon, "plus");
+    (0, import_obsidian4.setIcon)(addIcon, "plus");
     addButton.appendChild(addIcon);
     addButton.addEventListener("click", () => this.plugin.promptCreateSpace());
     switcher.appendChild(tabs);
+    const spaceMenu = iconButton(switcher, "more-horizontal", localize("\u5F53\u524D Space \u7684\u66F4\u591A\u64CD\u4F5C"), (event) => {
+      this.showSpaceMenu(event, this.plugin.activeSpace);
+    });
+    spaceMenu.classList.add("bucket-space-menu");
+    spaceMenu.setAttribute("aria-haspopup", "menu");
     switcher.appendChild(addButton);
     wrapper.appendChild(switcher);
     return wrapper;
@@ -2333,7 +2517,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     wrapper.className = "bucket-entry-wrapper bucket-pinned-entry";
     wrapper.dataset.entryId = entry.id;
     const target = this.app.vault.getAbstractFileByPath(entry.path);
-    const validFolder = entry.type === "folder" && target instanceof import_obsidian3.TFolder ? target : null;
+    const validFolder = entry.type === "folder" && target instanceof import_obsidian4.TFolder ? target : null;
     const validFile = entry.type === "file" && isBucketFile2(target) ? target : null;
     const missing = validFolder === null && validFile === null;
     const row = createDiv();
@@ -2375,7 +2559,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     const leading = createSpan();
     leading.className = "bucket-entry-icon";
     leading.setAttribute("aria-hidden", "true");
-    (0, import_obsidian3.setIcon)(leading, entry.type === "folder" ? "folder" : "file-text");
+    (0, import_obsidian4.setIcon)(leading, entry.type === "folder" ? "folder" : "file-text");
     row.appendChild(leading);
     const label = createEl("button");
     label.type = "button";
@@ -2391,7 +2575,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
           return true;
         });
       } else {
-        new import_obsidian3.Notice(localize`找不到目标：${entry.path}`);
+        new import_obsidian4.Notice(localize`找不到目标：${entry.path}`);
       }
     });
     row.appendChild(label);
@@ -2469,7 +2653,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     const bucketIcon = createSpan();
     bucketIcon.className = "bucket-leading-icon";
     bucketIcon.setAttribute("aria-hidden", "true");
-    (0, import_obsidian3.setIcon)(bucketIcon, "layers");
+    (0, import_obsidian4.setIcon)(bucketIcon, "layers");
     header.appendChild(bucketIcon);
     const name = createEl("button");
     name.type = "button";
@@ -2535,7 +2719,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     wrapper.className = "bucket-entry-wrapper";
     wrapper.dataset.entryId = entry.id;
     const target = this.app.vault.getAbstractFileByPath(entry.path);
-    const validFolder = entry.type === "folder" && target instanceof import_obsidian3.TFolder ? target : null;
+    const validFolder = entry.type === "folder" && target instanceof import_obsidian4.TFolder ? target : null;
     const validFile = entry.type === "file" && isBucketFile2(target) ? target : null;
     const missing = validFolder === null && validFile === null;
     const row = createDiv();
@@ -2593,7 +2777,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     const leading = createSpan();
     leading.className = "bucket-entry-icon";
     leading.setAttribute("aria-hidden", "true");
-    (0, import_obsidian3.setIcon)(leading, entry.type === "folder" ? "folder" : "file-text");
+    (0, import_obsidian4.setIcon)(leading, entry.type === "folder" ? "folder" : "file-text");
     row.appendChild(leading);
     const label = createEl("button");
     label.type = "button";
@@ -2609,7 +2793,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
           return true;
         });
       } else {
-        new import_obsidian3.Notice(localize`找不到目标：${entry.path}`);
+        new import_obsidian4.Notice(localize`找不到目标：${entry.path}`);
       }
     });
     row.appendChild(label);
@@ -2641,14 +2825,14 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   renderFolderChildren(parent, rootEntry, folder, depth2, rootAriaLevel = 2) {
     var _a;
     const order = getFolderSortOrder(this.plugin.data.settings, folder.path);
-    const children = folder.children.filter((child) => (child instanceof import_obsidian3.TFolder || isBucketFile2(child)) && !isPathExcluded(rootEntry, child.path)).map((child) => {
+    const children = folder.children.filter((child) => (child instanceof import_obsidian4.TFolder || isBucketFile2(child)) && !isPathExcluded(rootEntry, child.path)).map((child) => {
       var _a2, _b, _c;
       return { child, key: {
         name: child.name,
         path: child.path,
-        folder: child instanceof import_obsidian3.TFolder,
-        ctime: child instanceof import_obsidian3.TFile ? (_a2 = child.stat) == null ? void 0 : _a2.ctime : void 0,
-        created: order === "created-desc" && child instanceof import_obsidian3.TFile && child.extension.toLowerCase() === "md" ? (_c = (_b = this.app.metadataCache.getFileCache(child)) == null ? void 0 : _b.frontmatter) == null ? void 0 : _c.created : void 0
+        folder: child instanceof import_obsidian4.TFolder,
+        ctime: child instanceof import_obsidian4.TFile ? (_a2 = child.stat) == null ? void 0 : _a2.ctime : void 0,
+        created: order === "created-desc" && child instanceof import_obsidian4.TFile && child.extension.toLowerCase() === "md" ? (_c = (_b = this.app.metadataCache.getFileCache(child)) == null ? void 0 : _b.frontmatter) == null ? void 0 : _c.created : void 0
       } };
     }).sort((left, right) => compareFolderChildren(left.key, right.key, order)).map((item) => item.child);
     for (const child of children) {
@@ -2658,7 +2842,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       const row = createDiv();
       row.className = "bucket-entry-row bucket-nested-row";
       row.dataset.bucketPath = child.path;
-      row.dataset.bucketKind = child instanceof import_obsidian3.TFolder ? "folder" : "file";
+      row.dataset.bucketKind = child instanceof import_obsidian4.TFolder ? "folder" : "file";
       row.style.setProperty("--bucket-indent", `${depth2 * 14}px`);
       row.setAttribute("role", "treeitem");
       row.setAttribute("aria-level", String(depth2 + rootAriaLevel));
@@ -2667,7 +2851,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
         row.classList.add("is-active");
         row.setAttribute("aria-current", "page");
       }
-      if (child instanceof import_obsidian3.TFolder) {
+      if (child instanceof import_obsidian4.TFolder) {
         const expanded = (rootEntry.expandedPaths || []).includes(child.path);
         const disclosure = iconButton(
           row,
@@ -2683,7 +2867,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
         const icon = createSpan();
         icon.className = "bucket-entry-icon";
         icon.setAttribute("aria-hidden", "true");
-        (0, import_obsidian3.setIcon)(icon, "folder");
+        (0, import_obsidian4.setIcon)(icon, "folder");
         row.appendChild(icon);
         const label = createEl("button");
         label.type = "button";
@@ -2710,7 +2894,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
         const icon = createSpan();
         icon.className = "bucket-entry-icon";
         icon.setAttribute("aria-hidden", "true");
-        (0, import_obsidian3.setIcon)(icon, "file-text");
+        (0, import_obsidian4.setIcon)(icon, "file-text");
         row.appendChild(icon);
         const label = createEl("button");
         label.type = "button";
@@ -2746,7 +2930,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   showSpaceMenu(event, space) {
     event.preventDefault();
-    const menu = new import_obsidian3.Menu();
+    const menu = new import_obsidian4.Menu();
     menu.addItem((item) => {
       item.setTitle(localize("\u91CD\u547D\u540D Space\u2026")).setIcon("pencil").onClick(() => this.plugin.promptRenameSpace(space));
     });
@@ -2765,11 +2949,11 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     const button = iconButton(actions, "plus", localize`在 ${path} 中新建…`, (event) => {
       event.stopPropagation();
       const target = this.app.vault.getAbstractFileByPath(path);
-      if (!(target instanceof import_obsidian3.TFolder)) {
-        new import_obsidian3.Notice(localize("\u8FD9\u4E2A\u6587\u4EF6\u5939\u5DF2\u4E0D\u5B58\u5728\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9\u4F4D\u7F6E\u3002"));
+      if (!(target instanceof import_obsidian4.TFolder)) {
+        new import_obsidian4.Notice(localize("\u8FD9\u4E2A\u6587\u4EF6\u5939\u5DF2\u4E0D\u5B58\u5728\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9\u4F4D\u7F6E\u3002"));
         return;
       }
-      const menu = new import_obsidian3.Menu();
+      const menu = new import_obsidian4.Menu();
       this.addFolderCreationItems(menu, target);
       const bounds = button.getBoundingClientRect();
       menu.showAtPosition({ x: bounds.left, y: bounds.bottom });
@@ -2784,7 +2968,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
     menu.addItem((item) => item.setTitle(localize("\u65B0\u5EFA\u5B50\u6587\u4EF6\u5939\u2026")).setIcon("folder-plus").onClick(() => this.plugin.promptCreateFolder(target.path)));
   }
   addCreationMenu(menu, target) {
-    if (!(target instanceof import_obsidian3.TFolder))
+    if (!(target instanceof import_obsidian4.TFolder))
       return;
     this.addFolderCreationItems(menu, target);
     this.plugin.addFolderSortMenu(menu, target);
@@ -2792,7 +2976,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   showTargetMenu(event, target) {
     event.preventDefault();
-    const menu = new import_obsidian3.Menu();
+    const menu = new import_obsidian4.Menu();
     const file = this.app.vault.getAbstractFileByPath(target.path);
     this.addCreationMenu(menu, file);
     if (isBucketFile2(file)) {
@@ -2816,7 +3000,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   showPinnedMenu(event, entry) {
     event.preventDefault();
     const target = { type: entry.type, path: entry.path, label: entry.label };
-    const menu = new import_obsidian3.Menu();
+    const menu = new import_obsidian4.Menu();
     const file = this.app.vault.getAbstractFileByPath(entry.path);
     this.addCreationMenu(menu, file);
     if (isBucketFile2(file)) {
@@ -2839,7 +3023,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   showBucketMenu(event, bucket) {
     event.preventDefault();
-    const menu = new import_obsidian3.Menu();
+    const menu = new import_obsidian4.Menu();
     menu.addItem((item) => {
       item.setTitle(localize("\u6DFB\u52A0\u7B14\u8BB0\u6216\u6587\u4EF6\u5939\u2026")).setIcon("plus").onClick(() => this.plugin.promptAddTarget(bucket.id));
     });
@@ -2854,7 +3038,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
   }
   showEntryMenu(event, bucket, entry) {
     event.preventDefault();
-    const menu = new import_obsidian3.Menu();
+    const menu = new import_obsidian4.Menu();
     const entryTarget = { type: entry.type, path: entry.path, label: entry.label };
     const target = this.app.vault.getAbstractFileByPath(entry.path);
     const entryIndex = bucket.entries.findIndex((candidate) => candidate.id === entry.id);
@@ -2874,7 +3058,7 @@ var BucketSidebarView = class extends import_obsidian3.ItemView {
       item.setTitle(localize("\u590D\u5236\u5F15\u7528\u5230\u53E6\u4E00\u4E2A Bucket\u2026")).setIcon("copy").onClick(() => {
         const choices = this.plugin.activeSpace.buckets.filter((candidate) => candidate.id !== bucket.id);
         if (choices.length === 0) {
-          new import_obsidian3.Notice(localize("\u8FD8\u6CA1\u6709\u5176\u4ED6 Bucket"));
+          new import_obsidian4.Notice(localize("\u8FD8\u6CA1\u6709\u5176\u4ED6 Bucket"));
           return;
         }
         new BucketPickerModal(this.app, choices, localize("\u9009\u62E9\u8981\u590D\u5236\u5230\u7684 Bucket\u2026"), (targetBucket) => {

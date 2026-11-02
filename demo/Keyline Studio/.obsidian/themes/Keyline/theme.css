@@ -1,5 +1,5 @@
 /*
- * Keyline 0.8.23 — Community release cleanup; preserved layout and colors
+ * Keyline 0.8.27 — Restore sidebar edges on Obsidian 1.14
  *
  * A quiet, macOS-inspired Obsidian shell with a neutral writing canvas and
  * a floating navigation surface. This theme deliberately leaves file commands,
@@ -362,6 +362,10 @@ body:not(.is-mobile).show-ribbon .workspace.is-left-sidedock-open {
 body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
   isolation: isolate;
 
+  /* The card extends behind the ribbon, outside this dock's bounds. Keep
+     that paint visible; inner file/view containers retain native scrolling. */
+  overflow: visible;
+
   /* Let the shadow fade over the canvas, while the native ribbon remains
      above the card extending behind it. Do not lift this above menus. */
   z-index: calc(var(--layer-sidedock) - 1);
@@ -409,12 +413,14 @@ body:not(.is-mobile) .workspace > .mod-sidedock.mod-left-split:not(.is-sidedock-
   padding-block: var(--ncl-space-panel);
 }
 
-body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left,
-body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left::before {
+/* Obsidian 1.14 names the ribbon mod-primary without the legacy mod-left
+   alias. Keep both hosts transparent so the ribbon cannot cover the card. */
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon:is(.mod-left, .mod-primary),
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon:is(.mod-left, .mod-primary)::before {
   background: transparent;
 }
 
-body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon.mod-left {
+body:not(.is-mobile) .workspace.is-left-sidedock-open > .workspace-ribbon:is(.mod-left, .mod-primary) {
   padding-bottom: var(--ncl-sidebar-card-inset);
 
   /* Center within the visible card, whose left edge is inset from the window. */
@@ -659,14 +665,14 @@ body:not(.is-mobile) :is(.workspace-ribbon, .view-header, .workspace-tab-header-
   --titlebar-background-focused: var(--ncl-sidebar);
 }
 
-body:not(.is-mobile) .workspace-ribbon.mod-left {
+body:not(.is-mobile) .workspace-ribbon:is(.mod-left, .mod-primary) {
   --titlebar-background: var(--ncl-sidebar);
   --titlebar-background-focused: var(--ncl-sidebar);
 }
 
 /* A collapsed dock leaves a toolbar on the window chrome, not a second
    rectangular canvas. Core's header drag region and all native geometry stay. */
-body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left {
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon:is(.mod-left, .mod-primary) {
   --ribbon-background-collapsed: var(--ncl-chrome);
   --titlebar-background: var(--ncl-chrome);
   --titlebar-background-focused: var(--ncl-chrome);
@@ -681,12 +687,12 @@ body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.
   padding-inline: var(--ncl-space-panel) 0;
 }
 
-body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left :is(.side-dock-actions, .side-dock-settings) {
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon:is(.mod-left, .mod-primary) :is(.side-dock-actions, .side-dock-settings) {
   /* Native 44px ribbons must still fit the unchanged button hit targets. */
   padding-inline: 0;
 }
 
-body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon.mod-left::before {
+body:not(.is-mobile) .workspace:not(.is-left-sidedock-open) > .workspace-ribbon:is(.mod-left, .mod-primary)::before {
   background: var(--ncl-chrome);
   border: 0;
   box-shadow: none;
@@ -875,7 +881,7 @@ body:not(.is-mobile) .workspace > .ncl-shell-profile.is-compact {
 }
 .ncl-shell-profile.is-compact :is(.workspace-drawer-vault-name, .workspace-drawer-vault-switcher-icon, .ncl-shell-secondary) { display: none; }
 
-body:not(.is-mobile) .workspace > .workspace-ribbon.mod-left.ncl-shell-ribbon {
+body:not(.is-mobile) .workspace > .workspace-ribbon:is(.mod-left, .mod-primary).ncl-shell-ribbon {
   padding-bottom: calc(var(--ncl-shell-footer-height, 0px) + 8px);
 }
 
@@ -1297,9 +1303,30 @@ body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-
 /* stylelint-disable-next-line selector-class-pattern -- Obsidian-owned class; cannot rename. */
 .HyperMD-codeblock {
   border: 1px solid var(--background-modifier-border);
-  border-radius: 10px;
   background: var(--background-primary-alt);
 }
+
+.markdown-rendered pre {
+  border-radius: 10px;
+}
+
+/* CodeMirror renders one element per source line. Round only the block's
+   outer corners so hard breaks and blank lines keep a continuous edge. */
+/* stylelint-disable selector-class-pattern -- Obsidian-owned classes; cannot rename. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+  border-radius: 0;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock-begin {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock-end {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+/* stylelint-enable selector-class-pattern */
 
 .markdown-rendered hr,
 .cm-line.hr {
@@ -1309,6 +1336,103 @@ body:not(.is-mobile) .mod-root .workspace-split.mod-horizontal > * > .workspace-
 .markdown-rendered mark {
   padding: 0.05em 0.12em;
   border-radius: 3px;
+}
+
+/* -------------------------------------------------------------------------
+   Markdown tables — one report-style appearance, no semantic inference.
+   Scope variables to tables, not the app: raw Markdown, Bases and settings
+   keep their native colours, sizing and controls.
+   ---------------------------------------------------------------------- */
+.theme-light {
+  --ncl-table-header-bg: #142d4e;
+  --ncl-table-rule: #cdd6e0;
+}
+
+.theme-dark {
+  --ncl-table-header-bg: #263e5a;
+  --ncl-table-rule: #405065;
+}
+
+.markdown-rendered table,
+.markdown-source-view.mod-cm6 .cm-table-widget table {
+  --table-header-background: var(--ncl-table-header-bg);
+  --table-header-background-hover: var(--ncl-table-header-bg);
+  --table-header-color: #fff;
+  --table-header-weight: 600;
+  --table-header-border-color: var(--ncl-table-header-bg);
+  --table-header-border-width: 0;
+  --table-border-color: var(--ncl-table-rule);
+  --table-column-first-border-width: 0;
+  --table-column-last-border-width: 0;
+  --table-row-last-border-width: 1px;
+  --table-line-height: 1.5;
+  --table-text-size: var(--font-text-size);
+  --table-text-color: var(--text-normal);
+  --table-column-min-width: 6em;
+  --table-column-alt-background: transparent;
+  --table-row-alt-background: transparent;
+  --ncl-table-cell-padding: 0.4em 0.75em;
+
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Leave Markdown's column alignment untouched. Every body row follows the
+   same rule, including rows named "Total" or ending with a forecast year. */
+.markdown-rendered table > :is(thead, tbody, tfoot) > tr > :is(th, td),
+.markdown-source-view.mod-cm6 .cm-table-widget table > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  padding: var(--ncl-table-cell-padding);
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: var(--table-border-color);
+}
+
+.markdown-rendered table > thead > tr > th,
+.markdown-source-view.mod-cm6 .cm-table-widget table > thead > tr > th {
+  background: var(--ncl-table-header-bg);
+  color: var(--table-header-color);
+  border-color: var(--ncl-table-header-bg);
+  line-height: var(--table-line-height);
+}
+
+/* Native Live Preview places padding on the editable wrapper. Keeping it
+   there preserves cell selection, add-row/column buttons and drag handles. */
+.markdown-source-view.mod-cm6 .cm-table-widget .table-wrapper {
+  min-width: 100%;
+}
+
+.markdown-source-view.mod-cm6 .cm-table-widget table > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  padding: 0;
+}
+
+.markdown-source-view.mod-cm6 .cm-table-widget .table-cell-wrapper {
+  padding: var(--ncl-table-cell-padding);
+}
+
+/* Do not switch to the document's looser leading when a cell gains focus. */
+.markdown-source-view.mod-cm6 .cm-table-widget .cm-content {
+  line-height: var(--table-line-height);
+}
+
+/* Header editors and links must remain readable against the dark header. */
+.markdown-rendered table > thead,
+.markdown-source-view.mod-cm6 .cm-table-widget table > thead {
+  --table-column-alt-background: var(--ncl-table-header-bg);
+  --text-normal: #fff;
+  --text-muted: #d7e6f5;
+  --caret-color: #fff;
+  --link-color: #e2edff;
+  --link-color-hover: #fff;
+  --link-external-color: #e2edff;
+  --link-external-color-hover: #fff;
+}
+
+.markdown-rendered table > thead code,
+.markdown-source-view.mod-cm6 .cm-table-widget table > thead .cm-inline-code {
+  background: rgb(255 255 255 / 10%);
+  border-color: rgb(255 255 255 / 25%);
+  color: inherit;
 }
 
 .callout {
@@ -1474,6 +1598,8 @@ body:not(.is-mobile) .workspace-leaf-content[data-type="markdown"] .metadata-add
 }
 
 .workspace-leaf-content[data-type="file-explorer"] > .nav-header {
+  /* Keep the native filter row above the scrollable tree in long Vaults. */
+  flex-shrink: 0;
   min-height: var(--ncl-sidebar-toolbar-height);
   justify-content: flex-end;
   padding: 0 var(--ncl-sidebar-gutter);
@@ -2157,4 +2283,105 @@ textarea:focus,
   .inline-title {
     font-size: 30px;
   }
+}
+
+/* Mobile note surfaces. Keep native navigation, keyboard insets and property
+   editing intact; none of these rules apply to desktop windows or settings. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] > .view-content {
+  --ncl-page-top-padding: 16px;
+  --ncl-page-padding-block: 20px;
+  --file-margins: 16px max(18px, var(--safe-area-inset-right, 0px)) 20px max(18px, var(--safe-area-inset-left, 0px));
+  --ncl-editor-line-height: 1.65;
+  --ncl-reading-line-height: 1.7;
+  --ncl-paragraph-gap: 0.85em;
+  --ncl-paragraph-before: 0.85em;
+  --ncl-paragraph-after: 0.85em;
+  --ncl-heading-before: 1.4em;
+  --ncl-heading-after: 0.55em;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .inline-title {
+  margin-bottom: 16px;
+  font-size: 1.65em;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-container {
+  --metadata-label-font: var(--font-interface);
+  --metadata-input-font: var(--font-interface);
+  --metadata-label-font-size: max(16px, var(--font-text-size));
+  --metadata-input-font-size: max(16px, var(--font-text-size));
+  --metadata-label-width: clamp(96px, 36%, 160px);
+  --metadata-input-height: max(44px, calc(var(--font-text-size) * 2.5));
+  --metadata-input-padding: 8px 6px;
+  --metadata-property-padding: 0;
+  --metadata-gap: 0;
+  --metadata-padding: 0;
+  --metadata-divider-width: 0;
+  --metadata-property-box-shadow-focus: inset 0 0 0 1px var(--interactive-accent);
+
+  margin-block: 0 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: var(--font-text-size);
+}
+
+/* Core's phone card extends beyond the content column. Align it with the
+   title and body instead; the native collapse/hidden states stay in charge. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-content {
+  width: 100%;
+  transform: none;
+  padding: 6px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+  background: var(--background-primary-alt);
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-properties-heading {
+  min-height: 44px;
+  margin-bottom: 4px;
+  padding-block: 8px;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-properties-title {
+  font-size: max(13px, calc(var(--font-text-size) * 0.85));
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-property {
+  min-height: 44px;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] :is(.metadata-property-key, .metadata-property-value) {
+  min-width: 0;
+}
+
+/* Override generic form-field chrome, including on focus. Keep the row's
+   native focus indication and checkbox semantics; never hide property data. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-container
+  :is(input.metadata-property-key-input, .metadata-input:not([type="checkbox"]),
+      .multi-select-container, .multi-select-input) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.is-mobile .workspace-leaf-content[data-type="markdown"] .metadata-add-button {
+  min-height: 44px;
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Remove only the theme's desktop end-of-note spacer. Do not override core's
+   inline virtualisation padding or its navigation/keyboard safe-area math. */
+body.is-mobile .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-reading-view > .markdown-preview-view > .markdown-preview-sizer,
+body.is-mobile .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller > .cm-sizer {
+  padding-bottom: 0;
 }

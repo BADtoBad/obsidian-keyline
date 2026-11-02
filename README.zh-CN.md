@@ -23,9 +23,9 @@
 
 ## 体验示例库
 
-从 Releases 下载 **Keyline-Studio-Demo-0.8.23.zip**，解压后在 Obsidian 中选择“打开本地仓库”，从 `00 Home/Studio showcase.md` 开始。
+下载 [**Keyline-Studio-Demo-2026-11-03.zip**](https://github.com/BADtoBad/obsidian-keyline/releases/download/0.8.28/Keyline-Studio-Demo-2026-11-03.zip)，解压后将其中的 **Keyline Studio** 文件夹作为独立库打开。本次包内更新为 **Keyline 0.8.28、With Keyline 1.3.0、Bucket Sidebar 0.5.8**，排版、报告式表格、分类图标和 Studio／Focus 布局与当前展示图一致。完整桌面套件需要 **Obsidian 1.13.7 或更高版本**。
 
-示例包含 27 篇相互链接的英文笔记、项目页面、研究资料，以及原创 PDF、EPUB、图片、音频与 Canvas 样例，全部是虚构内容。预置工作区把主题、分类图标、Bucket 分组与工作区导航放在一起展示，让你先体验，再配置自己的 Vault。查看并按需启用附带的可选插件，即可使用相应功能。EPUB 阅读本身需另装阅读器。
+检查并允许配套插件运行后，在底部工作区菜单选择 **Studio**，即可恢复布局并打开 `00 Home/Studio showcase.md`。27 篇英文笔记和 PDF、EPUB、图片、音频、Canvas 素材均为虚构示例；EPUB 阅读需另装阅读器。详见[包内指南](demo/README.txt)及[验证记录](demo/VERIFICATION.json)，旧下载包仍保留在发行历史中。
 
 ## 推荐搭配
 

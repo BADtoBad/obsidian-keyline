@@ -83,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 292
+    "width": 320
   },
   "right": {
     "id": "showcase-right",
@@ -107,7 +107,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 292
+    "width": 320
   },
   "left-ribbon": {
     "hiddenItems": {

@@ -1,7 +1,8 @@
 {
   "cssTheme": "Keyline",
-  "theme": "obsidian",
+  "theme": "moonstone",
   "baseFontSize": 16,
   "interfaceFontFamily": "-apple-system",
-  "textFontFamily": "-apple-system"
+  "textFontFamily": "-apple-system",
+  "showRibbon": true
 }
