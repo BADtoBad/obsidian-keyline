@@ -132,7 +132,7 @@ function typographyVariables(values) {
   return result;
 }
 
-// node_modules/.pnpm/@lezer+common@1.5.3/node_modules/@lezer/common/dist/index.js
+// ../../../release/public/with-keyline/node_modules/.pnpm/@lezer+common@1.5.3/node_modules/@lezer/common/dist/index.js
 var DefaultBufferLength = 1024;
 var nextPropID = 0;
 var Range = class {
@@ -1679,7 +1679,7 @@ var StringInput = class {
 };
 var stoppedInner = new NodeProp({ perNode: true });
 
-// node_modules/.pnpm/@lezer+highlight@1.2.5/node_modules/@lezer/highlight/dist/index.js
+// ../../../release/public/with-keyline/node_modules/.pnpm/@lezer+highlight@1.2.5/node_modules/@lezer/highlight/dist/index.js
 var nextTagID = 0;
 var Tag = class {
   /**
@@ -2303,7 +2303,7 @@ var classHighlighter = tagHighlighter([
   { tag: tags.punctuation, class: "tok-punctuation" }
 ]);
 
-// node_modules/.pnpm/@lezer+markdown@1.8.0/node_modules/@lezer/markdown/dist/index.js
+// ../../../release/public/with-keyline/node_modules/.pnpm/@lezer+markdown@1.8.0/node_modules/@lezer/markdown/dist/index.js
 var CompositeBlock = class {
   static create(type, value, from, parentHash, end) {
     let hash = parentHash + (parentHash << 8) + type + (value << 4) | 0;
@@ -5549,6 +5549,7 @@ var defaults = Object.freeze({
   fileNavigation: true,
   workspaces: true,
   typographyEnabled: true,
+  paragraphFlow: true,
   typography: normalizeTypography(null),
   ...insertDefaults,
   fullwidthLinks: true,
@@ -5587,6 +5588,7 @@ function decodePreferences(value) {
     fileNavigation: typeof raw.fileNavigation === "boolean" ? raw.fileNavigation : defaults.fileNavigation,
     workspaces: typeof raw.workspaces === "boolean" ? raw.workspaces : defaults.workspaces,
     typographyEnabled: typeof raw.typographyEnabled === "boolean" ? raw.typographyEnabled : defaults.typographyEnabled,
+    paragraphFlow: typeof raw.paragraphFlow === "boolean" ? raw.paragraphFlow : defaults.paragraphFlow,
     typography: normalizeTypography(raw.typography),
     fullwidthLinks: typeof raw.fullwidthLinks === "boolean" ? raw.fullwidthLinks : defaults.fullwidthLinks,
     hideMarkers: typeof raw.hideMarkers === "boolean" ? raw.hideMarkers : defaults.hideMarkers,
@@ -6292,6 +6294,8 @@ var strings = {
   toolbar: ["Selection toolbar", "\u9009\u533A\u5DE5\u5177\u680F"],
   toolbarHint: ["Show formatting after selecting text. Programmatic placeholders do not open it.", "\u9009\u62E9\u6587\u5B57\u540E\u663E\u793A\u683C\u5F0F\u5DE5\u5177\u680F\uFF1B\u81EA\u52A8\u9009\u4E2D\u7684\u5360\u4F4D\u6587\u5B57\u4E0D\u89E6\u53D1\u3002"],
   focusToolbar: ["Focus selection toolbar", "\u805A\u7126\u9009\u533A\u5DE5\u5177\u680F"],
+  paragraphFlow: ["Paragraph editing", "\u6BB5\u843D\u7F16\u8F91"],
+  paragraphFlowHint: ["Live Preview: Enter starts a paragraph, Shift+Enter adds a line break. Markdown separators share one paragraph gap. Lists and code keep their native keys.", "\u5B9E\u65F6\u9884\u89C8\uFF1AEnter \u65B0\u5EFA\u6BB5\u843D\uFF0CShift+Enter \u6BB5\u5185\u6362\u884C\u3002Markdown \u5206\u6BB5\u7A7A\u884C\u53EA\u663E\u793A\u4E00\u6B21\u6BB5\u95F4\u8DDD\uFF0C\u5217\u8868\u548C\u4EE3\u7801\u4FDD\u7559\u539F\u6709\u6309\u952E\u884C\u4E3A\u3002"],
   typographyEnabled: ["Custom typography", "\u81EA\u5B9A\u4E49\u6392\u7248"],
   typographyHint: ["Applies to Markdown panes only. Disabling restores the previous styles.", "\u4EC5\u5F71\u54CD Markdown \u7A97\u683C\uFF1B\u5173\u95ED\u540E\u6062\u590D\u5148\u524D\u6837\u5F0F\u3002"],
   reset: ["Reset", "\u91CD\u7F6E"],
@@ -8173,7 +8177,8 @@ var mobileUnavailable = /* @__PURE__ */ new Set([
   "hideMarkers",
   "markSuspicious",
   "pasteHints",
-  "fullwidthLinks"
+  "fullwidthLinks",
+  "paragraphFlow"
 ]);
 function platformPreferences(preferences, mobile) {
   if (!mobile)
@@ -8207,6 +8212,7 @@ var rows = [
   { section: "interface", key: "fileNavigation", label: "fileNavigation", hint: "fileNavigationHint" },
   { section: "interface", key: "workspaces", label: "workspace", hint: "workspaceHint" },
   { section: "typography", key: "typographyEnabled", label: "typographyEnabled", hint: "typographyHint" },
+  { section: "typography", key: "paragraphFlow", label: "paragraphFlow", hint: "paragraphFlowHint" },
   { section: "icons", key: "fileIcons", label: "fileIcons", hint: "iconsHint" },
   { section: "icons", key: "monochrome", label: "monochrome" },
   { section: "editing", key: "editingEnabled", label: "editingEnabled", hint: "editingEnabledHint" },
@@ -8878,8 +8884,118 @@ function editorRhythm(text2) {
   return result;
 }
 
+// src/domain/paragraph-flow.ts
+var prose = (block) => (block == null ? void 0 : block.kind) === "heading" ? "heading" : (block == null ? void 0 : block.kind) === "paragraph" ? "paragraph" : void 0;
+var blank = (value) => /^[ \t\r\n]*$/u.test(value);
+function containing(items, at) {
+  let low = 0, high = items.length - 1;
+  while (low <= high) {
+    const mid = low + high >>> 1;
+    if (items[mid].from <= at)
+      low = mid + 1;
+    else
+      high = mid - 1;
+  }
+  const item = items[high];
+  return item && at <= item.to ? item : void 0;
+}
+function paragraphRhythm(text2, drafts = []) {
+  const base = editorRhythm(text2), separators = [];
+  if (text2.length > MAX_RHYTHM_UNITS)
+    return { ...base, separators };
+  const model = parseBlocks(text2);
+  const roots2 = model.blocks.filter((block) => block.parent === null);
+  const phantom = (at) => ({ id: `draft:${at}`, kind: "paragraph", from: at, to: at, parent: null, children: [], depth: 0, locked: false });
+  const editable = [];
+  const lastStart = text2.lastIndexOf("\n") + 1;
+  if (blank(text2.slice(lastStart)) && !containing(roots2, lastStart))
+    editable.push(lastStart);
+  for (const draft of drafts)
+    if (draft >= 0 && draft <= text2.length && (draft === 0 || text2[draft - 1] === "\n")) {
+      const end = text2.indexOf("\n", draft);
+      if (blank(text2.slice(draft, end < 0 ? text2.length : end)) && !containing(roots2, draft) && !editable.includes(draft))
+        editable.push(draft);
+    }
+  const blocks2 = [...roots2, ...editable.map(phantom)].sort((a, b) => a.from - b.from);
+  const add = (from, to, previous, next) => {
+    var _a, _b;
+    const value = text2.slice(from, to);
+    if (to <= from || !blank(value) || ((_b = (_a = value.match(/\n/gu)) == null ? void 0 : _a.length) != null ? _b : 0) < (previous ? 2 : 1))
+      return;
+    const before = prose(next), after = prose(previous);
+    const gap = { at: from, side: 1, before, after };
+    if (before === "paragraph" && after === "paragraph") {
+      gap.direct = "paragraph";
+      delete gap.before;
+      delete gap.after;
+    }
+    if ((previous == null ? void 0 : previous.kind) === "list" && (next == null ? void 0 : next.kind) === "list")
+      gap.direct = "paragraph";
+    separators.push({ from, to, replaceFrom: previous ? from + value.indexOf("\n") + 1 : from, gap });
+  };
+  for (let i = 0; i < blocks2.length; i++)
+    add(i ? blocks2[i - 1].to : 0, blocks2[i].from, blocks2[i - 1], blocks2[i]);
+  const covered2 = (at) => !!containing(separators, at);
+  const continuation = (at) => {
+    const b = containing(roots2, at);
+    return (b == null ? void 0 : b.kind) === "paragraph" && b.from < at;
+  };
+  const starts = new Set(blocks2.map((b) => b.from));
+  const lines = base.lines.filter((line) => !continuation(line.at) && (!covered2(line.at) || starts.has(line.at)));
+  const gaps = base.gaps.filter((gap) => !covered2(gap.at) && !(gap.side === -1 && continuation(gap.at)));
+  const rootLists = new Set(roots2.filter((block) => block.kind === "list").map((block) => block.id));
+  const items = model.blocks.filter((block) => block.kind === "item" && block.parent !== null && rootLists.has(block.parent));
+  const task = (item) => /^ {0,3}(?:[-+*]|\d{1,9}[.)])[ \t]+\[[^\]\r\n]\](?:[ \t]|$)/u.test(text2.slice(item.from, item.to));
+  for (let i = 1; i < items.length; i++) {
+    const previous = items[i - 1], next = items[i];
+    if (task(previous) !== task(next) && /^[ \t\r]*\n[ \t]*$/u.test(text2.slice(previous.to, next.from)))
+      gaps.push({ at: next.from, side: -1, direct: "paragraph" });
+  }
+  for (const at of editable) {
+    if (!lines.some((line) => line.at === at))
+      lines.push({ at, role: "paragraph" });
+    if (!covered2(at) && !gaps.some((gap) => gap.at === at && gap.side === -1))
+      gaps.push({ at, side: -1, before: "paragraph" });
+    if (at === text2.length && !gaps.some((gap) => gap.at === at && gap.side === 1))
+      gaps.push({ at, side: 1, after: "paragraph" });
+  }
+  return { lines, gaps, separators };
+}
+function paragraphEnter(text2, from, to, hardBreak = false) {
+  if (text2.length > MAX_RHYTHM_UNITS || from < 0 || to < from || to > text2.length || inProtectedSyntax(text2, from, to))
+    return null;
+  const roots2 = parseBlocks(text2).blocks.filter((b) => b.parent === null);
+  const block = roots2.find((b) => b.from <= from && b.to >= to);
+  if (block && block.kind !== "paragraph")
+    return null;
+  if (!block) {
+    const start2 = text2.lastIndexOf("\n", Math.max(0, from - 1)) + 1, end = text2.indexOf("\n", to);
+    if (!blank(text2.slice(start2, end < 0 ? text2.length : end)) || roots2.some((b) => b.from < to && b.to > from))
+      return null;
+  }
+  const start = from === 0 ? 0 : text2.lastIndexOf("\n", from - 1) + 1;
+  const row = text2.slice(start, text2.indexOf("\n", from) < 0 ? text2.length : text2.indexOf("\n", from));
+  if (/^(?:[ \t]|\^[\w-]+[ \t]*$)/u.test(row))
+    return null;
+  const insert = hardBreak ? "  \n" : "\n\n", anchor = from + insert.length;
+  return { from, to, insert, anchor, draft: hardBreak ? void 0 : anchor };
+}
+function paragraphJoin(text2, at, direction) {
+  var _a, _b;
+  const roots2 = parseBlocks(text2).blocks.filter((b) => b.parent === null);
+  const next = direction === -1 ? roots2.find((b) => b.from === at) : roots2.find((b) => b.from > at);
+  const previous = direction === 1 ? roots2.find((b) => b.to === at) : [...roots2].reverse().find((b) => b.to < at);
+  if (!next || !previous || next.kind !== "paragraph" || previous.kind !== "paragraph")
+    return null;
+  const separator = text2.slice(previous.to, next.from);
+  if (!blank(separator) || ((_b = (_a = separator.match(/\n/gu)) == null ? void 0 : _a.length) != null ? _b : 0) < 2)
+    return null;
+  return { from: previous.to, to: next.from, insert: "", anchor: previous.to };
+}
+
 // src/platform/editor-rhythm.ts
 var measureRhythm = import_state2.StateEffect.define();
+var newParagraph = import_state2.StateEffect.define();
 var RhythmWidget = class extends import_view2.WidgetType {
   constructor(gap, preview) {
     super();
@@ -8902,47 +9018,119 @@ var RhythmWidget = class extends import_view2.WidgetType {
   }
 };
 var EditorRhythmController = class {
-  constructor(preferences) {
+  constructor(preferences, app) {
     this.preferences = preferences;
+    this.app = app;
     this.views = /* @__PURE__ */ new Map();
     this.active = true;
   }
   extension() {
     const owner = this;
-    const build = (state) => {
+    const drafts = import_state2.StateField.define({
+      create: () => [],
+      update(value, transaction) {
+        var _a, _b;
+        const sameFile = ((_a = transaction.startState.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _a.file) === ((_b = transaction.state.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _b.file);
+        let next = sameFile ? value.map((at) => transaction.changes.mapPos(at, -1)) : [];
+        if (transaction.isUserEvent("undo") || transaction.isUserEvent("redo")) {
+          const line = transaction.state.doc.lineAt(transaction.state.selection.main.head);
+          if (!line.text.trim())
+            next.push(line.from);
+        }
+        for (const effect of transaction.effects)
+          if (effect.is(newParagraph))
+            next.push(...effect.value);
+        return [...new Set(next)].filter((at) => {
+          const line = transaction.state.doc.lineAt(Math.min(at, transaction.state.doc.length));
+          return line.from === at;
+        });
+      }
+    });
+    const flowing = (state) => owner.preferences().paragraphFlow === true && !!state.field(import_obsidian13.editorLivePreviewField, false) && (!owner.app || owner.app.workspace.getLeavesOfType("markdown").some((leaf) => {
       var _a;
+      return leaf.view.editor === ((_a = state.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _a.editor);
+    }));
+    const build = (state) => {
+      var _a, _b;
       if (!owner.active || !owner.preferences().typographyEnabled || !((_a = state.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _a.file) || state.doc.length > MAX_RHYTHM_UNITS)
         return import_view2.Decoration.none;
-      const plan = editorRhythm(state.doc.toString());
       const preview = !!state.field(import_obsidian13.editorLivePreviewField, false);
+      const plan = flowing(state) ? paragraphRhythm(state.doc.toString(), (_b = state.field(drafts, false)) != null ? _b : []) : { ...editorRhythm(state.doc.toString()), separators: [] };
       return import_view2.Decoration.set([
         ...plan.lines.map((line) => import_view2.Decoration.line({ class: `keyline-next-rhythm-${line.role}` }).range(line.at)),
-        ...plan.gaps.map((gap) => import_view2.Decoration.widget({ widget: new RhythmWidget(gap, preview), block: true, side: gap.side }).range(gap.at))
+        ...plan.gaps.map((gap) => import_view2.Decoration.widget({ widget: new RhythmWidget(gap, preview), block: true, side: gap.side }).range(gap.at)),
+        // Retain both surrounding line breaks. Covering the next line's start
+        // swallows Obsidian's line decorations (heading folds, list markers).
+        // For a single blank line, a zero-length inclusive block replacement
+        // occupies that empty line without touching either content line.
+        ...plan.separators.map((separator) => import_view2.Decoration.replace({
+          widget: new RhythmWidget(separator.gap, preview),
+          block: true,
+          inclusiveStart: true,
+          inclusiveEnd: true,
+          paragraphSeparator: true,
+          paragraphSeparatorFrom: separator.from,
+          paragraphSeparatorTo: separator.to
+        }).range(separator.replaceFrom, separator.to - 1))
       ], true);
     };
     const field = import_state2.StateField.define({
       create: build,
       update(value, transaction) {
         var _a, _b;
-        return transaction.docChanged || transaction.effects.some((effect) => effect.is(measureRhythm)) || ((_a = transaction.startState.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _a.file) !== ((_b = transaction.state.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _b.file) || transaction.startState.field(import_obsidian13.editorLivePreviewField, false) !== transaction.state.field(import_obsidian13.editorLivePreviewField, false) ? build(transaction.state) : value;
+        return transaction.docChanged || transaction.effects.some((effect) => effect.is(measureRhythm) || effect.is(newParagraph)) || ((_a = transaction.startState.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _a.file) !== ((_b = transaction.state.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _b.file) || transaction.startState.field(import_obsidian13.editorLivePreviewField, false) !== transaction.state.field(import_obsidian13.editorLivePreviewField, false) ? build(transaction.state) : value;
       },
       provide: (field2) => import_view2.EditorView.decorations.from(field2)
     });
-    return [field, import_view2.ViewPlugin.define((view) => {
-      let document2 = view.dom.ownerDocument;
-      owner.views.set(view, null);
-      return {
-        update() {
-          if (document2 !== view.dom.ownerDocument) {
-            document2 = view.dom.ownerDocument;
-            owner.schedule(view);
+    const edit2 = (view, key) => {
+      var _a, _b;
+      if (!owner.active || !owner.preferences().typographyEnabled || !flowing(view.state) || !view.hasFocus || view.composing || view.state.readOnly || ((_a = view.dom.parentElement) == null ? void 0 : _a.closest(".cm-editor")) || view.state.selection.ranges.length !== 1 || !((_b = view.state.field(import_obsidian13.editorInfoField, false)) == null ? void 0 : _b.file) || view.state.doc.length > MAX_RHYTHM_UNITS)
+        return false;
+      const range = view.state.selection.main, text2 = view.state.doc.toString();
+      const plan = key === "Enter" || key === "Shift-Enter" ? paragraphEnter(text2, range.from, range.to, key === "Shift-Enter") : range.empty ? paragraphJoin(text2, range.head, key === "Backspace" ? -1 : 1) : null;
+      if (!plan)
+        return false;
+      view.dispatch({
+        changes: { from: plan.from, to: plan.to, insert: plan.insert },
+        selection: { anchor: plan.anchor },
+        effects: plan.draft === void 0 ? [] : [newParagraph.of(view.state.doc.lineAt(range.from).text.trim() ? [plan.draft] : [view.state.doc.lineAt(range.from).from, plan.draft])],
+        scrollIntoView: true,
+        annotations: import_state2.Transaction.userEvent.of(key.includes("Enter") ? "input" : key === "Backspace" ? "delete.backward" : "delete.forward")
+      });
+      return true;
+    };
+    return [
+      field,
+      import_view2.ViewPlugin.define((view) => {
+        let document2 = view.dom.ownerDocument;
+        owner.views.set(view, null);
+        return {
+          update() {
+            if (document2 !== view.dom.ownerDocument) {
+              document2 = view.dom.ownerDocument;
+              owner.schedule(view);
+            }
+          },
+          destroy() {
+            owner.detach(view);
           }
-        },
-        destroy() {
-          owner.detach(view);
-        }
-      };
-    })];
+        };
+      }),
+      drafts,
+      import_view2.EditorView.atomicRanges.of((view) => {
+        const ranges = [];
+        view.state.field(field).between(0, view.state.doc.length, (_from, _to, value) => {
+          if (value.spec.paragraphSeparator)
+            ranges.push(import_view2.Decoration.replace({ inclusive: false }).range(value.spec.paragraphSeparatorFrom, value.spec.paragraphSeparatorTo));
+        });
+        return import_view2.Decoration.set(ranges, true);
+      }),
+      import_state2.Prec.high(import_view2.keymap.of([
+        { key: "Enter", run: (view) => edit2(view, "Enter"), shift: (view) => edit2(view, "Shift-Enter") },
+        { key: "Backspace", run: (view) => edit2(view, "Backspace") },
+        { key: "Delete", run: (view) => edit2(view, "Delete") }
+      ]))
+    ];
   }
   detach(view) {
     const frame = this.views.get(view);
@@ -15589,7 +15777,7 @@ var KeylineNext = class extends import_obsidian32.Plugin {
       var _a2;
       return (_a2 = this.typography) == null ? void 0 : _a2.dispose();
     });
-    this.rhythm = new EditorRhythmController(() => this.editorPreferences);
+    this.rhythm = new EditorRhythmController(() => this.editorPreferences, this.app);
     this.registerEditorExtension(this.rhythm.extension());
     this.register(() => {
       var _a2;

@@ -24,9 +24,11 @@ With the companions enabled, this same approach extends to interaction: file nam
 
 ## Try the example Vault
 
-Download [**Keyline-Studio-Demo-2026-11-03.zip**](https://github.com/BADtoBad/obsidian-keyline/releases/download/0.8.28/Keyline-Studio-Demo-2026-11-03.zip), unzip it, and open the enclosed **Keyline Studio** folder as a separate Vault. This refreshed bundle matches the current showcase: **Keyline 0.8.28**, **With Keyline 1.3.0** and **Bucket Sidebar 0.5.8**, with the same typography, report-style tables, icons and saved Studio/Focus layouts. The full desktop setup requires **Obsidian 1.13.7+**.
+Download [**Keyline-Studio-Demo-2026-11-08.zip**](https://github.com/BADtoBad/obsidian-keyline/releases/download/0.8.28/Keyline-Studio-Demo-2026-11-08.zip), unzip it, and open the enclosed **Keyline Studio** folder as a separate Vault. This refreshed bundle matches the current showcase: **Keyline 0.8.28**, **With Keyline 1.4.0** and **Bucket Sidebar 0.5.8**, with the same typography, report-style tables, icons and saved Studio/Focus layouts. The full desktop setup requires **Obsidian 1.13.7+**.
 
 Review and enable the bundled plugins, then choose **Studio** in the bottom workspace menu to restore the layout and open `00 Home/Studio showcase.md`. Explore 27 linked fictional English notes and original PDF, EPUB, image, audio and Canvas samples. EPUB reading itself needs a separate reader. See the [included guide](demo/README.txt) and [package verification](demo/VERIFICATION.json); the previous download remains in release history.
+
+With Keyline 1.4.0 adds desktop paragraph editing: Enter starts a paragraph, Shift+Enter adds a line break, and imported Markdown separators display as one gap. It is enabled in the example; turn it off under Typography → Paragraph editing to restore the earlier behavior.
 
 ## Recommended companions
 
@@ -35,7 +37,7 @@ Review and enable the bundled plugins, then choose **Studio** in the bottom work
 | Component | What you get |
 | --- | --- |
 | **Keyline theme** — this repository | The ready-to-use light and dark visual foundation. |
-| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | Selection toolbar, block handles, page/date mentions, property entry and themed desktop calendar, file-type icons, typography and saved-workspace switching. English and Chinese UI; limited Mobile Beta. |
+| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | Selection toolbar, block handles, page/date mentions, property entry and themed desktop calendar, file-type icons, paragraph editing, typography and saved-workspace switching. English and Chinese UI; limited Mobile Beta. |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | Organise references into spaces and groups without moving or duplicating the originals. |
 
 The theme and these two optional plugins are separately installed. Neither plugin is mandatory, they do not require each other, and installing the theme does not install them automatically. Each companion has its own English and Chinese guide and screenshots.

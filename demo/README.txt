@@ -1,8 +1,8 @@
 KEYLINE STUDIO — EXAMPLE VAULT
-Updated 2026-11-03
+Updated 2026-11-08
 
 This fictional English Vault matches the current Keyline showcase images.
-It contains Keyline 0.8.28, With Keyline 1.3.0 and Bucket Sidebar 0.5.8,
+It contains Keyline 0.8.28, With Keyline 1.4.0 and Bucket Sidebar 0.5.8,
 including the current report-style tables and file-type icons.
 The full desktop setup requires Obsidian 1.13.7 or later.
 
@@ -31,6 +31,9 @@ The old Keyline interactions plugin is not included. Do not enable both
 With Keyline and that older alternative in the same Vault.
 
 TRY THE FEATURES
+- In desktop Live Preview, press Enter for a paragraph or Shift+Enter for a
+  line break. Imported paragraph separators display as one gap. Change this
+  in Settings > With Keyline > Typography > Paragraph editing.
 - Select text in Live Preview to use the nearby formatting toolbar.
 - Type @, then choose a date or page with the mouse or keyboard.
 - Type / on an empty line to open the insert menu.

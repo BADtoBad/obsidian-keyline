@@ -6,7 +6,7 @@
   "publishedAssetsMatched": 8,
   "versions": {
     "Keyline": "0.8.28",
-    "with-keyline": "1.3.0",
+    "with-keyline": "1.4.0",
     "bucket-sidebar": "0.5.8"
   },
   "files": 58,
@@ -14,21 +14,22 @@
   "extractedBytesMatchStage": true,
   "oldPluginIncluded": false,
   "privateDataAudit": "passed",
-  "zip": "Keyline-Studio-Demo-2026-11-03.zip",
-  "sha256": "5d7810eb3309eadab065ed5c1f1176be5bce309a2cd814f41a4158dfc27a4021",
-  "bytes": 324429,
+  "zip": "Keyline-Studio-Demo-2026-11-08.zip",
+  "sha256": "2e6b75d4199f6fca44be22ef88211265c1c2d84902917c0da5a0aab6e4ded8f4",
+  "bytes": 327479,
   "nativeHost": {
     "version": "1.13.7",
     "platform": "macOS",
     "status": "passed",
     "checks": [
+      "Published With Keyline 1.4.0 loads with paragraph editing enabled",
       "Fresh ZIP opens the saved Studio note and both plugins after trust",
       "Selecting Studio after first trust restores exactly one right-side Bucket panel",
       "Workspace menu Focus restores expected sidebars",
       "Workspace menu Studio restores expected sidebars",
       "All 27 note files unchanged during launch and workspace checks"
     ],
-    "firstActivation": "After trusting the bundled plugins, choose Studio in the bottom workspace menu to restore the exact layout. Folder expansion is local to each device.",
+    "firstActivation": "After trusting the bundled plugins, choose Studio in the bottom workspace menu to restore the saved layout. Folder expansion is local to each device.",
     "matchingShowcaseGeometry": true
   }
 }

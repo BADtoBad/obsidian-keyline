@@ -23,9 +23,11 @@
 
 ## 体验示例库
 
-下载 [**Keyline-Studio-Demo-2026-11-03.zip**](https://github.com/BADtoBad/obsidian-keyline/releases/download/0.8.28/Keyline-Studio-Demo-2026-11-03.zip)，解压后将其中的 **Keyline Studio** 文件夹作为独立库打开。本次包内更新为 **Keyline 0.8.28、With Keyline 1.3.0、Bucket Sidebar 0.5.8**，排版、报告式表格、分类图标和 Studio／Focus 布局与当前展示图一致。完整桌面套件需要 **Obsidian 1.13.7 或更高版本**。
+下载 [**Keyline-Studio-Demo-2026-11-08.zip**](https://github.com/BADtoBad/obsidian-keyline/releases/download/0.8.28/Keyline-Studio-Demo-2026-11-08.zip)，解压后将其中的 **Keyline Studio** 文件夹作为独立库打开。本次包内更新为 **Keyline 0.8.28、With Keyline 1.4.0、Bucket Sidebar 0.5.8**，排版、报告式表格、分类图标和 Studio／Focus 布局与当前展示图一致。完整桌面套件需要 **Obsidian 1.13.7 或更高版本**。
 
 检查并允许配套插件运行后，在底部工作区菜单选择 **Studio**，即可恢复布局并打开 `00 Home/Studio showcase.md`。27 篇英文笔记和 PDF、EPUB、图片、音频、Canvas 素材均为虚构示例；EPUB 阅读需另装阅读器。详见[包内指南](demo/README.txt)及[验证记录](demo/VERIFICATION.json)，旧下载包仍保留在发行历史中。
+
+示例库默认启用 With Keyline 1.4.0 的桌面段落编辑：Enter 分段、Shift+Enter 段内换行，导入 Markdown 的分段空行显示为一份段间距。可在「排版 → 段落编辑」关闭，恢复之前的编辑方式。
 
 ## 推荐搭配
 
@@ -34,7 +36,7 @@
 | 组件 | 带来的体验 |
 | --- | --- |
 | **Keyline 主题** — 本仓库 | 开箱即用的明暗视觉基础。 |
-| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | 选中文字工具栏、块把手、页面／日期引用、分类图标、排版与工作区切换；内置中英双语。 |
+| **[With Keyline](https://community.obsidian.md/plugins/with-keyline)** | 选中文字工具栏、块把手、页面／日期引用、分类图标、段落编辑、排版与工作区切换；内置中英双语。 |
 | **[Bucket Sidebar](https://github.com/BADtoBad/obsidian-bucket-sidebar)** | 按空间与分组组织引用，不搬动或复制原文件。 |
 
 主题与这两个可选插件分别安装。两个插件均非必需、互不依赖，安装主题也不会自动安装插件。每个插件均有中英文介绍和截图。
